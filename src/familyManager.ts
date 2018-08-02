@@ -7,7 +7,7 @@ class EntityNode {
 
 export class Family {
     private types: string[];
-    entities: Entity[];
+    entities: Entity[] = [];
 
     constructor(types: string[]) {
         this.types = types;

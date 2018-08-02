@@ -2,7 +2,7 @@ import Component from "./components/component";
 
 export class Entity {
     id: number;
-    components: { [name: string]: Component };
+    components: { [name: string]: Component } = {};
 
     onComponentAdded: (entity: Entity, component: Component) => void;
     onComponentRemoved: (entity: Entity, component: Component) => void;

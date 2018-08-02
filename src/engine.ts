@@ -41,7 +41,7 @@ export class EngineSubject extends Subject<{ type: string }> {
 
 export class Engine {
     private entities = new ObservableList<Entity>();
-    private families: HashSet<Family>;
+    private families = new HashSet<Family>();
     private nextId = 0;
 
     subscriber = new EngineSubject(this);
@@ -57,7 +57,7 @@ export class Engine {
             return existingFamily;
         }
 
-        this.entities.forEach(e => {
+        this.entities.items.forEach(e => {
             newFamily.onEntityAdded(e);
         });
 
