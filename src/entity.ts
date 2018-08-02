@@ -1,8 +1,30 @@
-interface Entity {
-    [key: string]: object
+import Component from "./components/component";
 
-    has: <T>(type: T & string) => boolean;
-    get: <T, K extends { type: T & string }>(type: T & string) => K;
-    add: <T>(type: { type: T & string}) => void;
-    pop: <T>(type: string) => { type: string };
+export class Entity {
+    id: number;
+    components: { [name: string]: Component };
+
+    onComponentAdded: (entity: Entity, component: Component) => void;
+    onComponentRemoved: (entity: Entity, component: Component) => void;
+
+    get<T extends Component>(name: string) {
+        return this.components[name] as T;
+    }
+
+    has(name: string) {
+        return !!this.components[name];
+    }
+
+    add(component: Component) {
+        this.components[component.name] = component;
+        this.onComponentAdded && this.onComponentAdded(this, component);
+    }
+
+    remove(component: Component | string) {
+        const name = typeof component === "string" ? component : component.name;
+        component = this.components[name];
+        delete this.components[name];
+
+        this.onComponentRemoved(this, component);
+    }
 }

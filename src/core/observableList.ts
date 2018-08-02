@@ -46,4 +46,6 @@ export class ObservableList<T> {
         this.items.splice(index, 1);
         this.removeListeners.forEach(listener => listener(item, index));
     }
+
+    forEach = this.items.forEach;
 }
