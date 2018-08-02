@@ -1,13 +1,33 @@
-import Component from "./components/component";
 import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
+import { Subject } from "./iterators/subject";
 
 export class Engine {
     private entities = new ObservableList<Entity>();
     private families: HashSet<Family>;
     private nextId = 0;
+
+    private eventSubscriptions = new Map<string, Subject<Engine>>();
+    private typeSubscriptions = new Map<string, Subject<Family>>();
+
+    on(event: string) {
+        if (!this.eventSubscriptions.has(event)) {
+            this.eventSubscriptions.set(event, new Subject());
+        }
+
+        return this.eventSubscriptions.get(event);
+    }
+
+    broadcastMessage(event: string) {
+        const subject = this.eventSubscriptions.get(event);
+        if (!subject) {
+            return;
+        }
+
+        subject.next(this);
+    }
 
     with(types: string[]) {
         const newFamily = new Family(types);

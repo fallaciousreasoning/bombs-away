@@ -1,3 +1,4 @@
+
 export class Subject<T> {
     nextHandlers: ((item: T) => void)[];
 
@@ -33,5 +34,11 @@ export class Subject<T> {
 
     subscribe(subscription: (item: T) => void) {
         this.nextHandlers.push(subscription);
+        return this;
     }
 }
+
+// Engine has dictionary of events --> subscribers
+// Engine.on('tick') // next(engine)
+//     .with(['transform', 'box']) // next(family)
+//     .subscribe(({ transform, render }) => drawOnScreen());
