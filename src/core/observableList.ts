@@ -1,7 +1,7 @@
 type ItemListener<T> = (item: T, index?: number) => void;
 
 export class ObservableList<T> {
-    items: T[]; 
+    items: T[] = []; 
     addListeners: ItemListener<T>[] = [];
     removeListeners: ItemListener<T>[] = [];
 

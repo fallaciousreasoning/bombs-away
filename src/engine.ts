@@ -46,7 +46,7 @@ export class Engine {
 
     subscriber = new EngineSubject(this);
 
-    broadcastMessage(event: { type: string }) {
+    broadcastMessage<T extends { type: string }>(event: T) {
         this.subscriber.next(event);
     }
 
@@ -56,7 +56,7 @@ export class Engine {
         if (existingFamily) {
             return existingFamily;
         }
-        
+
         this.entities.forEach(e => {
             newFamily.onEntityAdded(e);
         });
