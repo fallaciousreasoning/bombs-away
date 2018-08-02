@@ -1,35 +1,56 @@
+import Component from "./components/component";
 import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
 import { Subject } from "./iterators/subject";
 
+export class EngineSubject extends Subject<{ type: string }> {
+    engine: Engine;
+
+    constructor(engine: Engine) {
+        super();
+
+        this.engine = engine;
+    }
+
+    on(event: string) {
+        const subscriber = new EngineSubject(this.engine);
+        this.nextHandlers.push(e => {
+            if (event !== e.type) {
+                return;
+            }
+
+            subscriber.next(e);
+        })
+
+        return subscriber;
+    }
+
+    with(types: string[]) {
+        const family = this.engine.getFamily(types);
+        const subscriber = new Subject<Entity>();
+
+        this.nextHandlers.push(() => {
+            family.entities.forEach(e => subscriber.next(e));
+        });
+
+        return subscriber;
+    }
+}
+
 export class Engine {
     private entities = new ObservableList<Entity>();
     private families: HashSet<Family>;
     private nextId = 0;
 
-    private eventSubscriptions = new Map<string, Subject<Engine>>();
-    private typeSubscriptions = new Map<string, Subject<Family>>();
+    subscriber = new EngineSubject(this);
 
-    on(event: string) {
-        if (!this.eventSubscriptions.has(event)) {
-            this.eventSubscriptions.set(event, new Subject());
-        }
-
-        return this.eventSubscriptions.get(event);
+    broadcastMessage(event: { type: string }) {
+        this.subscriber.next(event);
     }
 
-    broadcastMessage(event: string) {
-        const subject = this.eventSubscriptions.get(event);
-        if (!subject) {
-            return;
-        }
-
-        subject.next(this);
-    }
-
-    with(types: string[]) {
+    getFamily(types: string[]) {
         const newFamily = new Family(types);
         const existingFamily = this.families.has(newFamily);
         if (existingFamily) {

@@ -1,6 +1,6 @@
 
 export class Subject<T> {
-    nextHandlers: ((item: T) => void)[];
+    protected nextHandlers: ((item: T) => void)[];
 
     map<K>(transform: (item: T) => K) {
         const newSubject = new Subject<K>();
