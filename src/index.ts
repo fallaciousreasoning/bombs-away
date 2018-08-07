@@ -15,6 +15,6 @@ engine.addEntity(e1);
 engine.addEntity(e2);
 
 engine.subscriber.on('tick').subscribe(console.log);
-engine.subscriber.on('tick').with(["Box", "Transform"]).subscribe(console.log);
+engine.subscriber.on('tick').with(["Box", "Transform"]).map(e => Object.keys(e.components)).subscribe(console.log);
 
 engine.broadcastMessage({ type: 'tick', data: 7 });
