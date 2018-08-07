@@ -21,10 +21,14 @@ engine.addEntity(e2);
 
 engine.subscriber.on('tick').subscribe(() => context.clearRect(0, 0, canvas.width, canvas.height));
 engine.subscriber.on('tick').with(["Box", "Transform"]).map(e => e.components).map(({ Transform, Box }: { Transform: Transform, Box: Box }) => {
-    console.log(Transform, Box)
     const halfSize = new Vector2(Box.width, Box.height).div(2);
     context.fillStyle = Box.color;
     context.fillRect(Transform.position.x - halfSize.x, Transform.position.y - halfSize.y, Box.width, Box.height);
 });
 
-engine.broadcastMessage({ type: 'tick', data: 7 });
+const tick = { type: 'tick' };
+const onTick = () => {
+    engine.broadcastMessage(tick);
+    setTimeout(onTick, 100/6);
+};
+onTick();
