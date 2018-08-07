@@ -5,6 +5,8 @@ export class Subject<T> {
     map<K>(transform: (item: T) => K) {
         const newSubject = new Subject<K>();
         this.nextHandlers.push(item => newSubject.next(transform(item)));
+
+        return newSubject;
     }
 
     filter(predicate: (item: T) => boolean) {
@@ -16,6 +18,8 @@ export class Subject<T> {
 
             newSubject.next(item);
         });
+
+        return newSubject;
     }
 
     reduce<To>(reducer: (prev: To, next: T) => To, initial: To) {
@@ -26,6 +30,8 @@ export class Subject<T> {
             prev = reducer(prev, item);
             newSubject.next(prev);
         });
+
+        return newSubject;
     }
 
     next(item: T) {
