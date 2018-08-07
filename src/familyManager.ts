@@ -13,12 +13,24 @@ export class Family {
         this.types = types;
     }
 
+    matches(entity: Entity) {
+        return this.types.every(t => !!entity.components[t]);
+    }
+
     onEntityAdded(entity: Entity) {
+        if (!this.matches(entity)) {
+            return;
+        }
+
         this.entities.push(entity);
     }
 
     onEntityRemoved(entity: Entity) {
-        const index =this.entities.indexOf(entity);
+        if (!this.matches(entity)) {
+            return;
+        }
+
+        const index = this.entities.indexOf(entity);
         this.entities.splice(index, 1);
     }
 
