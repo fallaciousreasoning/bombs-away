@@ -6,5 +6,11 @@ export default class Box implements Component {
     width: number;
     height: number;
 
-    canvas: CanvasRenderingContext2D;
+    color: string;
+
+    constructor(width: number, height?: number, color?: string){
+        this.width = width;
+        this.height = height || width;
+        this.color = color || 'black';
+    }
 }
