@@ -1,13 +1,12 @@
 import Box from "./components/box";
 import { Transform } from "./components/transform";
 import Vector2 from "./core/vector2";
-import { Engine } from "./engine";
 import { Entity } from "./entity";
+import { engine } from './game';
 
 const canvas = document.getElementById('root') as any;
 const context = canvas.getContext('2d') as CanvasRenderingContext2D;
 
-const engine = new Engine();
 window['engine'] = engine;
 
 const e1 = new Entity();
@@ -26,9 +25,3 @@ engine.subscriber.on('tick').with(["Box", "Transform"]).map(e => e.components).m
     context.fillRect(Transform.position.x - halfSize.x, Transform.position.y - halfSize.y, Box.width, Box.height);
 });
 
-const tick = { type: 'tick' };
-const onTick = () => {
-    engine.broadcastMessage(tick);
-    setTimeout(onTick, 100/6);
-};
-onTick();
