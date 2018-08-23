@@ -1,5 +1,6 @@
 import Box from "./components/box";
 import { Transform } from "./components/transform";
+import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
@@ -19,4 +20,5 @@ engine.addEntity(e1);
 engine.addEntity(e2);
 
 addRenderer(canvas, engine);
+window['input'] = new Input(canvas);
 
