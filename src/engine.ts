@@ -5,7 +5,7 @@ import { Entity } from "./entity";
 import { Family } from "./familyManager";
 import { Subject } from "./iterators/subject";
 
-export class EngineSubject extends Subject<{ type: string }> {
+class EngineSubject extends Subject<{ type: string }> {
     engine: Engine;
 
     constructor(engine: Engine) {
