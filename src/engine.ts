@@ -5,7 +5,7 @@ import { Entity } from "./entity";
 import { Family } from "./familyManager";
 import { Subject } from "./iterators/subject";
 
-class EngineSubject extends Subject<{ type: string }> {
+class EngineSubject<T> extends Subject<{ type: string }> {
     engine: Engine;
 
     constructor(engine: Engine) {
@@ -27,12 +27,12 @@ class EngineSubject extends Subject<{ type: string }> {
         return subscriber;
     }
 
-    with(types: string[]) {
+    with<K extends {}>(...types: (keyof K & string)[]) {
         const family = this.engine.getFamily(types);
-        const subscriber = new Subject<Entity>();
+        const subscriber = new Subject<{ components: K }>();
 
         this.nextHandlers.push(() => {
-            family.entities.forEach(e => subscriber.next(e));
+            family.entities.forEach(e => subscriber.next(e as any));
         });
 
         return subscriber;
