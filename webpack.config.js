@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
     mode: 'development',
     entry: "./src/index.ts",
@@ -21,5 +23,13 @@ module.exports = {
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
             { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ]
+    },
+
+    plugins: [
+        new webpack.HotModuleReplacementPlugin()
+    ],
+
+    devServer: {
+        hot: true
     }
 };

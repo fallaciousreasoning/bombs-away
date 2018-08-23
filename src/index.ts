@@ -11,7 +11,7 @@ const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const e1 = new Entity();
 e1.add(new Box(1, 1, 'red'));
-e1.add(new Transform(new Vector2(1, 1)));
+e1.add(new Transform(new Vector2(2, 1)));
 
 const e2 = new Entity();
 

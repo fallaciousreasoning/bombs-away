@@ -12,5 +12,8 @@
     "awesome-typescript-loader": "^5.2.0",
     "source-map-loader": "^0.2.3",
     "typescript": "^2.9.2"
+  },
+  "dependencies": {
+    "webpack": "^4.17.1"
   }
 }
