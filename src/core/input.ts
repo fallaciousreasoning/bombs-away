@@ -20,6 +20,10 @@ export default class Input implements Component {
         vertical: {
             positiveKeys: [ 83, 38 ],
             negativeKeys: [ 87, 40 ]
+        },
+        jump: {
+            positiveKeys: [32, 87],
+            negativeKeys: [],
         }
     };
 
