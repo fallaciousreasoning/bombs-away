@@ -38,8 +38,8 @@ addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
-addPlayerController(input, engine);
-addLookAtMouse(input, engine);
 addGravity(engine);
 addPhysics(engine);
+addPlayerController(input, engine);
+addLookAtMouse(input, engine);
 

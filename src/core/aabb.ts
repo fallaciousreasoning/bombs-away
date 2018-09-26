@@ -53,6 +53,6 @@ export class AABB {
     }
 
     intersects(other: AABB) {
-        return !(other.max.x < this.min.x || other.max.y < this.min.y || other.min.x > this.max.x || other.min.y > this.max.y);
+        return !(other.max.x <= this.min.x || other.max.y <= this.min.y || other.min.x >= this.max.x || other.min.y >= this.max.y);
     }
 }

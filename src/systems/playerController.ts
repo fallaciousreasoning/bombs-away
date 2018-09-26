@@ -1,15 +1,16 @@
+import Body from "../components/body";
 import Player from "../components/player";
-import { Transform } from "../components/transform";
 import Input from "../core/input";
+import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 
-export default function addMover(input: Input, engine: Engine) {
+export default function addPlayerController(input: Input, engine: Engine) {
     engine.subscriber
     .on('tick')
-    .with('player', 'transform')
+    .with('player', 'body')
     .map(e => e.components)
-    .map(({ player, transform }: { player: Player, transform: Transform }) => {
+    .map(({ player, body }: { player: Player, body: Body }) => {
         const horizontal = input.getAxis('horizontal');
-        transform.position.x += horizontal * 1/60 * player.speed;
+        body.velocity = new Vector2(horizontal * 10, body.velocity.y);
     });
 }
