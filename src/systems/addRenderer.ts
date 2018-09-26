@@ -10,12 +10,15 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
 
     engine.subscriber.on('tick').subscribe(() => context.clearRect(0, 0, canvas.width, canvas.height));
 
-    engine.subscriber.on('tick').with("Box", "Transform").map(e => e.components).map(({ Transform, Box }: { Transform: Transform, Box: Box }) => {
-        const size = new Vector2(Box.width, Box.height).mul(PIXELS_A_METRE);
+    engine.subscriber.on('tick')
+        .with("box", "transform")
+        .map(e => e.components)
+        .map(({ transform, box }: { transform: Transform, box: Box }) => {
+        const size = new Vector2(box.width, box.height).mul(PIXELS_A_METRE);
         const halfSize = size.div(2);
-        const position = Transform.position.mul(PIXELS_A_METRE);
+        const position = transform.position.mul(PIXELS_A_METRE);
 
-        context.fillStyle = Box.color;
+        context.fillStyle = box.color;
         context.fillRect(position.x - halfSize.x, position.y - halfSize.y, size.x, size.y);
     });
 }

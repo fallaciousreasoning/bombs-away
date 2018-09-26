@@ -1,7 +1,7 @@
 import Component from "./component";
 
 export default class Box implements Component {
-    name = 'Box';
+    name = 'box';
 
     width: number;
     height: number;

@@ -2,7 +2,7 @@ import Vector2 from "../core/vector2";
 import Component from "./component";
 
 export class Transform implements Component {
-    name = 'Transform';
+    name = 'transform';
 
     constructor(position?: Vector2, rotation?: number){
         this.position = position || new Vector2();
