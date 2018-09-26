@@ -10,6 +10,6 @@ export default function addMover(input: Input, engine: Engine) {
     .map(e => e.components)
     .map(({ Player, Transform }: { Player: Player, Transform: Transform }) => {
         const horizontal = input.getAxis('horizontal');
-        Transform.position.x += horizontal * 1/60;
+        Transform.position.x += horizontal * 1/60 * Player.speed;
     });
 }
