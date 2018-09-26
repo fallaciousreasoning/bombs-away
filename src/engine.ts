@@ -5,6 +5,10 @@ import { Entity } from "./entity";
 import { Family } from "./familyManager";
 import { Subject } from "./iterators/subject";
 
+interface Message {
+    type: string;
+}
+
 class EngineSubject<T> extends Subject<{ type: string }> {
     engine: Engine;
 
@@ -27,12 +31,23 @@ class EngineSubject<T> extends Subject<{ type: string }> {
         return subscriber;
     }
 
+    allWith<K extends {}>(...types: (keyof K & string)[]) {
+        const family = this.engine.getFamily(types);
+        const subscriber = new Subject<{ entities: { components: K }[], message: Message }>();
+
+        this.nextHandlers.push(message => {
+            subscriber.next({ entities: family.entities as any, message: message});
+        });
+
+        return subscriber;
+    }
+
     with<K extends {}>(...types: (keyof K & string)[]) {
         const family = this.engine.getFamily(types);
-        const subscriber = new Subject<{ components: K }>();
+        const subscriber = new Subject<{ components: K, message: Message }>();
 
-        this.nextHandlers.push(() => {
-            family.entities.forEach(e => subscriber.next(e as any));
+        this.nextHandlers.push(message => {
+            family.entities.forEach(e => subscriber.next({ components: e.components as any, message }));
         });
 
         return subscriber;
