@@ -47,7 +47,6 @@ export default class Input implements Component {
     }
 
     setMousePos({ x, y }: { x: number, y: number }) {
-        console.log("Set mouse: ", x, y)
         this.mousePosition = new Vector2(x, y);
     }
 }

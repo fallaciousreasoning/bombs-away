@@ -19,8 +19,14 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
         const halfSize = size.div(2);
         const position = transform.position.mul(PIXELS_A_METRE);
 
+        context.save();
+
+        context.translate(position.x, position.y);
+        context.rotate(transform.rotation);
         context.fillStyle = box.color;
-        context.fillRect(position.x - halfSize.x, position.y - halfSize.y, size.x, size.y);
+        context.fillRect(-halfSize.x, -halfSize.y, size.x, size.y);
+
+        context.restore();
     });
     engine.subscriber.on('tick')
         .with("line", "transform")
