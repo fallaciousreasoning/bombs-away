@@ -40,4 +40,21 @@ export default class Vector2 {
     rotate(degrees: number) {
         return new Vector2(Math.sin(degrees) * this.x, Math.cos(degrees) * this.y);
     }
+
+    lengthSquared() {
+        return this.x * this.x + this.y * this.y;
+    }
+
+    length() {
+        return Math.sqrt(this.lengthSquared());
+    }
+
+    normalized() {
+        return this.div(this.length());
+    }
+
+    toDegrees() {
+        const normalized = this.normalized();
+        return Math.sin(normalized.x) + Math.cos(normalized.y);
+    }
 }
