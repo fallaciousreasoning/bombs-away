@@ -1,8 +1,22 @@
 import Vector2 from "./vector2";
 
 export class AABB {
-    min: Vector2;
-    max: Vector2;
+    min = Vector2.zero;
+    max = Vector2.zero;
+
+    constructor(centre: Vector2, size: Vector2) {
+        this.centre = centre;
+        this.size = size;
+    }
+
+    get size() {
+        return new Vector2(this.width, this.height);
+    }
+
+    set size(value: Vector2) {
+        this.width = value.x;
+        this.height = value.y;
+    }
 
     get width() {
         return Math.abs(this.max.x - this.min.x);
@@ -36,5 +50,9 @@ export class AABB {
         const halfSize = new Vector2(this.width / 2, this.height / 2);
         this.min = value.sub(halfSize);
         this.max = value.add(halfSize);
+    }
+
+    intersects(other: AABB) {
+        return !(other.max.x < this.min.x || other.max.y < this.min.y || other.min.x > this.max.x || other.min.y > this.max.y);
     }
 }
