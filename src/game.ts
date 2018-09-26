@@ -3,7 +3,7 @@ import { Engine } from "./engine";
 export const engine = new Engine();
 
 const tickEvent = { type: 'tick', step: 0 };
-const tickRate = 1000/60;
+const tickRate = 10;
 let lastTick = 0;
 
 const tick = (timestamp) => {
