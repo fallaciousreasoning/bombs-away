@@ -29,6 +29,7 @@ export default function addPhysics(engine: Engine) {
 
                     if (collides) {
                         e1.transform.position = oldPos;
+                        e1.body.velocity = Vector2.zero;
                     }
                 })
         });
