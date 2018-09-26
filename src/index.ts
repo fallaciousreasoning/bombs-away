@@ -10,6 +10,7 @@ import { Entity } from "./entity";
 import { engine } from './game';
 import addGravity from "./systems/addGravity";
 import addMover from "./systems/addMover";
+import addPhysics from "./systems/addPhysics";
 import addRenderer from './systems/addRenderer';
 import addLookAtMouse from "./systems/lookAtMouse";
 
@@ -37,4 +38,5 @@ window['input'] = input;
 addMover(input, engine);
 addLookAtMouse(input, engine);
 addGravity(engine);
+addPhysics(engine);
 

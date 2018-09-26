@@ -9,7 +9,7 @@ export default class Body implements Component {
     width: number;
     height: number;
 
-    velocity: Vector2;
+    velocity = new Vector2();
 
     constructor(width: number, height: number, isDynamic?: boolean){
         this.width = width;
