@@ -4,6 +4,13 @@ interface Vector2ish {
 }
 
 export default class Vector2 {
+    static left = new Vector2(-1, 0);
+    static up = new Vector2(0, -1);
+    static unitX = new Vector2(1, 0);
+    static unitY = new Vector2(0, 1);
+    static zero = new Vector2(0);
+    static one = new Vector2(1, 1);
+
     x: number;
     y: number;
 

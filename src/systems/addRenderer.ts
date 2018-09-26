@@ -1,4 +1,5 @@
 import Box from "../components/box";
+import Line from "../components/line";
 import { Transform } from "../components/transform";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
@@ -20,5 +21,20 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
 
         context.fillStyle = box.color;
         context.fillRect(position.x - halfSize.x, position.y - halfSize.y, size.x, size.y);
+    });
+    engine.subscriber.on('tick')
+        .with("line", "transform")
+        .map(e => e.components)
+        .map(({ transform, line }: { transform: Transform, line: Line }) => {
+            
+        const position = transform.position.mul(PIXELS_A_METRE);
+        const lineEnd = line.direction.mul(line.length).mul(PIXELS_A_METRE).add(position);
+        
+        context.beginPath();
+        context.lineWidth = line.width * PIXELS_A_METRE;
+        context.strokeStyle = line.color;
+        context.moveTo(position.x, position.y);
+        context.lineTo(lineEnd.x, lineEnd.y);
+        context.stroke();
     });
 }
