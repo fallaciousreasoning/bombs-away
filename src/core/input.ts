@@ -47,6 +47,6 @@ export default class Input implements Component {
     }
 
     setMousePos({ x, y }: { x: number, y: number }) {
-        this.mousePosition = new Vector2(x, y);
+        this.mousePosition = new Vector2(x, y).div(64);
     }
 }

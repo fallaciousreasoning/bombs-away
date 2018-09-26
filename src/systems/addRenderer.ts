@@ -34,7 +34,11 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
         .map(({ transform, line }: { transform: Transform, line: Line }) => {
             
         const position = transform.position.mul(PIXELS_A_METRE);
-        const lineEnd = line.direction.mul(line.length).mul(PIXELS_A_METRE).add(position);
+        const lineEnd = line.direction
+            .mul(line.length)
+            .rotate(transform.rotation)
+            .mul(PIXELS_A_METRE)
+            .add(position);
         
         context.beginPath();
         context.lineWidth = line.width * PIXELS_A_METRE;

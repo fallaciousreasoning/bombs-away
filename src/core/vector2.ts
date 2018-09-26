@@ -38,7 +38,9 @@ export default class Vector2 {
     }
 
     rotate(degrees: number) {
-        return new Vector2(Math.sin(degrees) * this.x, Math.cos(degrees) * this.y);
+        const x = this.x * Math.cos(degrees) - this.y * Math.sin(degrees);
+        const y = this.x * Math.sin(degrees) + this.y * Math.cos(degrees)
+        return new Vector2(x, y);
     }
 
     lengthSquared() {
@@ -55,6 +57,6 @@ export default class Vector2 {
 
     toDegrees() {
         const normalized = this.normalized();
-        return Math.sin(normalized.x) + Math.cos(normalized.y);
+        return Math.atan2(normalized.y, normalized.x) + Math.PI/2;
     }
 }
