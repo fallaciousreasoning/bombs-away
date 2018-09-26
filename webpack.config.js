@@ -30,6 +30,7 @@ module.exports = {
     ],
 
     devServer: {
-        hot: true
+        hot: false,
+        contentBase:  './dist',
     }
 };

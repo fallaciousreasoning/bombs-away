@@ -23,10 +23,10 @@ export default class Input implements Component {
         }
     };
 
-    constructor(on: HTMLElement) {
-        on.addEventListener("keydown", event => this.setKey(event.keyCode, true));
-        on.addEventListener("keyup", event => this.setKey(event.keyCode, false));
-        on.addEventListener("mousemove", event => this.setMousePos(event));
+    constructor(on: HTMLDocument | HTMLElement) {
+        document.addEventListener("keydown", event => this.setKey(event.which, true));
+        document.addEventListener("keyup", event => this.setKey(event.which, false));
+        document.addEventListener("mousemove", event => this.setMousePos(event));
     }
 
     getAxis(name: string): number {
