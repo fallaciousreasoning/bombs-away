@@ -6,12 +6,13 @@ export default function addGravity(engine: Engine, gravity: Vector2 = new Vector
     engine.subscriber
     .on('tick')
     .with('body')
-    .map(e => e.components)
-    .map(({ body }: { body: Body }) => {
-        if (!body.isDynamic) {
-            return;
-        }
+    .subscribe(result => {
+      const body: Body = result.components.body; 
+      
+      if (!body.isDynamic) {
+        return;
+      }
 
-        body.velocity = body.velocity.add(gravity.mul(1/60));
+      body.velocity = body.velocity.add(gravity.mul((result.message as any).step));
     });
 }
