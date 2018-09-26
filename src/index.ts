@@ -9,10 +9,10 @@ import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
 import addGravity from "./systems/addGravity";
-import addMover from "./systems/addMover";
 import addPhysics from "./systems/addPhysics";
 import addRenderer from './systems/addRenderer';
 import addLookAtMouse from "./systems/lookAtMouse";
+import addPlayerController from "./systems/playerController";
 
 window['engine'] = engine;
 
@@ -38,7 +38,7 @@ addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
-addMover(input, engine);
+addPlayerController(input, engine);
 addLookAtMouse(input, engine);
 addGravity(engine);
 addPhysics(engine);
