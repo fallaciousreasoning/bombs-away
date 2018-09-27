@@ -4,30 +4,30 @@ import Component from "./component";
 export class Transform implements Component {
     name = 'transform';
 
-    private _position: Vector2;
-    private _rotation: number;
+    localPosition: Vector2;
+    localRotation: number;
 
     parent: Transform;
 
     constructor(position?: Vector2, rotation?: number, parent?: Transform){
-        this._position = position || new Vector2();
-        this._rotation = rotation || 0;
+        this.localPosition = position || new Vector2();
+        this.localRotation = rotation || 0;
         this.parent = parent;
     }
 
     get position() {
-        return this.parent ? this.parent.position.add(this._position) : this._position; 
+        return this.parent ? this.parent.position.add(this.localPosition) : this.localPosition; 
     }
 
     set position(value: Vector2) {
-        this._position = this.parent ?  value.sub(this.parent.position) : value;
+        this.localPosition = this.parent ?  value.sub(this.parent.position) : value;
     }
 
     get rotation() {
-        return this.parent ? this.parent.rotation + this._rotation : this._rotation;
+        return this.parent ? this.parent.rotation + this.localRotation : this.localRotation;
     }
 
     set rotation(value: number) {
-        this._rotation = this.parent ? value - this.parent.rotation : value;
+        this.localRotation = this.parent ? value - this.parent.rotation : value;
     }
 }
