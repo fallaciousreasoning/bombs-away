@@ -16,5 +16,5 @@ export class HashSet<T extends { getHashCode: () => string | number }> {
         this.list.splice(this.list.indexOf(value), 1);
     }
 
-    forEach = this.list.forEach;
+    forEach = (lambda: (item: T) => void) => this.list.forEach(lambda);
 }
