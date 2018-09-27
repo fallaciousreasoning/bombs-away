@@ -22,9 +22,12 @@ const player = new Entity();
 player.add(new Player());
 player.add(new Box(1, 1, 'red'));
 player.add(new Transform(new Vector2(2, 1)));
-player.add(new LookAtMouse());
-player.add(new Line(0.5, 0.1, 'white'));
 player.add(new Body(1, 1, true));
+
+const weapon = new Entity();
+weapon.add(new Line(1, 0.1, 'black'));
+weapon.add(new Transform(new Vector2(0.5, 0), 0, player.get('transform')));
+weapon.add(new LookAtMouse());
 
 const ground = new Entity();
 ground.add(new Box(10, 1));
@@ -32,6 +35,7 @@ ground.add(new Transform(new Vector2(5, 5)));
 ground.add(new Body(10, 1, false));
 
 engine.addEntity(player);
+engine.addEntity(weapon);
 engine.addEntity(ground);
 
 addRenderer(canvas, engine);
