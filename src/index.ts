@@ -25,7 +25,7 @@ const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const buildBullet = (weapon: Weapon, at: Vector2) => {
     const bullet = new Entity();
-    bullet.add(new Line(1, 0.1, 'white'));
+    bullet.add(new Line(1, 0.1, 'black'));
     bullet.add(new Transform(at));
     bullet.add(new AliveForTime(0.2));
     return bullet;
