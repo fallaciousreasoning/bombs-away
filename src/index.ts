@@ -1,3 +1,4 @@
+import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
 import Box from "./components/box";
 import FlipWithMouse from "./components/flipWithMouse";
@@ -5,10 +6,12 @@ import Line from "./components/line";
 import LookAtMouse from "./components/lookAtMouse";
 import Player from "./components/player";
 import { Transform } from "./components/transform";
+import Weapon from "./components/weapon";
 import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
+import addFireManager from "./systems/addFireManager";
 import addFlipWithMouse from "./systems/addFlipWithMouse";
 import addGravity from "./systems/addGravity";
 import addPhysics from "./systems/addPhysics";
@@ -19,6 +22,14 @@ import addPlayerController from "./systems/playerController";
 window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
+
+const buildBullet = (weapon: Weapon, at: Vector2) => {
+    const bullet = new Entity();
+    bullet.add(new Line(1, 0.1, 'white'));
+    bullet.add(new Transform(at));
+    bullet.add(new AliveForTime(0.2));
+    return bullet;
+}
 
 const player = new Entity();
 player.add(new Player());
@@ -31,6 +42,7 @@ weapon.add(new Line(1, 0.3, 'black'));
 weapon.add(new Transform(new Vector2(0.5, 0), 0, player.get('transform')));
 weapon.add(new LookAtMouse());
 weapon.add(new FlipWithMouse());
+weapon.add(new Weapon(buildBullet));
 
 const ground = new Entity();
 ground.add(new Box(10, 1));
@@ -50,4 +62,5 @@ addPhysics(engine);
 addPlayerController(input, engine);
 addLookAtMouse(input, engine);
 addFlipWithMouse(input, engine);
+addFireManager(input, engine);
 
