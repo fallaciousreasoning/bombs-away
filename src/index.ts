@@ -23,7 +23,7 @@ player.add(new Player());
 player.add(new Box(1, 1, 'red'));
 player.add(new Transform(new Vector2(2, 1)));
 player.add(new LookAtMouse());
-player.add(new Line(1, 0.1, 'white'));
+player.add(new Line(0.5, 0.1, 'white'));
 player.add(new Body(1, 1, true));
 
 const ground = new Entity();
