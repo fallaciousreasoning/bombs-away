@@ -26,8 +26,8 @@ export class AABB {
         const centre = this.centre;
         const halfWdith = value/2;
 
-        this.min.x = centre.x - halfWdith;
-        this.max.x = centre.x + halfWdith;
+        this.min = this.min.withX(centre.x - halfWdith);
+        this.max = this.max.withX(centre.x + halfWdith);
     }
 
     get height() {
@@ -38,8 +38,8 @@ export class AABB {
         const centre = this.centre;
         const halfHeight = value/2;
 
-        this.min.y = centre.y - halfHeight;
-        this.max.y = centre.y + halfHeight;
+        this.min = this.min.withY(centre.y - halfHeight);
+        this.max = this.max.withY(centre.y + halfHeight);
     }
 
     get centre() {

@@ -22,9 +22,7 @@ export default function addPhysics(engine: Engine) {
 type Entity = { transform: Transform, body: Body };
 const tryMoveOnAxis = (entity: Entity, entities: Entity[], axis: Vector2, step: number) => {
     const oldPos = entity.transform.position;
-    const velocityAlongComponent = entity.body.velocity.mul(axis);
-    velocityAlongComponent.x = Math.round(velocityAlongComponent.x);
-    velocityAlongComponent.y = Math.round(velocityAlongComponent.y);
+    const velocityAlongComponent = entity.body.velocity.mul(axis).round();
 
     entity.transform.position = entity.transform.position.add(velocityAlongComponent.mul(step));
     const e1B = new AABB(entity.transform.position, new Vector2(entity.body.width, entity.body.height));
