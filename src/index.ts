@@ -15,6 +15,7 @@ import addFireManager from "./systems/addFireManager";
 import addFlipWithMouse from "./systems/addFlipWithMouse";
 import addGravity from "./systems/addGravity";
 import addPhysics from "./systems/addPhysics";
+import addRemoveAfterTime from "./systems/addRemoveAfterTime";
 import addRenderer from './systems/addRenderer';
 import addLookAtMouse from "./systems/lookAtMouse";
 import addPlayerController from "./systems/playerController";
@@ -63,4 +64,5 @@ addPlayerController(input, engine);
 addLookAtMouse(input, engine);
 addFlipWithMouse(input, engine);
 addFireManager(input, engine);
+addRemoveAfterTime(engine);
 
