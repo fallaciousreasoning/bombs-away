@@ -7,6 +7,7 @@ export default class Weapon implements Component {
     fireRate = 0.4;
     damage = 1;
     range = 10;
+    accuracy = 0.8;
 
     nextShotIn = 0;
 

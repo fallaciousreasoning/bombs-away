@@ -25,9 +25,10 @@ window['engine'] = engine;
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const buildBullet = (weapon: Weapon, at: Transform) => {
+    const noise = (Math.PI * Math.random()  - Math.PI/2) * (1 - weapon.accuracy);
     const bullet = new Entity();
     bullet.add(new Line(weapon.range, 0.1, 'yellow'));
-    bullet.add(new Transform(at.position, at.rotation));
+    bullet.add(new Transform(at.position, at.rotation + noise));
     bullet.add(new AliveForTime(0.2));
     return bullet;
 }
