@@ -14,8 +14,7 @@ export default function addFireManager(input: Input, engine: Engine) {
         weapon.nextShotIn -= entity.message['step'];
 
         if (weapon.nextShotIn < 0 && input.getAxis('jump')) {
-            console.log('Shot?')
-            engine.addEntity(weapon.buildBullet(weapon, transform.position));
+            engine.addEntity(weapon.buildBullet(weapon, transform));
             weapon.nextShotIn = weapon.fireRate;
         }
     });

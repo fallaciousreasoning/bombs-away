@@ -24,10 +24,10 @@ window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
-const buildBullet = (weapon: Weapon, at: Vector2) => {
+const buildBullet = (weapon: Weapon, at: Transform) => {
     const bullet = new Entity();
-    bullet.add(new Line(1, 0.1, 'black'));
-    bullet.add(new Transform(at));
+    bullet.add(new Line(weapon.range, 0.1, 'yellow'));
+    bullet.add(new Transform(at.position, at.rotation));
     bullet.add(new AliveForTime(0.2));
     return bullet;
 }
@@ -40,7 +40,7 @@ player.add(new Body(1, 2, true));
 
 const weapon = new Entity();
 weapon.add(new Line(1, 0.3, 'black'));
-weapon.add(new Transform(new Vector2(0.5, 0), 0, player.get('transform')));
+weapon.add(new Transform(new Vector2(0.65, 0), 0, player.get('transform')));
 weapon.add(new LookAtMouse());
 weapon.add(new FlipWithMouse());
 weapon.add(new Weapon(buildBullet));
