@@ -3,7 +3,7 @@ import Vector2 from "./vector2";
 
 interface AxisInfo {
     positiveKeys: number[];
-    negativeKeys: number[];
+    negativeKeys?: number[];
 }
 
 export default class Input implements Component {
@@ -24,6 +24,9 @@ export default class Input implements Component {
         jump: {
             positiveKeys: [32, 87],
             negativeKeys: [],
+        },
+        shoot: {
+            positiveKeys: [1]
         }
     };
 
@@ -31,13 +34,15 @@ export default class Input implements Component {
         document.addEventListener("keydown", event => this.setKey(event.which, true));
         document.addEventListener("keyup", event => this.setKey(event.which, false));
         document.addEventListener("mousemove", event => this.setMousePos(event));
+        document.addEventListener("mousedown", event => this.setKey(event.which, true));
+        document.addEventListener("mouseup", event => this.setKey(event.which, false));
     }
 
     getAxis(name: string): number {
         let result = 0;
         const axisInfo = this.axes[name];
 
-        if (axisInfo.negativeKeys.some(k => this.downKeys[k]))
+        if (axisInfo.negativeKeys && axisInfo.negativeKeys.some(k => this.downKeys[k]))
             result--;
 
         if (axisInfo.positiveKeys.some(k => this.downKeys[k]))

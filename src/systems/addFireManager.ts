@@ -13,7 +13,7 @@ export default function addFireManager(input: Input, engine: Engine) {
 
         weapon.nextShotIn -= entity.message['step'];
 
-        if (weapon.nextShotIn < 0 && input.getAxis('jump')) {
+        if (weapon.nextShotIn < 0 && input.getAxis('shoot')) {
             engine.addEntity(weapon.buildBullet(weapon, transform));
             weapon.nextShotIn = weapon.fireRate;
         }
