@@ -1,0 +1,3 @@
+[submodule "union-generator"]
+	path = union-generator
+	url = https://github.com/fallaciousreasoning/ts-union-generator.git
