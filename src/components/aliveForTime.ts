@@ -6,5 +6,5 @@ export default class AliveForTime implements Component {
 
     constructor(time: number) {
         this.time = time;
-    }
+    } 
 }

@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const webpackUnionGeneratorPlugin = require('./union-generator/webpack-union-generator-plugin');
 
 module.exports = {
     mode: 'development',
@@ -26,7 +27,8 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new webpackUnionGeneratorPlugin()
     ],
 
     devServer: {
