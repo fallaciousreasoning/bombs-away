@@ -37,9 +37,9 @@ export class System<T0 extends Names,
                     T7 extends Names,
                     T8 extends Names,
                     T9 extends Names> {
-    types: [T0, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?];
+    types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?];
 
-    constructor(types: [T0, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) {
+    constructor(types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) {
         this.types = types;
     }
 

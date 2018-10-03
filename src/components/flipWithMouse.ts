@@ -1,3 +1,3 @@
 export default class FlipWithMouse {
-    name = 'flipWithMouse';
+    name: 'flipWithMouse' = 'flipWithMouse';
 }

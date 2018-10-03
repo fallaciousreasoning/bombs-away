@@ -5,11 +5,9 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 
 export default function addPlayerController(input: Input, engine: Engine) {
-    engine.subscriber
-    .on('tick')
-    .with('player', 'body')
-    .map(e => e.components)
-    .map(({ player, body }: { player: Player, body: Body }) => {
+    engine
+    .makeSystem('player', 'body')
+    .onEach('tick', ({ player, body }: { player: Player, body: Body }) => {
         const horizontal = input.getAxis('horizontal');
         let jumpImpulse = 0;
         if (input.getAxis('jump')) {

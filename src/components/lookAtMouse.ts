@@ -1,3 +1,3 @@
 export default class LookAtMouse {
-    name = 'lookAtMouse';
+    name: 'lookAtMouse' = 'lookAtMouse';
 }

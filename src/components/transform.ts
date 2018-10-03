@@ -1,7 +1,7 @@
 import Vector2 from "../core/vector2";
 
 export class Transform {
-    name = 'transform';
+    name: 'transform' = 'transform';
 
     localPosition: Vector2;
     localRotation: number;

@@ -1,15 +1,13 @@
-import AliveForTime from "../components/aliveForTime";
 import { Engine } from "../engine";
 
 export default function addRemoveAfterTime(engine: Engine) {
-    engine.subscriber
-    .on('tick')
-    .with('aliveForTime')
-    .map((entity) => {
-        const aliveForTime: AliveForTime = entity.components.aliveForTime;
-        aliveForTime.time -= entity.message['step'];
+    engine
+    .makeSystem('aliveForTime')
+    .onEach('tick', (entity, message) => {
+        entity.aliveForTime.time -= message['step'];
 
-        if (aliveForTime.time < 0) {
+        if (entity.aliveForTime.time < 0) {
+            throw new Error("Can't do this yet :'(");
             engine.removeEntity(entity as any);
         }
     });

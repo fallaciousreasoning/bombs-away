@@ -14,17 +14,18 @@ export class Engine {
     private families = new HashSet<Family>();
     private nextId = 0;
 
-    private systems: any[];
+    private systems: any[] = [];
 
     broadcastMessage<T extends { type: string }>(event: T) {
         for (const system of this.systems) {
             if (system[event.type]) {
-                system[event.type](event);
+                const family = this.getFamily(system.types).entities.map(c => c.components);
+                system[event.type](family, event);
             }
         }
     }
 
-    makeSystem = <T0 extends Names,
+    makeSystem = <T0 extends Names=never,
         T1 extends Names=never,
         T2 extends Names=never,
         T3 extends Names=never,
@@ -34,7 +35,7 @@ export class Engine {
         T7 extends Names=never,
         T8 extends Names=never,
         T9 extends Names=never>
-        (...types: [T0, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
+        (...types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
         const system = new System(types);
         this.systems.push(system);
         return system;

@@ -5,17 +5,16 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 
 export default function addPhysics(engine: Engine) {
-    engine.subscriber
-        .on('tick')
-        .allWith('body', 'transform')
-        .subscribe(({ entities, message }) => {
+    engine
+        .makeSystem('body', 'transform')
+        .on('tick', (entities, message) => {
             const step = message['step'];
-            const components = entities.map(e => e.components);
-            components
+            entities
                 .forEach(e1 => {
-                    tryMoveOnAxis(e1, components, Vector2.unitY, step);
-                    tryMoveOnAxis(e1, components, Vector2.unitX, step);
+                    tryMoveOnAxis(e1, entities, Vector2.unitY, step);
+                    tryMoveOnAxis(e1, entities, Vector2.unitX, step);
                 })
+
         });
 }
 

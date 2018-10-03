@@ -1,21 +1,15 @@
-import { Transform } from "../components/transform";
-import Weapon from "../components/weapon";
 import Input from "../core/input";
 import { Engine } from "../engine";
 
 export default function addFireManager(input: Input, engine: Engine) {
-    engine.subscriber
-    .on('tick')
-    .with('transform', 'weapon')
-    .map((entity) => {
-        const transform: Transform = entity.components.transform;
-        const weapon: Weapon = entity.components.weapon;
+    engine
+        .makeSystem('transform', 'weapon')
+        .onEach('tick', ({ transform, weapon }, message) => {
+            weapon.nextShotIn -= message['step'];
 
-        weapon.nextShotIn -= entity.message['step'];
-
-        if (weapon.nextShotIn < 0 && input.getAxis('shoot')) {
-            engine.addEntity(weapon.buildBullet(weapon, transform));
-            weapon.nextShotIn = weapon.fireRate;
-        }
-    });
+            if (weapon.nextShotIn < 0 && input.getAxis('shoot')) {
+                engine.addEntity(weapon.buildBullet(weapon, transform));
+                weapon.nextShotIn = weapon.fireRate;
+            }
+        });
 }
