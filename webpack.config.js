@@ -29,8 +29,8 @@ module.exports = {
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
         new webpackUnionGeneratorPlugin({
-            fileGlobs: 'src/components/**',
-            outputFile: 'src/components/Generated.ts',
+            fileGlobs: __dirname + '/src/components/',
+            outputFile: __dirname + '/src/components/Generated.ts',
             unionName: 'Generated'
         })
     ],
