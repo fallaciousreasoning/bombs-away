@@ -3,55 +3,10 @@ import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
-import { Subject } from "./iterators/subject";
+import { Names, System } from "./systems/system";
 
 interface Message {
     type: string;
-}
-
-class EngineSubject<T> extends Subject<{ type: string }> {
-    engine: Engine;
-
-    constructor(engine: Engine) {
-        super();
-
-        this.engine = engine;
-    }
-
-    on(event: string) {
-        const subscriber = new EngineSubject(this.engine);
-        this.nextHandlers.push(e => {
-            if (event !== e.type) {
-                return;
-            }
-
-            subscriber.next(e);
-        })
-
-        return subscriber;
-    }
-
-    allWith<K extends {}>(...types: (keyof K & string)[]) {
-        const family = this.engine.getFamily(types);
-        const subscriber = new Subject<{ entities: { components: K }[], message: Message }>();
-
-        this.nextHandlers.push(message => {
-            subscriber.next({ entities: family.entities as any, message: message});
-        });
-
-        return subscriber;
-    }
-
-    with<K extends {}>(...types: (keyof K & string)[]) {
-        const family = this.engine.getFamily(types);
-        const subscriber = new Subject<{ components: K, message: Message }>();
-
-        this.nextHandlers.push(message => {
-            family.entities.forEach(e => subscriber.next({ components: e.components as any, message }));
-        });
-
-        return subscriber;
-    }
 }
 
 export class Engine {
@@ -59,10 +14,30 @@ export class Engine {
     private families = new HashSet<Family>();
     private nextId = 0;
 
-    subscriber = new EngineSubject(this);
+    private systems: any[];
 
     broadcastMessage<T extends { type: string }>(event: T) {
-        this.subscriber.next(event);
+        for (const system of this.systems) {
+            if (system[event.type]) {
+                system[event.type](event);
+            }
+        }
+    }
+
+    makeSystem = <T0 extends Names,
+        T1 extends Names=never,
+        T2 extends Names=never,
+        T3 extends Names=never,
+        T4 extends Names=never,
+        T5 extends Names=never,
+        T6 extends Names=never,
+        T7 extends Names=never,
+        T8 extends Names=never,
+        T9 extends Names=never>
+        (...types: [T0, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
+        const system = new System(types);
+        this.systems.push(system);
+        return system;
     }
 
     getFamily(types: string[]) {
