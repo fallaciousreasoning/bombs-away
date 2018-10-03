@@ -1,5 +1,5 @@
 export default class Box {
-    name = 'box';
+    name: 'box' = 'box';
 
     width: number;
     height: number;
