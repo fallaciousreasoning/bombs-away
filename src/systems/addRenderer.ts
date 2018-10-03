@@ -8,7 +8,7 @@ export const PIXELS_A_METRE = 64;
 export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
     const context = canvas.getContext('2d');
 
-    engine.makeSystem(null).on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
+    engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
 
     engine
         .makeSystem("box", "transform")
