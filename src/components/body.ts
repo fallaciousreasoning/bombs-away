@@ -1,8 +1,7 @@
 import Vector2 from "../core/vector2";
-import Component from "./component";
 
-export default class Body implements Component {
-    name = 'body';
+export default class Body {
+    name: 'body' = 'body';
 
     isDynamic: boolean;
 

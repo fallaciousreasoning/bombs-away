@@ -1,7 +1,6 @@
 import Vector2 from "../core/vector2";
-import Component from "./component";
 
-export class Transform implements Component {
+export class Transform {
     name = 'transform';
 
     localPosition: Vector2;

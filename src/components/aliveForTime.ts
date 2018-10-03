@@ -1,10 +1,8 @@
-import Component from "./component";
-
-export default class AliveForTime implements Component {
-    name = 'aliveForTime';
+export default class AliveForTime {
+    name: "aliveForTime" = "aliveForTime";
     time: number;
 
     constructor(time: number) {
         this.time = time;
-    } 
+    }
 }

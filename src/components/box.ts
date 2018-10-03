@@ -1,6 +1,4 @@
-import Component from "./component";
-
-export default class Box implements Component {
+export default class Box {
     name = 'box';
 
     width: number;

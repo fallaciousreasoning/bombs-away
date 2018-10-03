@@ -1,6 +1,4 @@
-import Component from "./component";
-
-export default class Player implements Component {
+export default class Player {
     name = 'player';
     speed = 10;
     jumpImpulse = 5;

@@ -1,4 +1,3 @@
-import Component from "../components/component";
 import Vector2 from "./vector2";
 
 interface AxisInfo {
@@ -6,7 +5,7 @@ interface AxisInfo {
     negativeKeys?: number[];
 }
 
-export default class Input implements Component {
+export default class Input {
     name = 'Input';
 
     mousePosition = new Vector2();

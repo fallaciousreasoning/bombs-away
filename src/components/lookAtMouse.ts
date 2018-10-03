@@ -1,5 +1,3 @@
-import Component from "./component";
-
-export default class LookAtMouse implements Component {
+export default class LookAtMouse {
     name = 'lookAtMouse';
 }

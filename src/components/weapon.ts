@@ -1,9 +1,8 @@
 import { Entity } from "../entity";
-import Component from "./component";
 import { Transform } from "./transform";
 
-export default class Weapon implements Component {
-    name = 'weapon';
+export default class Weapon {
+    name: 'weapon' = 'weapon';
     fireRate = 0.4;
     damage = 1;
     range = 10;

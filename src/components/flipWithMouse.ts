@@ -1,5 +1,3 @@
-import Component from "./component";
-
-export default class FlipWithMouse implements Component {
+export default class FlipWithMouse {
     name = 'flipWithMouse';
 }

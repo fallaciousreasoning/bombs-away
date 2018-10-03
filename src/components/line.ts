@@ -1,7 +1,6 @@
 import Vector2 from "../core/vector2";
-import Component from "./component";
 
-export default class Line implements Component {
+export default class Line {
     name = 'line';
 
     direction = Vector2.up;

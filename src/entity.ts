@@ -1,13 +1,13 @@
-import Component from "./components/component";
+import { Generated } from "./components/Generated";
 
 export class Entity {
     id: number;
-    components: { [name: string]: Component } = {};
+    components: { [name: string]: Generated } = {};
 
-    onComponentAdded: (entity: Entity, component: Component) => void;
-    onComponentRemoved: (entity: Entity, component: Component) => void;
+    onComponentAdded: (entity: Entity, component: Generated) => void;
+    onComponentRemoved: (entity: Entity, component: Generated) => void;
 
-    get<T extends Component>(name: string) {
+    get<T extends Generated>(name: string) {
         return this.components[name] as T;
     }
 
@@ -15,12 +15,12 @@ export class Entity {
         return !!this.components[name];
     }
 
-    add(component: Component) {
+    add(component: Generated) {
         this.components[component.name] = component;
         this.onComponentAdded && this.onComponentAdded(this, component);
     }
 
-    remove(component: Component | string) {
+    remove(component: Generated | string) {
         const name = typeof component === "string" ? component : component.name;
         component = this.components[name];
         delete this.components[name];
