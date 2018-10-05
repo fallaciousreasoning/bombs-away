@@ -1,4 +1,4 @@
-import { Generated } from "./components/Generated";
+import { Component } from "./components/Component";
 import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
@@ -84,11 +84,11 @@ export class Engine {
         this.families.forEach(f => f.onEntityRemoved(entity));
     }
 
-    private onComponentAdded(entity: Entity, component: Generated) {
+    private onComponentAdded(entity: Entity, component: Component) {
         this.families.forEach(f => f.onComponentAdded(entity, component));
     }
 
-    private onComponentRemoved(entity: Entity, component: Generated) {
+    private onComponentRemoved(entity: Entity, component: Component) {
         this.families.forEach(f => f.onComponentRemoved(entity, component));
     }
 }

@@ -1,32 +1,32 @@
-import { Generated } from "../components/Generated";
+import { Component } from "../components/Component";
 
 export type Narrow<T, N> = T extends { name: N } ? T : never;
-export type Names = Generated['name'];
+export type Names = Component['name'];
 
 export type Entity<Components extends Names[]> = {
     id: number;
 } & {
-    [P in Components[0]]: Narrow<Generated, P>
+    [P in Components[0]]: Narrow<Component, P>
 } & {
-    [P in Components[1]]: Narrow<Generated, P>
+    [P in Components[1]]: Narrow<Component, P>
 } & {
-    [P in Components[2]]: Narrow<Generated, P>
+    [P in Components[2]]: Narrow<Component, P>
 } & {
-    [P in Components[3]]: Narrow<Generated, P>
+    [P in Components[3]]: Narrow<Component, P>
 } & {
-    [P in Components[4]]: Narrow<Generated, P>
+    [P in Components[4]]: Narrow<Component, P>
 } & {
-    [P in Components[5]]: Narrow<Generated, P>
+    [P in Components[5]]: Narrow<Component, P>
 } & {
-    [P in Components[6]]: Narrow<Generated, P>
+    [P in Components[6]]: Narrow<Component, P>
 } & {
-    [P in Components[7]]: Narrow<Generated, P>
+    [P in Components[7]]: Narrow<Component, P>
 } & {
-    [P in Components[8]]: Narrow<Generated, P>
+    [P in Components[8]]: Narrow<Component, P>
 } & {
-    [P in Components[9]]: Narrow<Generated, P>
+    [P in Components[9]]: Narrow<Component, P>
 } & {
-    [P in Components[10]]: Narrow<Generated, P>
+    [P in Components[10]]: Narrow<Component, P>
 }
 
 export class System<T0 extends Names,

@@ -30,8 +30,8 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpackUnionGeneratorPlugin({
             fileGlobs: __dirname + '/src/components/',
-            outputFile: __dirname + '/src/components/Generated.ts',
-            unionName: 'Generated'
+            outputFile: __dirname + '/src/components/Component.ts',
+            unionName: 'Component'
         })
     ],
 

@@ -1,4 +1,4 @@
-import { Generated } from "./components/Generated";
+import { Component } from "./components/Component";
 import { Entity } from "./entity";
 import { Names } from "./systems/system";
 
@@ -31,11 +31,11 @@ export class Family {
         this.entities.splice(index, 1);
     }
 
-    onComponentAdded(entity: Entity, component: Generated) {
+    onComponentAdded(entity: Entity, component: Component) {
         throw new Error('Component addition not supported');
     }
 
-    onComponentRemoved(entity: Entity, component: Generated) {
+    onComponentRemoved(entity: Entity, component: Component) {
         throw new Error('Component removal not supported')
     }
 

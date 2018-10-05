@@ -8,4 +8,4 @@ import Player from "./player";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Generated = AliveForTime | Body | Box | FlipWithMouse | Line | LookAtMouse | Player | Transform | Weapon;
+export type Component = AliveForTime | Body | Box | FlipWithMouse | Line | LookAtMouse | Player | Transform | Weapon;
