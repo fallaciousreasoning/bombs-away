@@ -1,8 +1,9 @@
 import { Engine } from "./engine";
+import { Tick } from "./messages/tick";
 
 export const engine = new Engine();
 
-const tickEvent = { type: 'tick', step: 0 };
+const tickEvent: Tick = { type: 'tick', step: 0 };
 let lastTick = 0;
 
 const tick = (timestamp) => {

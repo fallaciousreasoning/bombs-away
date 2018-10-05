@@ -3,11 +3,8 @@ import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
+import { Message } from "./messages/message";
 import { ComponentType, System } from "./systems/system";
-
-interface Message {
-    type: string;
-}
 
 export class Engine {
     private entities = new ObservableList<Entity>();
@@ -16,7 +13,7 @@ export class Engine {
 
     private systems: any[] = [];
 
-    broadcastMessage<T extends { type: string }>(event: T) {
+    broadcastMessage(event: Message) {
         for (const system of this.systems) {
             if (system[event.type]) {
                 const entities = this.getFamily(system.types).entities;
