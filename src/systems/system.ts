@@ -1,4 +1,5 @@
 import { Component } from "../components/Component";
+import { Entity } from "../entity";
 import { Message } from "../messages/message";
 
 export type Narrow<T, N> = T extends { type: N } ? T : never;
@@ -6,9 +7,7 @@ export type Narrow<T, N> = T extends { type: N } ? T : never;
 export type ComponentType = Component['type'];
 export type MessageType = Message['type'];
 
-export type Entity<Components extends ComponentType[]> = {
-    id: number;
-} & {
+export type Entityish<Components extends ComponentType[]> = Entity & {
     [P in Components[0]]: Narrow<Component, P>
 } & {
     [P in Components[1]]: Narrow<Component, P>
@@ -48,7 +47,7 @@ export class System<T0 extends ComponentType,
         this.types = types;
     }
 
-    private onMessageInternal<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
+    private onMessageInternal<M extends MessageType>(messageType: M, handler: (entities: Entityish<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
         (<any>this)[messageType] = handler;
         return this;
     }
@@ -57,11 +56,11 @@ export class System<T0 extends ComponentType,
         return this.onMessageInternal(messageType, (_, message) => handler(message));
     }
 
-    on<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
+    on<M extends MessageType>(messageType: M, handler: (entities: Entityish<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
         return this.onMessageInternal(messageType, handler);
     }
 
-    onEach<M extends MessageType>(messageType: M, handler: (entity: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: Narrow<Message, M>) => void) {
+    onEach<M extends MessageType>(messageType: M, handler: (entity: Entityish<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: Narrow<Message, M>) => void) {
         return this.on(messageType, (entities, message) => entities.forEach(e => handler(e, message)));
     }
 }
