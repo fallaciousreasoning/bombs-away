@@ -3,8 +3,11 @@ import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
+import { Destroy } from "./messages/destroy";
 import { Message } from "./messages/message";
 import { ComponentType, System } from "./systems/system";
+
+const destroyMessage: Destroy = { type: 'destroy' } as any;
 
 export class Engine {
     private entities = new ObservableList<Entity>();
@@ -76,6 +79,9 @@ export class Engine {
         if (!entity) {
             return;
         }
+
+        destroyMessage.entity = entity;
+        this.broadcastMessage(destroyMessage);
 
         this.entities.removeAt(index);
         this.families.forEach(f => f.onEntityRemoved(entity));
