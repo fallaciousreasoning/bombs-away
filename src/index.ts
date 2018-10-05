@@ -55,10 +55,10 @@ ground.add(new Transform(new Vector2(5, 5)));
 ground.add(new Body(10, 1, false));
 
 const enemy = new Entity();
-enemy.add(new Box(1, 1, 'red'));
+enemy.add(new Box(1, 1, 'blue'));
 enemy.add(new Transform(new Vector2(4, 0)));
 enemy.add(new Body(1, 1, true));
-enemy.add(new Bounce(0.4));
+enemy.add(new Bounce(0.6));
 
 engine.addEntity(player);
 engine.addEntity(weapon);
