@@ -2,7 +2,7 @@ export class Pool<T> {
     protected create: () => T;
     protected reset: (item: T) => void;
 
-    protected available: T[];
+    protected available: T[] = [];
 
     constructor(create: () => T, reset: (item: T) => void) {
         this.create = create;

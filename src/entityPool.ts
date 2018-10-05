@@ -19,6 +19,8 @@ export class EntityPool extends Pool<Entity> {
 
     get() {
         const entity = super.get();
+        this.engine.assignId(entity);
+
         this.ownedEntities.add(entity.id);
         return entity;
     }

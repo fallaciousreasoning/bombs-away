@@ -12,6 +12,7 @@ import Weapon from "./components/weapon";
 import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
+import { EntityPool } from "./entityPool";
 import { engine } from './game';
 import addFireManager from "./systems/addFireManager";
 import addFlipWithMouse from "./systems/addFlipWithMouse";
@@ -38,15 +39,18 @@ const buildBullet = (weapon: Weapon, at: Transform) => {
     return bullet;
 }
 
-const buildEnemy = (spawn: Spawn, at: Transform) => {
+const enemyPool = new EntityPool(engine, () => {
     const enemy = new Entity();
     enemy.add(new Box(1, 1, 'blue'));
-    enemy.add(new Transform(at.position));
+    enemy.add(new Transform());
     enemy.add(new Body(1, 1, true));
     enemy.add(new Bounce(0.6));
-    enemy.add(new AliveForTime(12.5));
+    enemy.add(new AliveForTime(0));
     return enemy;
-}
+}, enemy => {
+    enemy.get('aliveForTime').time = 12.5;
+    enemy.get('body').velocity = Vector2.zero;
+});
 
 const player = new Entity();
 player.add(new Player());
@@ -69,7 +73,11 @@ ground.add(new Body(10, 1, false));
 const spawn = new Entity();
 spawn.add(new Box(0.5, 0.5, 'yellow'));
 spawn.add(new Transform(new Vector2(8, 0)));
-spawn.add(new Spawn(buildEnemy));
+spawn.add(new Spawn((spawn, transform) => {
+    const e = enemyPool.get();
+    e.get('transform').position = transform.position;
+    return e;
+}));
 
 engine.addEntity(player);
 engine.addEntity(weapon);

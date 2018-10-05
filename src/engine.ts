@@ -60,8 +60,13 @@ export class Engine {
         return this.entities;
     }
 
+    assignId(entity: Entity) {
+        entity.id = entity.id || ++this.nextId;
+    }
+
     addEntity(entity: Entity) {
-        entity.id = this.nextId++;
+        this.assignId(entity);
+
         entity.onComponentAdded = this.onComponentAdded;
         entity.onComponentRemoved = this.onComponentRemoved;
 
