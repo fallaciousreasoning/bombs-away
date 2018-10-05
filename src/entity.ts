@@ -1,5 +1,5 @@
 import { Component } from "./components/Component";
-import { Names, Narrow } from "./systems/system";
+import { ComponentType, Narrow } from "./systems/system";
 
 export class Entity {
     id: number;
@@ -7,21 +7,21 @@ export class Entity {
     onComponentAdded: (entity: Entity, component: Component) => void;
     onComponentRemoved: (entity: Entity, component: Component) => void;
 
-    get<Key extends Names>(name: Key) {
+    get<Key extends ComponentType>(name: Key) {
         return (<any>this)[name] as Narrow<Component, Key>;
     }
 
-    has(name: Names) {
+    has(name: ComponentType) {
         return !!this[name];
     }
 
     add(component: Component) {
-        this[component.name] = component;
+        this[component.type] = component;
         this.onComponentAdded && this.onComponentAdded(this, component);
     }
 
     remove(component: Component | string) {
-        const name = typeof component === "string" ? component : component.name;
+        const name = typeof component === "string" ? component : component.type;
         component = this[name];
         delete this[name];
 

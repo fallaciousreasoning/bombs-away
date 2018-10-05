@@ -1,5 +1,5 @@
 export default class AliveForTime {
-    name: "aliveForTime" = "aliveForTime";
+    type: "aliveForTime" = "aliveForTime";
     time: number;
 
     constructor(time: number) {

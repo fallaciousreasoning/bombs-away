@@ -1,12 +1,12 @@
 import { Component } from "./components/Component";
 import { Entity } from "./entity";
-import { Names } from "./systems/system";
+import { ComponentType } from "./systems/system";
 
 export class Family {
-    private types: Names[];
+    private types: ComponentType[];
     entities: Entity[] = [];
 
-    constructor(types: Names[]) {
+    constructor(types: ComponentType[]) {
         this.types = types;
     }
 

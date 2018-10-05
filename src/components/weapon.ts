@@ -2,7 +2,7 @@ import { Entity } from "../entity";
 import { Transform } from "./transform";
 
 export default class Weapon {
-    name: 'weapon' = 'weapon';
+    type: 'weapon' = 'weapon';
     fireRate = 0.4;
     damage = 1;
     range = 10;

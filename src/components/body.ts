@@ -1,7 +1,7 @@
 import Vector2 from "../core/vector2";
 
 export default class Body {
-    name: 'body' = 'body';
+    type: 'body' = 'body';
 
     isDynamic: boolean;
 

@@ -3,7 +3,7 @@ import { HashSet } from "./core/hashMap";
 import { ObservableList } from "./core/observableList";
 import { Entity } from "./entity";
 import { Family } from "./familyManager";
-import { Names, System } from "./systems/system";
+import { ComponentType, System } from "./systems/system";
 
 interface Message {
     type: string;
@@ -25,23 +25,23 @@ export class Engine {
         }
     }
 
-    makeSystem = <T0 extends Names=never,
-        T1 extends Names=never,
-        T2 extends Names=never,
-        T3 extends Names=never,
-        T4 extends Names=never,
-        T5 extends Names=never,
-        T6 extends Names=never,
-        T7 extends Names=never,
-        T8 extends Names=never,
-        T9 extends Names=never>
+    makeSystem = <T0 extends ComponentType=never,
+        T1 extends ComponentType=never,
+        T2 extends ComponentType=never,
+        T3 extends ComponentType=never,
+        T4 extends ComponentType=never,
+        T5 extends ComponentType=never,
+        T6 extends ComponentType=never,
+        T7 extends ComponentType=never,
+        T8 extends ComponentType=never,
+        T9 extends ComponentType=never>
         (...types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
         const system = new System(types);
         this.systems.push(system);
         return system;
     }
 
-    getFamily(types: Names[]) {
+    getFamily(types: ComponentType[]) {
         const newFamily = new Family(types);
         const existingFamily = this.families.has(newFamily);
         if (existingFamily) {

@@ -1,5 +1,5 @@
 export default class Player {
-    name: 'player' = 'player';
+    type: 'player' = 'player';
     speed = 10;
     jumpImpulse = 5;
 }

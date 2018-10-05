@@ -1,9 +1,12 @@
 import { Component } from "../components/Component";
+import { Message } from "../messages/message";
 
-export type Narrow<T, N> = T extends { name: N } ? T : never;
-export type Names = Component['name'];
+export type Narrow<T, N> = T extends { type: N } ? T : never;
 
-export type Entity<Components extends Names[]> = {
+export type ComponentType = Component['type'];
+export type MessageType = Message['type'];
+
+export type Entity<Components extends ComponentType[]> = {
     id: number;
 } & {
     [P in Components[0]]: Narrow<Component, P>
@@ -29,33 +32,33 @@ export type Entity<Components extends Names[]> = {
     [P in Components[10]]: Narrow<Component, P>
 }
 
-export class System<T0 extends Names,
-                    T1 extends Names,
-                    T2 extends Names,
-                    T3 extends Names,
-                    T4 extends Names,
-                    T5 extends Names,
-                    T6 extends Names,
-                    T7 extends Names,
-                    T8 extends Names,
-                    T9 extends Names> {
+export class System<T0 extends ComponentType,
+                    T1 extends ComponentType,
+                    T2 extends ComponentType,
+                    T3 extends ComponentType,
+                    T4 extends ComponentType,
+                    T5 extends ComponentType,
+                    T6 extends ComponentType,
+                    T7 extends ComponentType,
+                    T8 extends ComponentType,
+                    T9 extends ComponentType> {
     types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?];
 
     constructor(types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) {
         this.types = types;
     }
 
-    onMessage(messageType: string, handler: (message?: any) => void) {
-        this[messageType] = handler;
+    onMessage<M extends MessageType>(messageType: M, handler: (message?: Narrow<Message, M>) => void) {
+        (<any>this)[messageType] = handler;
         return this;
     }
 
-    on(messageType: string, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: any) => void) {
-        this[messageType] = handler;
+    on<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: any) => void) {
+        (<any>this)[messageType] = handler;
         return this;
     }
 
-    onEach(messageType: string, handler: (entity: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: any) => void) {
+    onEach<M extends MessageType>(messageType: M, handler: (entity: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: any) => void) {
         return this.on(messageType, (entities, message) => entities.forEach(e => handler(e, message)));
     }
 }
