@@ -32,6 +32,11 @@ module.exports = {
             fileGlobs: __dirname + '/src/components/',
             outputFile: __dirname + '/src/components/Component.ts',
             unionName: 'Component'
+        }),
+        new webpackUnionGeneratorPlugin({
+            fileGlobs: __dirname + '/src/messages/',
+            outputFile: __dirname + '/src/messages/message.ts',
+            unionName: 'Message'
         })
     ],
 
