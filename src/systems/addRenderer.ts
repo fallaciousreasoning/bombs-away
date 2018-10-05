@@ -13,9 +13,9 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
     engine
         .makeSystem("box", "transform")
         .onEach('tick', ({ transform, box }) => {
-            const size = new Vector2(box.width, box.height).mul(PIXELS_A_METRE);
+            const size = new Vector2(box.width, box.height).mul(PIXELS_A_METRE).round();
             const halfSize = size.div(2);
-            const position = transform.position.mul(PIXELS_A_METRE);
+            const position = transform.position.mul(PIXELS_A_METRE).round();
 
             context.save();
 
@@ -30,12 +30,13 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
     engine
         .makeSystem("line", "transform")
         .onEach('tick', ({ transform, line }: { transform: Transform, line: Line }) => {
-            const position = transform.position.mul(PIXELS_A_METRE);
+            const position = transform.position.mul(PIXELS_A_METRE).round();
             const lineEnd = line.direction
                 .mul(line.length)
                 .rotate(transform.rotation)
                 .mul(PIXELS_A_METRE)
-                .add(position);
+                .add(position)
+                .round();
             
             context.beginPath();
             context.lineWidth = line.width * PIXELS_A_METRE;
