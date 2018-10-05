@@ -6,6 +6,7 @@ import FlipWithMouse from "./components/flipWithMouse";
 import Line from "./components/line";
 import LookAtMouse from "./components/lookAtMouse";
 import Player from "./components/player";
+import Spawn from "./components/spawn";
 import { Transform } from "./components/transform";
 import Weapon from "./components/weapon";
 import Input from "./core/input";
@@ -22,6 +23,7 @@ import addPhysics from "./systems/collisionDetector";
 import naivePhysicsResolver from "./systems/collisionResolver";
 import addLookAtMouse from "./systems/lookAtMouse";
 import addPlayerController from "./systems/playerController";
+import addSpawn from "./systems/spawnSystem";
 
 window['engine'] = engine;
 
@@ -34,6 +36,15 @@ const buildBullet = (weapon: Weapon, at: Transform) => {
     bullet.add(new Transform(at.position, at.rotation + noise));
     bullet.add(new AliveForTime(0.2));
     return bullet;
+}
+
+const buildEnemy = (spawn: Spawn, at: Transform) => {
+    const enemy = new Entity();
+    enemy.add(new Box(1, 1, 'blue'));
+    enemy.add(new Transform(at.position));
+    enemy.add(new Body(1, 1, true));
+    enemy.add(new Bounce(0.6));
+    return enemy;
 }
 
 const player = new Entity();
@@ -54,16 +65,15 @@ ground.add(new Box(10, 1));
 ground.add(new Transform(new Vector2(5, 5)));
 ground.add(new Body(10, 1, false));
 
-const enemy = new Entity();
-enemy.add(new Box(1, 1, 'blue'));
-enemy.add(new Transform(new Vector2(4, 0)));
-enemy.add(new Body(1, 1, true));
-enemy.add(new Bounce(0.6));
+const spawn = new Entity();
+spawn.add(new Box(0.5, 0.5, 'yellow'));
+spawn.add(new Transform(new Vector2(8, 0)));
+spawn.add(new Spawn(buildEnemy));
 
 engine.addEntity(player);
 engine.addEntity(weapon);
 engine.addEntity(ground);
-engine.addEntity(enemy);
+engine.addEntity(spawn);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
@@ -78,4 +88,5 @@ addLookAtMouse(input, engine);
 addFlipWithMouse(input, engine);
 addFireManager(input, engine);
 addRemoveAfterTime(engine);
+addSpawn(engine);
 
