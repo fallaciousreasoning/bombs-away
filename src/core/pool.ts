@@ -1,8 +1,8 @@
 export class Pool<T> {
-    private create: () => T;
-    private reset: (item: T) => void;
+    protected create: () => T;
+    protected reset: (item: T) => void;
 
-    private available: T[];
+    protected available: T[];
 
     constructor(create: () => T, reset: (item: T) => void) {
         this.create = create;

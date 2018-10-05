@@ -56,6 +56,10 @@ export class Engine {
         return newFamily;
     }
 
+    getEntities() {
+        return this.entities;
+    }
+
     addEntity(entity: Entity) {
         entity.id = this.nextId++;
         entity.onComponentAdded = this.onComponentAdded;
