@@ -30,14 +30,16 @@ window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
-const buildBullet = (weapon: Weapon, at: Transform) => {
-    const noise = (Math.PI * Math.random()  - Math.PI/2) * (1 - weapon.accuracy);
+const bulletPool = new EntityPool(engine, () => {
     const bullet = new Entity();
-    bullet.add(new Line(weapon.range, 0.1, 'yellow'));
-    bullet.add(new Transform(at.position, at.rotation + noise));
-    bullet.add(new AliveForTime(0.2));
+    bullet.add(new Line(0, 0.1, 'yellow'));
+    bullet.add(new Transform());
+    bullet.add(new AliveForTime(0));
     return bullet;
-}
+
+}, bullet => {
+    bullet.get('aliveForTime').time = 5.2;
+})
 
 const enemyPool = new EntityPool(engine, () => {
     const enemy = new Entity();
@@ -63,7 +65,14 @@ weapon.add(new Line(1, 0.3, 'black'));
 weapon.add(new Transform(new Vector2(0.65, 0), 0, player.get('transform')));
 weapon.add(new LookAtMouse());
 weapon.add(new FlipWithMouse());
-weapon.add(new Weapon(buildBullet));
+weapon.add(new Weapon((weapon, transform) => {
+    const noise = (Math.PI * Math.random()  - Math.PI/2) * (1 - weapon.accuracy);
+    const b = bulletPool.get();
+    b.get('line').length = weapon.range;
+    b.get('transform').position = transform.position;
+    b.get('transform').rotation = transform.rotation + noise;
+    return b;
+}));
 
 const ground = new Entity();
 ground.add(new Box(10, 1));
