@@ -1,7 +1,7 @@
 import Vector2 from "../core/vector2";
 
 export default class Line {
-    name = 'line';
+    name: 'line' = 'line';
 
     direction = Vector2.up;
     
