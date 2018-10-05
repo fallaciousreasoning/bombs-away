@@ -1,4 +1,5 @@
 import { Generated } from "./components/Generated";
+import { Names, Narrow } from "./systems/system";
 
 export class Entity {
     id: number;
@@ -7,11 +8,11 @@ export class Entity {
     onComponentAdded: (entity: Entity, component: Generated) => void;
     onComponentRemoved: (entity: Entity, component: Generated) => void;
 
-    get<T extends Generated>(name: string) {
-        return this.components[name] as T;
+    get<Key extends Names>(name: Key) {
+        return this.components[name] as Narrow<Generated, Key>;
     }
 
-    has(name: string) {
+    has(name: Names) {
         return !!this.components[name];
     }
 
