@@ -1,3 +1,4 @@
+import { Collision } from "./collision";
 import { Tick } from "./tick";
 
-export type Message = Tick;
+export type Message = Collision | Tick;

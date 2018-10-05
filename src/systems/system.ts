@@ -48,17 +48,20 @@ export class System<T0 extends ComponentType,
         this.types = types;
     }
 
+    private onMessageInternal<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
+        (<any>this)[messageType] = handler;
+        return this;
+    }
+
     onMessage<M extends MessageType>(messageType: M, handler: (message?: Narrow<Message, M>) => void) {
-        (<any>this)[messageType] = handler;
-        return this;
+        return this.onMessageInternal(messageType, (_, message) => handler(message));
     }
 
-    on<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: any) => void) {
-        (<any>this)[messageType] = handler;
-        return this;
+    on<M extends MessageType>(messageType: M, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: Narrow<Message, M>) => void) {
+        return this.onMessageInternal(messageType, handler);
     }
 
-    onEach<M extends MessageType>(messageType: M, handler: (entity: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: any) => void) {
+    onEach<M extends MessageType>(messageType: M, handler: (entity: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>, message?: Narrow<Message, M>) => void) {
         return this.on(messageType, (entities, message) => entities.forEach(e => handler(e, message)));
     }
 }

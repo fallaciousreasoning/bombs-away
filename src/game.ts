@@ -8,7 +8,7 @@ let lastTick = 0;
 
 const tick = (timestamp) => {
     const step = Math.min(timestamp - lastTick, 250);
-    tickEvent.step = step/1000;
+    tickEvent.step = 1/60///step/1000;
     engine.broadcastMessage(tickEvent);
     lastTick = timestamp;
     requestAnimationFrame(tick);
