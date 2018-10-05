@@ -44,6 +44,7 @@ const buildEnemy = (spawn: Spawn, at: Transform) => {
     enemy.add(new Transform(at.position));
     enemy.add(new Body(1, 1, true));
     enemy.add(new Bounce(0.6));
+    enemy.add(new AliveForTime(12.5));
     return enemy;
 }
 
