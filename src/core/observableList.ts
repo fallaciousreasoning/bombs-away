@@ -43,6 +43,11 @@ export class ObservableList<T> {
             return;
         }
 
+        this.removeAt(index);
+    }
+
+    removeAt(index: number) {
+        const item = this.items[index];
         this.items.splice(index, 1);
         this.removeListeners.forEach(listener => listener(item, index));
     }

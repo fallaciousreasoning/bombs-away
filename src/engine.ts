@@ -65,8 +65,22 @@ export class Engine {
         this.families.forEach(f => f.onEntityAdded(entity));
     }
 
-    removeEntity(entity: Entity) {
-        this.entities.pop(entity);
+    removeEntity(entityish: { id: number }) {
+        let entity: Entity;
+        let index: number;
+        for (let i = 0; i < this.entities.items.length; ++i) {
+            if (this.entities.items[i].id !== entityish.id) continue;
+
+            entity = this.entities.items[i];
+            index = i;
+            break;
+        }
+
+        if (!entity) {
+            return;
+        }
+
+        this.entities.removeAt(index);
         this.families.forEach(f => f.onEntityRemoved(entity));
     }
 
