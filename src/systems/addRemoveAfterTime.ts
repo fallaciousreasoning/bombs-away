@@ -7,7 +7,6 @@ export default function addRemoveAfterTime(engine: Engine) {
         entity.aliveForTime.time -= message['step'];
 
         if (entity.aliveForTime.time < 0) {
-            throw new Error("Can't do this yet :'(");
             engine.removeEntity(entity as any);
         }
     });

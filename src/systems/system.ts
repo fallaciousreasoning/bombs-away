@@ -4,6 +4,8 @@ export type Narrow<T, N> = T extends { name: N } ? T : never;
 export type Names = Generated['name'];
 
 export type Entity<Components extends Names[]> = {
+    id: number;
+} & {
     [P in Components[0]]: Narrow<Generated, P>
 } & {
     [P in Components[1]]: Narrow<Generated, P>
@@ -41,6 +43,11 @@ export class System<T0 extends Names,
 
     constructor(types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) {
         this.types = types;
+    }
+
+    onMessage(messageType: string, handler: (message?: any) => void) {
+        this[messageType] = handler;
+        return this;
     }
 
     on(messageType: string, handler: (entities: Entity<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>[], message?: any) => void) {

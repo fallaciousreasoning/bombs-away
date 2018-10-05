@@ -1,20 +1,17 @@
 import { Generated } from "./components/Generated";
 import { Entity } from "./entity";
-
-class EntityNode {
-
-}
+import { Names } from "./systems/system";
 
 export class Family {
-    private types: string[];
+    private types: Names[];
     entities: Entity[] = [];
 
-    constructor(types: string[]) {
+    constructor(types: Names[]) {
         this.types = types;
     }
 
     matches(entity: Entity) {
-        return this.types.every(t => !!entity.components[t]);
+        return this.types.every(t => !!entity.has(t));
     }
 
     onEntityAdded(entity: Entity) {

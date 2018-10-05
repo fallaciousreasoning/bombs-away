@@ -19,8 +19,8 @@ export class Engine {
     broadcastMessage<T extends { type: string }>(event: T) {
         for (const system of this.systems) {
             if (system[event.type]) {
-                const family = this.getFamily(system.types).entities.map(c => c.components);
-                system[event.type](family, event);
+                const entities = this.getFamily(system.types).entities;
+                system[event.type](entities, event);
             }
         }
     }
@@ -41,7 +41,7 @@ export class Engine {
         return system;
     }
 
-    getFamily(types: string[]) {
+    getFamily(types: Names[]) {
         const newFamily = new Family(types);
         const existingFamily = this.families.has(newFamily);
         if (existingFamily) {
