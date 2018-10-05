@@ -8,7 +8,7 @@ export default function naivePhysicsResolver(engine: Engine) {
                 .body
                 .velocity
                 .sub(message.normal
-                    .mul(message.moved.body.velocity));
+                    .mul(message.movedAmount.mul(1)));
 
             message.moved.transform.position = message
                 .moved

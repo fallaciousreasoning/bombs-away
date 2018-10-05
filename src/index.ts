@@ -1,5 +1,6 @@
 import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
+import { Bounce } from "./components/bounce";
 import Box from "./components/box";
 import FlipWithMouse from "./components/flipWithMouse";
 import Line from "./components/line";
@@ -16,6 +17,7 @@ import addFlipWithMouse from "./systems/addFlipWithMouse";
 import addGravity from "./systems/addGravity";
 import addRemoveAfterTime from "./systems/addRemoveAfterTime";
 import addRenderer from './systems/addRenderer';
+import addBounce from "./systems/bounceSystem";
 import addPhysics from "./systems/collisionDetector";
 import naivePhysicsResolver from "./systems/collisionResolver";
 import addLookAtMouse from "./systems/lookAtMouse";
@@ -52,9 +54,16 @@ ground.add(new Box(10, 1));
 ground.add(new Transform(new Vector2(5, 5)));
 ground.add(new Body(10, 1, false));
 
+const enemy = new Entity();
+enemy.add(new Box(1, 1, 'red'));
+enemy.add(new Transform(new Vector2(4, 0)));
+enemy.add(new Body(1, 1, true));
+enemy.add(new Bounce(0.4));
+
 engine.addEntity(player);
 engine.addEntity(weapon);
 engine.addEntity(ground);
+engine.addEntity(enemy);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
@@ -62,6 +71,7 @@ window['input'] = input;
 
 addGravity(engine);
 addPhysics(engine);
+addBounce(engine);
 naivePhysicsResolver(engine);
 addPlayerController(input, engine);
 addLookAtMouse(input, engine);

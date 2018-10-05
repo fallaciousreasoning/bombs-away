@@ -1,6 +1,6 @@
 import AliveForTime from "./aliveForTime";
 import Body from "./body";
-import { Bounce } from "./bounces";
+import { Bounce } from "./bounce";
 import Box from "./box";
 import FlipWithMouse from "./flipWithMouse";
 import Line from "./line";
