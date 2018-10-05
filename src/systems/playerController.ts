@@ -11,7 +11,6 @@ export default function addPlayerController(input: Input, engine: Engine) {
         const horizontal = input.getAxis('horizontal');
         let jumpImpulse = 0;
         if (input.getAxis('jump')) {
-            console.log('f')
             jumpImpulse = -player.jumpImpulse;
         }
         body.velocity = new Vector2(horizontal * 10, jumpImpulse || body.velocity.y);
