@@ -6,6 +6,13 @@ import { Entityish } from "./system";
 
 type CollisionEntity = Entityish<['transform', 'body']>;
 
+const hash = (a: {id: number}, b: {id: number}) => {
+    const min = Math.min(a.id, b.id);
+    const max = Math.max(a.id, b.id);
+
+    return (23 * 37 + min) * 37 + max;
+}
+
 class CollisionManager {
     private islandPool: Pool<Collision> = new Pool<Collision>(() => ({
         type: 'collision',
@@ -13,13 +20,30 @@ class CollisionManager {
         moved: undefined,
         movedAmount: undefined,
         normal: undefined,
-        penetration: 0
+        penetration: 0,
+        hash: undefined
     }), () => { });
 
     private engine: Engine;
+    private islands: Map<number, Collision> = new Map();
 
     constructor(engine: Engine) {
         this.engine = engine;
+    }
+
+    areTouching = (a: { id: number }, b: { id: number}) => this.islands.has(hash(a, b));
+
+    handleSeperations = () => {
+        const values = this.islands.values();
+        let island: Collision;
+        while (island = values.next().value) {
+            if (this.collidesRectangleRectange(island.moved, island.hit, true)) {
+                continue;
+            }
+
+            // TODO fire seperated event
+            this.islands.delete(island.hash);
+        }
     }
 
     collidesRectangleRectange(a: CollisionEntity, b: CollisionEntity, onlyIntersects: boolean): Collision {
@@ -55,12 +79,16 @@ class CollisionManager {
         message.moved = a;
         message.normal = normal;
         message.penetration = penetration;
+        message.hash = hash(a, b);
+        this.islands.set(message.hash, message);
         return message;
     }
 }
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
+
+    engine.makeSystem().onMessage('tick', collisionManager.handleSeperations);
 
     engine
         .makeSystem('body', 'transform')
@@ -80,6 +108,9 @@ export default function addPhysics(engine: Engine) {
                     if (i == j) continue;
 
                     const b = entities[j];
+                    // if (collisionManager.areTouching(a, b)) {
+                    //     continue;
+                    // }
 
                     const message = collisionManager.collidesRectangleRectange(a, b, false);
                     if (!message) {
@@ -87,7 +118,6 @@ export default function addPhysics(engine: Engine) {
                     }
 
                     message.movedAmount = movedAmount;
-
                     engine.broadcastMessage(message);
                 }
             }

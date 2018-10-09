@@ -4,6 +4,8 @@ import { Entityish } from "../systems/system";
 export interface Collision {
     type: 'collision';
 
+    hash: number;
+
     moved: Entityish<['body', 'transform']>;
     movedAmount: Vector2;
 
