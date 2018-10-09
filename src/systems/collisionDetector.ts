@@ -1,10 +1,67 @@
+import { Pool } from "../core/pool";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { Collision } from "../messages/collision";
+import { Entityish } from "./system";
 
-const collisionMessage: Collision = { type: 'collision' } as any;
+type CollisionEntity = Entityish<['transform', 'body']>;
+
+class CollisionManager {
+    private islandPool: Pool<Collision> = new Pool<Collision>(() => ({
+        type: 'collision',
+        hit: undefined,
+        moved: undefined,
+        movedAmount: undefined,
+        normal: undefined,
+        penetration: 0
+    }), () => { });
+
+    private engine: Engine;
+
+    constructor(engine: Engine) {
+        this.engine = engine;
+    }
+
+    collidesRectangleRectange(a: CollisionEntity, b: CollisionEntity, onlyIntersects: boolean): Collision {
+        const aToB = b.transform.position.sub(a.transform.position);
+        const xOverlap = (a.body.width + b.body.width) / 2 - Math.abs(aToB.x);
+
+        if (xOverlap < 0) {
+            return;
+        }
+
+        const yOverlap = (a.body.height + b.body.height) / 2 - Math.abs(aToB.y);
+
+        if (yOverlap < 0) {
+            return;
+        }
+
+        if (onlyIntersects) {
+            return <any>true;
+        }
+
+        let normal: Vector2;
+        let penetration: number;
+        if (xOverlap < yOverlap) {
+            normal = new Vector2(aToB.x < 0 ? -1 : 1, 0);
+            penetration = xOverlap;
+        } else {
+            normal = new Vector2(0, aToB.y < 0 ? -1 : 1);
+            penetration = yOverlap;
+        }
+
+        const message = this.islandPool.get();
+        message.hit = b;
+        message.moved = a;
+        message.normal = normal;
+        message.penetration = penetration;
+        return message;
+    }
+}
 
 export default function addPhysics(engine: Engine) {
+    const collisionManager = new CollisionManager(engine);
+
     engine
         .makeSystem('body', 'transform')
         .on('tick', (entities, message) => {
@@ -24,59 +81,15 @@ export default function addPhysics(engine: Engine) {
 
                     const b = entities[j];
 
-                    const aToB = b.transform.position.sub(a.transform.position);
-                    const xOverlap = (a.body.width + b.body.width)/2 - Math.abs(aToB.x);
-
-                    if (xOverlap < 0) {
+                    const message = collisionManager.collidesRectangleRectange(a, b, false);
+                    if (!message) {
                         continue;
                     }
 
-                    const yOverlap = (a.body.height + b.body.height)/2 - Math.abs(aToB.y);
+                    message.movedAmount = movedAmount;
 
-                    if (yOverlap < 0) {
-                        continue;
-                    }
-
-                    let normal: Vector2;
-                    let penetration: number;
-                    if (xOverlap < yOverlap) {
-                        normal = new Vector2(aToB.x < 0 ? -1 : 1, 0);
-                        penetration = xOverlap;
-                    } else {
-                        normal = new Vector2(0, aToB.y < 0 ? -1 : 1);
-                        penetration = yOverlap;
-                    }
-
-                    collisionMessage.hit = b;
-                    collisionMessage.moved = a;
-                    collisionMessage.movedAmount = movedAmount;
-                    collisionMessage.normal = normal;
-                    collisionMessage.penetration = penetration;
-                    engine.broadcastMessage(collisionMessage);
+                    engine.broadcastMessage(message);
                 }
             }
         });
 }
-
-// const tryMoveOnAxis = (entity: Entity, entities: Entity[], axis: Vector2, step: number) => {
-//     const oldPos = entity.transform.position;
-//     const velocityAlongComponent = entity.body.velocity.mul(axis).round();
-
-//     entity.transform.position = entity.transform.position.add(velocityAlongComponent.mul(step));
-//     const e1B = new AABB(entity.transform.position, new Vector2(entity.body.width, entity.body.height));
-
-//     const collides = entities
-//         .some(e2 => {
-//             if (entity == e2) {
-//                 return false;
-//             }
-
-//             const e2B = new AABB(e2.transform.position, new Vector2(e2.body.width, e2.body.height));
-//             return e1B.intersects(e2B);
-//         });
-
-//     if (collides) {
-//         entity.transform.position = oldPos;
-//         entity.body.velocity = entity.body.velocity.sub(velocityAlongComponent);
-//     }
-// };
