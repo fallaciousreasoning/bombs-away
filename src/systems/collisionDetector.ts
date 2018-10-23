@@ -49,7 +49,7 @@ class CollisionManager {
         this.islandPool.release(message);
     }
 
-    collidesRectangleRectange(a: CollisionEntity, b: CollisionEntity): Collision {
+    collidesRectangleRectangle(a: CollisionEntity, b: CollisionEntity): Collision {
         const aToB = b.transform.position.sub(a.transform.position);
         const xOverlap = (a.body.width + b.body.width) / 2 - Math.abs(aToB.x);
 
@@ -118,11 +118,12 @@ export default function addPhysics(engine: Engine) {
 
                     const b = entities[j];
 
-                    const message = collisionManager.collidesRectangleRectange(a, b);
+                    const message = collisionManager.collidesRectangleRectangle(a, b);
                     if (!message) {
                         continue;
                     }
 
+                    // TODO: Move this in with all the other messages.
                     message.movedAmount = movedAmount;
                     engine.broadcastMessage(message);
                 }
