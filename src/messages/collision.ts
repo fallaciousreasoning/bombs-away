@@ -33,3 +33,36 @@ export interface CollisionExit {
     moved: Entityish<['body', 'transform']>;
     hit: Entityish<['body', 'transform']>;
 }
+
+export interface Trigger {
+    type: 'trigger';
+
+    hash: number;
+
+    moved: Entityish<['body', 'transform']>;
+    movedAmount: Vector2;
+
+    hit: Entityish<['body', 'transform']>;
+
+    normal: Vector2;
+    penetration: number;
+}
+
+export interface TriggerEnter {
+    type: 'trigger-enter';
+
+    moved: Entityish<['body', 'transform']>;
+    movedAmount: Vector2;
+
+    hit: Entityish<['body', 'transform']>;
+
+    normal: Vector2;
+    penetration: number;
+}
+
+export interface TriggerExit {
+    type: 'trigger-exit';
+
+    moved: Entityish<['body', 'transform']>;
+    hit: Entityish<['body', 'transform']>;
+}

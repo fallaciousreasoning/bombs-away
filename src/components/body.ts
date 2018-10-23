@@ -4,6 +4,7 @@ export default class Body {
     type: 'body' = 'body';
 
     isDynamic: boolean;
+    isTrigger: boolean = false;
 
     width: number;
     height: number;

@@ -1,7 +1,7 @@
 import { Pool } from "../core/pool";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
-import { Collision } from "../messages/collision";
+import { Collision, Trigger } from "../messages/collision";
 import { Entityish } from "./system";
 
 type CollisionEntity = Entityish<['transform', 'body']>;
@@ -14,7 +14,7 @@ const hash = (a: {id: number}, b: {id: number}) => {
 }
 
 class CollisionManager {
-    private islandPool: Pool<Collision> = new Pool<Collision>(() => ({
+    private islandPool = new Pool<Collision | Trigger>(() => ({
         type: 'collision',
         hit: undefined,
         moved: undefined,
@@ -28,20 +28,23 @@ class CollisionManager {
     });
 
     private engine: Engine;
-    private islands: Map<number, Collision> = new Map();
+    private islands: Map<number, Collision | Trigger> = new Map();
 
     constructor(engine: Engine) {
         this.engine = engine;
     }
 
-    onNoCollision(message: Collision) {
+    onNoCollision(message: Collision | Trigger) {
         // If there was no existing collision, return.
         if (!message) {
             return;
         }
 
         // Otherwise, we've separated.
-        (<any>message)['type'] = "collision-exit"; // Hacky set type, so we don't thrash the GC. Reset by the pool.
+        // Hacky set type, so we don't thrash the GC. Reset by the pool.
+        (<any>message)['type'] = message.type == 'collision'
+            ? 'collision-exit'
+            : 'collision-enter'; 
         this.engine.broadcastMessage(message);
 
         // Clean up.
@@ -49,7 +52,7 @@ class CollisionManager {
         this.islandPool.release(message);
     }
 
-    collidesRectangleRectangle(a: CollisionEntity, b: CollisionEntity): Collision {
+    collidesRectangleRectangle(a: CollisionEntity, b: CollisionEntity): Collision | Trigger {
         const aToB = b.transform.position.sub(a.transform.position);
         const xOverlap = (a.body.width + b.body.width) / 2 - Math.abs(aToB.x);
 
@@ -84,7 +87,9 @@ class CollisionManager {
             message = this.islandPool.get();
             message.hash = h;
 
-            (<any>message).type = "collision-enter";
+            (<any>message).type = a.body.isTrigger || b.body.isTrigger
+                ? "trigger-enter"
+                : "collision-enter";
         }
 
         message.hit = b;
@@ -94,9 +99,14 @@ class CollisionManager {
         message.hash = h;
         this.islands.set(message.hash, message);
 
-        if (message.type !== "collision") {
+        if (<any>message.type === "collision-enter") {
             this.engine.broadcastMessage(message);
-            message.type = "collision";
+            (<any>message['type']) = "collision";
+        }
+
+        if (<any>message.type === "trigger-enter") {
+            this.engine.broadcastMessage(message);
+            (<any>message['type']) = "trigger";
         }
 
         return message;
