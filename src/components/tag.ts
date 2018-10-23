@@ -3,7 +3,7 @@ export class Tag {
 
     tags: Set<string>;
 
-    constructor(tags: string[]) {
+    constructor(...tags: string[]) {
         this.tags = new Set(tags);
     }
 

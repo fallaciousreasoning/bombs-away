@@ -25,6 +25,9 @@ import naivePhysicsResolver from "./systems/collisionResolver";
 import addLookAtMouse from "./systems/lookAtMouse";
 import addPlayerController from "./systems/playerController";
 import addSpawn from "./systems/spawnSystem";
+import removeDeadThings from "./systems/removeDeadThings";
+import { Tag } from "./components/tag";
+import Health from "./components/health";
 
 window['engine'] = engine;
 
@@ -48,10 +51,12 @@ const enemyPool = new EntityPool(engine, () => {
     enemy.add(new Body(1, 1, true));
     enemy.add(new Bounce(0.6));
     enemy.add(new AliveForTime(0));
+    enemy.add(new Health(0));
     return enemy;
 }, enemy => {
-    enemy.get('aliveForTime').time = 12.5;
+    enemy.get('aliveForTime').time = 30;
     enemy.get('body').velocity = Vector2.zero;
+    enemy.get('health').health = 100;
 });
 
 const player = new Entity();
@@ -107,4 +112,5 @@ addFlipWithMouse(input, engine);
 addFireManager(input, engine);
 addRemoveAfterTime(engine);
 addSpawn(engine);
+removeDeadThings(engine);
 
