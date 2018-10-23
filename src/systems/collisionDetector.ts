@@ -58,12 +58,14 @@ class CollisionManager {
         let message = this.islands.get(h);
 
         if (xOverlap < 0) {
+            this.onNoCollision(message);
             return;
         }
 
         const yOverlap = (a.body.height + b.body.height) / 2 - Math.abs(aToB.y);
 
         if (yOverlap < 0) {
+            this.onNoCollision(message);
             return;
         }
 
@@ -82,8 +84,8 @@ class CollisionManager {
             message = this.islandPool.get();
             message.hash = h;
 
-            // TODO: Pool, or reuse message.
-            this.engine.broadcastMessage(<any>{ ...message, type: "collision-enter" });
+            (<any>message).type = "collision-enter";
+            this.engine.broadcastMessage(message);
         }
 
         message.hit = b;
@@ -92,6 +94,12 @@ class CollisionManager {
         message.penetration = penetration;
         message.hash = h;
         this.islands.set(message.hash, message);
+
+        if (message.type !== "collision") {
+            this.engine.broadcastMessage(message);
+            message.type = "collision";
+        }
+
         return message;
     }
 }
