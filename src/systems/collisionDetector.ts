@@ -4,7 +4,7 @@ import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import { Entityish } from "./system";
 
-type CollisionEntity = Entityish<['transform', 'body']>;
+type CollisionEntity = Entityish<['body', 'transform', 'collider']>;
 
 const hash = (a: {id: number}, b: {id: number}) => {
     const min = Math.min(a.id, b.id);
@@ -52,9 +52,9 @@ class CollisionManager {
         this.islandPool.release(message);
     }
 
-    collidesRectangleRectangle(a: CollisionEntity, b: CollisionEntity): Collision | Trigger {
+    collidesRectangleRectangle(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
         const aToB = b.transform.position.sub(a.transform.position);
-        const xOverlap = (a.body.width + b.body.width) / 2 - Math.abs(aToB.x);
+        const xOverlap = (a.collider.width + b.collider.width) / 2 - Math.abs(aToB.x);
 
         // See if we have an existing collision.
         const h = hash(a, b);
@@ -65,7 +65,7 @@ class CollisionManager {
             return;
         }
 
-        const yOverlap = (a.body.height + b.body.height) / 2 - Math.abs(aToB.y);
+        const yOverlap = (a.collider.height + b.collider.height) / 2 - Math.abs(aToB.y);
 
         if (yOverlap < 0) {
             this.onNoCollision(message);
@@ -87,13 +87,14 @@ class CollisionManager {
             message = this.islandPool.get();
             message.hash = h;
 
-            (<any>message).type = a.body.isTrigger || b.body.isTrigger
+            (<any>message).type = false //a.body.isTrigger || b.body.isTrigger
                 ? "trigger-enter"
                 : "collision-enter";
         }
 
-        message.hit = b;
-        message.moved = a;
+        // TODO: Probably should cast a/b to any here.
+        message.hit = <any>b;
+        message.moved = <any>a;
         message.normal = normal;
         message.penetration = penetration;
         message.hash = h;
@@ -117,17 +118,25 @@ export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
 
     engine
-        .makeSystem('body', 'transform')
+        .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
+            // TODO: Loop should go over all entities with collider + transform, not just ones with bodies
+
             // Outer loop over all dynamic bodies.
             for (let i = 0; i < entities.length; ++i) {
                 const a = entities[i];
+                const body = a.get('body');
+
+                // Can't update entity with no body.
+                if (!body) {
+                    continue;
+                }
 
                 // Move the entity.
-                const movedAmount = a.body.velocity.mul(message.step);
+                const movedAmount = body.velocity.mul(message.step);
                 a.transform.position = a.transform.position.add(movedAmount);
 
-                if (!a.body.isDynamic) continue;
+                if (!body.isDynamic) continue;
 
                 // Inner loop over all other bodies.
                 for (let j = 0; j < entities.length; ++j) {
@@ -135,6 +144,7 @@ export default function addPhysics(engine: Engine) {
 
                     const b = entities[j];
 
+                    // TODO: Work out what collision method to use.
                     const message = collisionManager.collidesRectangleRectangle(a, b);
                     if (!message) {
                         continue;

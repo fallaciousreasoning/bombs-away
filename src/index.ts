@@ -51,7 +51,8 @@ const enemyPool = new EntityPool(engine, () => {
     const enemy = new Entity();
     enemy.add(new Box(1, 1, 'blue'));
     enemy.add(new Transform());
-    enemy.add(new Body(1, 1, true));
+    enemy.add(new Body(true));
+    enemy.add({ type: 'collider', collider: 'box', width: 1, height: 1, isTrigger: false });
     enemy.add(new Bounce(0.6));
     enemy.add(new AliveForTime(0));
     enemy.add(new Health(0));
@@ -66,7 +67,8 @@ const player = new Entity();
 player.add(new Player());
 player.add(new Box(1, 2, 'red'));
 player.add(new Transform(new Vector2(2, 1)));
-player.add(new Body(1, 2, true));
+player.add(new Body(true));
+player.add({ type: 'collider', collider: 'box', width: 1, height: 2 });
 
 const weapon = new Entity();
 weapon.add(new Line(1, 0.3, 'black'));
@@ -85,7 +87,8 @@ weapon.add(new Weapon((weapon, transform) => {
 const ground = new Entity();
 ground.add(new Box(10, 1));
 ground.add(new Transform(new Vector2(5, 5)));
-ground.add(new Body(10, 1, false));
+ground.add(new Body(false));
+ground.add({ type: 'collider', collider: 'box', width: 10, height: 1 })
 
 const spawn = new Entity();
 spawn.add(new Box(0.5, 0.5, 'yellow'));
