@@ -14,3 +14,22 @@ export interface Collision {
     normal: Vector2;
     penetration: number;
 }
+
+export interface CollisionEnter {
+    type: 'collision-enter';
+
+    moved: Entityish<['body', 'transform']>;
+    movedAmount: Vector2;
+
+    hit: Entityish<['body', 'transform']>;
+
+    normal: Vector2;
+    penetration: number;
+}
+
+export interface CollisionExit {
+    type: 'collision-exit';
+
+    moved: Entityish<['body', 'transform']>;
+    hit: Entityish<['body', 'transform']>;
+}

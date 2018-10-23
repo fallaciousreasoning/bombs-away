@@ -22,7 +22,10 @@ class CollisionManager {
         normal: undefined,
         penetration: 0,
         hash: undefined
-    }), () => { });
+    }), (i) => {
+        // Reset the type.
+        i.type = "collision";
+    });
 
     private engine: Engine;
     private islands: Map<number, Collision> = new Map();
@@ -31,24 +34,28 @@ class CollisionManager {
         this.engine = engine;
     }
 
-    areTouching = (a: { id: number }, b: { id: number}) => this.islands.has(hash(a, b));
-
-    handleSeperations = () => {
-        const values = this.islands.values();
-        let island: Collision;
-        while (island = values.next().value) {
-            if (this.collidesRectangleRectange(island.moved, island.hit, true)) {
-                continue;
-            }
-
-            // TODO fire seperated event
-            this.islands.delete(island.hash);
+    onNoCollision(message: Collision) {
+        // If there was no existing collision, return.
+        if (!message) {
+            return;
         }
+
+        // Otherwise, we've separated.
+        (<any>message)['type'] = "collision-exit"; // Hacky set type, so we don't thrash the GC. Reset by the pool.
+        this.engine.broadcastMessage(message);
+
+        // Clean up.
+        this.islands.delete(message.hash);
+        this.islandPool.release(message);
     }
 
-    collidesRectangleRectange(a: CollisionEntity, b: CollisionEntity, onlyIntersects: boolean): Collision {
+    collidesRectangleRectange(a: CollisionEntity, b: CollisionEntity): Collision {
         const aToB = b.transform.position.sub(a.transform.position);
         const xOverlap = (a.body.width + b.body.width) / 2 - Math.abs(aToB.x);
+
+        // See if we have an existing collision.
+        const h = hash(a, b);
+        let message = this.islands.get(h);
 
         if (xOverlap < 0) {
             return;
@@ -58,10 +65,6 @@ class CollisionManager {
 
         if (yOverlap < 0) {
             return;
-        }
-
-        if (onlyIntersects) {
-            return <any>true;
         }
 
         let normal: Vector2;
@@ -74,12 +77,20 @@ class CollisionManager {
             penetration = yOverlap;
         }
 
-        const message = this.islandPool.get();
+        // If we don't have an existing collision.
+        if (!message) {
+            message = this.islandPool.get();
+            message.hash = h;
+
+            // TODO: Pool, or reuse message.
+            this.engine.broadcastMessage(<any>{ ...message, type: "collision-enter" });
+        }
+
         message.hit = b;
         message.moved = a;
         message.normal = normal;
         message.penetration = penetration;
-        message.hash = hash(a, b);
+        message.hash = h;
         this.islands.set(message.hash, message);
         return message;
     }
@@ -87,8 +98,6 @@ class CollisionManager {
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
-
-    engine.makeSystem().onMessage('tick', collisionManager.handleSeperations);
 
     engine
         .makeSystem('body', 'transform')
@@ -108,11 +117,8 @@ export default function addPhysics(engine: Engine) {
                     if (i == j) continue;
 
                     const b = entities[j];
-                    // if (collisionManager.areTouching(a, b)) {
-                    //     continue;
-                    // }
 
-                    const message = collisionManager.collidesRectangleRectange(a, b, false);
+                    const message = collisionManager.collidesRectangleRectange(a, b);
                     if (!message) {
                         continue;
                     }
