@@ -28,6 +28,8 @@ import addSpawn from "./systems/spawnSystem";
 import removeDeadThings from "./systems/removeDeadThings";
 import { Tag } from "./components/tag";
 import Health from "./components/health";
+import applyDamage from "./systems/applyDamage";
+import Damage from "./components/damage";
 
 window['engine'] = engine;
 
@@ -38,6 +40,7 @@ const bulletPool = new EntityPool(engine, () => {
     bullet.add(new Line(0, 0.1, 'yellow'));
     bullet.add(new Transform());
     bullet.add(new AliveForTime(0));
+    bullet.add(new Damage(100));
     return bullet;
 
 }, bullet => {
@@ -113,4 +116,5 @@ addFireManager(input, engine);
 addRemoveAfterTime(engine);
 addSpawn(engine);
 removeDeadThings(engine);
+applyDamage(engine);
 

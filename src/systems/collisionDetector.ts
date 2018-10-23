@@ -85,7 +85,6 @@ class CollisionManager {
             message.hash = h;
 
             (<any>message).type = "collision-enter";
-            this.engine.broadcastMessage(message);
         }
 
         message.hit = b;
