@@ -138,6 +138,7 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
         insert.push(end);
     }
 
+    // We reverse the inserted vertices, because we go around the wrong way..
     result.splice(insertAt, 0, ...insert.reverse());
 
     return new Vertices(result);
