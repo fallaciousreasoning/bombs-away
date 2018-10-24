@@ -138,7 +138,7 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
         insert.push(end);
     }
 
-    result.splice(insertAt, 0, ...insert);
+    result.splice(insertAt, 0, ...insert.reverse());
 
     return new Vertices(result);
 }
