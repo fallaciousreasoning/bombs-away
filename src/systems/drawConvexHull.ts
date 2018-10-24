@@ -45,9 +45,28 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
                 context.fillRect(vertices[i].x - pointSize/2, vertices[i].y - pointSize/2, pointSize, pointSize);
             }
 
-            context.fillStyle = 'red';
-            context.fillRect(hull.hull.centroid.x, hull.hull.centroid.y, pointSize, pointSize);
+            context.fillStyle = 'blue';
+            context.fillRect(hull.hull.centroid.x-pointSize/2, hull.hull.centroid.y-pointSize/2, pointSize, pointSize);
 
             context.restore();
         });
+
+    engine.makeSystem().onMessage('tick', () => {
+        const points: {x: number, y:number}[] = window['debugPoints'];
+        if (!points) {
+            return;
+        }
+
+        context.save();
+
+        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+        context.fillStyle = "red";
+
+        const pointSize = 0.5;
+        for (const point of points) {
+            context.fillRect(point.x - pointSize/2, point.y - pointSize/2, pointSize, pointSize);
+        }
+
+        context.restore();
+    });
 }

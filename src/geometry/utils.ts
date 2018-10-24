@@ -71,3 +71,23 @@ export const closestPointOnLine = (start: Vector2, end: Vector2, point: Vector2)
 
     return start.add(se.mul(distance));
 }
+
+/**
+ * Returns the point of intersection of two lines or undefined.
+ * Based on: https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+ * @param a Line 1 start
+ * @param b Line 1 end
+ * @param c Line 2 start
+ * @param d Line 2 end
+ */
+export const lineIntersection = (a: Vector2, b: Vector2, c: Vector2, d: Vector2) => {
+    let s1 = b.sub(a);
+    let s2 = d.sub(c);
+
+    const s = (-s1.y * (a.x - c.x) + s1.x * (a.y - c.y)) / (-s2.x * s1.y + s1.x * s2.y);
+    const t = ( s2.x * (a.x - c.y) - s2.y * (a.y - c.x)) / (-s2.x * s1.y + s1.x * s2.y);
+
+    // If there was an intersection point, return it.
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+        return new Vector2(a.x + t * s1.x, a.y + t * s1.y);
+}

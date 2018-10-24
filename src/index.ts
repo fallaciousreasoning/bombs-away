@@ -9,9 +9,10 @@ import convexHullTester from "./systems/convexHullTester";
 import drawConvexHull from "./systems/drawConvexHull";
 import { Vertices } from "./geometry/vertices";
 import { makeCircle, makeBox } from "./geometry/createPolygon";
-import { subtract } from "./geometry/subtract";
+import { subtract, betterSubtract } from "./geometry/subtract";
 
 window['engine'] = engine;
+window['debugPoints'] = [];
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
@@ -23,12 +24,14 @@ const addShape = (shape: Vertices) => {
 }
 const boxPoly = makeBox(5, 2).translate(new Vector2(5));
 const circlePoly = makeCircle(1, 5).translate(new Vector2(5, 4));
+const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
-const joined = subtract(boxPoly, circlePoly);
+const joined = betterSubtract(boxPoly, cutPoly);
 
-// addShape(boxPoly);
+addShape(boxPoly);
+addShape(cutPoly);
 // addShape(circlePoly);
-addShape(joined);
+// addShape(joined);
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
 //     new Vector2(0),
