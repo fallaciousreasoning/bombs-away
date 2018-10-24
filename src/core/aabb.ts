@@ -52,6 +52,14 @@ export class AABB {
         this.max = value.add(halfSize);
     }
 
+    get bottomLeft() {
+        return new Vector2(this.min.x, this.max.y);
+    }
+
+    get topRight() {
+        return new Vector2(this.max.x, this.min.y);
+    }
+
     intersects(other: AABB) {
         return !(other.max.x <= this.min.x || other.max.y <= this.min.y || other.min.x >= this.max.x || other.min.y >= this.max.y);
     }

@@ -8,7 +8,7 @@ import Vector2 from "../core/vector2";
  * @param point The point to determine the 'leftness' of.
  */
 const isLeft = (start: Vector2, end: Vector2, point: Vector2) => {
-    return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x) < 0;
+    return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x) <= 0;
 }
 
 /**
@@ -24,7 +24,7 @@ export class ConvexHull extends Vertices {
 
     contains(point: Vector2) {
         for (let i = 0; i < this.vertices.length; ++i) {
-            const next = i === this.vertices.length ? 0 : i + 1;
+            const next = i === this.vertices.length - 1 ? 0 : i + 1;
             const left = isLeft(this.vertices[i], this.vertices[next], point);
             if (!left) return false;
         }

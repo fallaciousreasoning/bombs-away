@@ -30,94 +30,22 @@ import { Tag } from "./components/tag";
 import Health from "./components/health";
 import applyDamage from "./systems/applyDamage";
 import Damage from "./components/damage";
+import convexHullTester from "./systems/convexHullTester";
 
 window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
-const bulletPool = new EntityPool(engine, () => {
-    const bullet = new Entity();
-    bullet.add(new Line(0, 0.1, 'yellow'));
-    bullet.add(new Transform());
-    bullet.add(new AliveForTime(0));
-    bullet.add(new Damage(100));
-    return bullet;
+const convexHull = new Entity();
+convexHull.add(new Box(5, 5, 'black'));
+convexHull.add(new Transform(new Vector2(3.5)));
 
-}, bullet => {
-    bullet.get('aliveForTime').time = 5.2;
-})
-
-const enemyPool = new EntityPool(engine, () => {
-    const enemy = new Entity();
-    enemy.add(new Box(1, 1, 'blue'));
-    enemy.add(new Transform());
-    enemy.add(new Body(true));
-    enemy.add({ type: 'collider', collider: 'box', width: 1, height: 1, isTrigger: false });
-    enemy.add(new Bounce(0.6));
-    enemy.add(new AliveForTime(0));
-    enemy.add(new Health(0));
-    return enemy;
-}, enemy => {
-    enemy.get('aliveForTime').time = 30;
-    enemy.get('body').velocity = Vector2.zero;
-    enemy.get('health').health = 100;
-});
-
-const player = new Entity();
-player.add(new Player());
-player.add(new Box(1, 2, 'red'));
-player.add(new Transform(new Vector2(2, 1)));
-player.add(new Body(true));
-player.add({ type: 'collider', collider: 'box', width: 1, height: 2 });
-
-const weapon = new Entity();
-weapon.add(new Line(1, 0.3, 'black'));
-weapon.add(new Transform(new Vector2(0.65, 0), 0, player.get('transform')));
-weapon.add(new LookAtMouse());
-weapon.add(new FlipWithMouse());
-weapon.add(new Weapon((weapon, transform) => {
-    const noise = (Math.PI * Math.random()  - Math.PI/2) * (1 - weapon.accuracy);
-    const b = bulletPool.get();
-    b.get('line').length = weapon.range;
-    b.get('transform').position = transform.position;
-    b.get('transform').rotation = transform.rotation + noise;
-    return b;
-}));
-
-const ground = new Entity();
-ground.add(new Box(10, 1));
-ground.add(new Transform(new Vector2(5, 5)));
-ground.add(new Body(false));
-ground.add({ type: 'collider', collider: 'box', width: 10, height: 1 })
-
-const spawn = new Entity();
-spawn.add(new Box(0.5, 0.5, 'yellow'));
-spawn.add(new Transform(new Vector2(8, 0)));
-spawn.add(new Spawn((spawn, transform) => {
-    const e = enemyPool.get();
-    e.get('transform').position = transform.position;
-    return e;
-}));
-
-engine.addEntity(player);
-engine.addEntity(weapon);
-engine.addEntity(ground);
-engine.addEntity(spawn);
+engine.addEntity(convexHull);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
-addGravity(engine);
-addPhysics(engine);
-addBounce(engine);
-naivePhysicsResolver(engine);
-addPlayerController(input, engine);
-addLookAtMouse(input, engine);
-addFlipWithMouse(input, engine);
-addFireManager(input, engine);
-addRemoveAfterTime(engine);
-addSpawn(engine);
-removeDeadThings(engine);
-applyDamage(engine);
+convexHullTester(input, engine);
+
 
