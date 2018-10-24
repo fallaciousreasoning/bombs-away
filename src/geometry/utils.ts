@@ -85,7 +85,7 @@ export const lineIntersection = (a: Vector2, b: Vector2, c: Vector2, d: Vector2)
     let s2 = d.sub(c);
 
     const s = (-s1.y * (a.x - c.x) + s1.x * (a.y - c.y)) / (-s2.x * s1.y + s1.x * s2.y);
-    const t = ( s2.x * (a.x - c.y) - s2.y * (a.y - c.x)) / (-s2.x * s1.y + s1.x * s2.y);
+    const t = ( s2.x * (a.y - c.y) - s2.y * (a.x - c.x)) / (-s2.x * s1.y + s1.x * s2.y);
 
     // If there was an intersection point, return it.
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1)

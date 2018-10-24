@@ -71,4 +71,13 @@ export class Vertices {
     average() {
         return this.vertices.reduce((prev, next) => prev.add(next), Vector2.zero).div(this.vertices.length);
     }
+
+    shift(by: number) {
+        const vertices = [];
+        for (const vertex of this.vertices) {
+            vertices[(by++)%this.vertices.length] = vertex;
+        }
+
+        return new Vertices(vertices);
+    }
 }
