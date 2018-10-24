@@ -1,11 +1,11 @@
-import { ConvexHull } from "../geometry/convexHull";
+import { Vertices } from "../geometry/vertices";
 
 export default class Hull {
     type: 'hull' = 'hull';
 
-    hull: ConvexHull;
+    hull: Vertices;
 
-    constructor(hull: ConvexHull){
+    constructor(hull: Vertices){
         this.hull = hull;
     }
 }

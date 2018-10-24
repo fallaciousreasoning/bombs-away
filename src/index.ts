@@ -4,17 +4,17 @@ import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
-import { ConvexHull } from "./geometry/convexHull";
 import addRenderer from './systems/addRenderer';
 import convexHullTester from "./systems/convexHullTester";
 import drawConvexHull from "./systems/drawConvexHull";
+import { Vertices } from "./geometry/vertices";
 
 window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const convexHull = new Entity();
-convexHull.add(new Hull(new ConvexHull([
+convexHull.add(new Hull(new Vertices([
     new Vector2(0),
     new Vector2(-1, 1),
     new Vector2(-1.1, 2),

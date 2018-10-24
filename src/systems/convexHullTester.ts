@@ -1,5 +1,4 @@
 import { Engine } from "../engine";
-import { ConvexHull } from "../geometry/convexHull";
 import Input from "../core/input";
 import Vector2 from "../core/vector2";
 import { AABB } from "../core/aabb";
@@ -16,9 +15,8 @@ export default function convexHullTester(input: Input, engine: Engine) {
             aabb.bottomLeft,
             aabb.max
         ]);
-        const hull = new ConvexHull(verts.vertices);
 
-        const contains = hull.contains(input.mousePosition);
+        const contains = verts.contains(input.mousePosition);
         box.color = contains ? 'green' : 'red';
     });
 }
