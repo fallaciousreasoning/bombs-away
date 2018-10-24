@@ -28,10 +28,10 @@ const cutPoly = makeBox(1, 2).shift(3).translate(new Vector2(5, 4))
 
 const joined = betterSubtract(boxPoly, cutPoly);
 
-addShape(boxPoly);
-addShape(cutPoly);
+// addShape(boxPoly);
+// addShape(cutPoly);
 // addShape(circlePoly);
-// addShape(joined);
+addShape(joined);
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
 //     new Vector2(0),

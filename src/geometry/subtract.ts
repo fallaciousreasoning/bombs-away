@@ -123,8 +123,7 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
             continue;
         }
         console.log(intersection);
-        result.splice(intersection.index, 0, intersection.intersection);
-        window['debugPoints'].push(intersection.intersection);
+        result.splice(intersection.index + 1, 0, intersection.intersection);
     }
 
     return new Vertices(result);
