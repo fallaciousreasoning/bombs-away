@@ -1,7 +1,7 @@
 import Vector2 from "../core/vector2";
 import { Vertices } from "./vertices";
 
-const makeBox = (width: number, height: number) => {
+export const makeBox = (width: number, height: number) => {
     const halfSize = new Vector2(width, height).div(2);
 
     return new Vertices([
@@ -12,7 +12,7 @@ const makeBox = (width: number, height: number) => {
     ]);
 }
 
-const makeCircle = (radius: number, triangles = 8) => {
+export const makeCircle = (radius: number, triangles = 8) => {
     const spoke = new Vector2(0, radius);
     const angle = Math.PI/triangles * 2;
     const vertices = [spoke];
