@@ -45,6 +45,9 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
                 context.fillRect(vertices[i].x - pointSize/2, vertices[i].y - pointSize/2, pointSize, pointSize);
             }
 
+            context.fillStyle = 'red';
+            context.fillRect(hull.hull.centroid.x, hull.hull.centroid.y, pointSize, pointSize);
+
             context.restore();
         });
 }
