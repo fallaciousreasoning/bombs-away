@@ -74,3 +74,16 @@ export const subtract = (first: Vertices, second: Vertices): Vertices => {
     // Create a new vertices to hold our result.
     return new Vertices(resultVertices);
 }
+
+const betterSubtract = (first: Vertices, second: Vertices) => {
+    // Naively assume that we aren't going to cut the shape in half.
+    // hopefully we can work around this (more than two intersections means we're cutting) (maybe cut with closest line to centroid?)
+
+    // For each edge:
+        // Does it intersect with our shape? (<-- Candidate for optimization?)
+            // First intersection? Make a cut, set flag.
+            // Second intersection? Make a cut, break
+
+        // Have we made a cut?
+            // Insert our vertex
+}
