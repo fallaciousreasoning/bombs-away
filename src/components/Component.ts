@@ -6,6 +6,7 @@ import { Collider } from "./collider";
 import Damage from "./damage";
 import FlipWithMouse from "./flipWithMouse";
 import Health from "./health";
+import Hull from "./hull";
 import Line from "./line";
 import LookAtMouse from "./lookAtMouse";
 import Player from "./player";
@@ -14,4 +15,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Damage | FlipWithMouse | Health | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon | Collider;
+export type Component = AliveForTime | Body | Bounce | Box | Damage | FlipWithMouse | Health | Hull | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon | Collider;

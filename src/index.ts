@@ -31,13 +31,23 @@ import Health from "./components/health";
 import applyDamage from "./systems/applyDamage";
 import Damage from "./components/damage";
 import convexHullTester from "./systems/convexHullTester";
+import Hull from "./components/hull";
+import { ConvexHull } from "./geometry/convexHull";
+import drawConvexHull from "./systems/drawConvexHull";
 
 window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const convexHull = new Entity();
-convexHull.add(new Box(5, 5, 'black'));
+convexHull.add(new Hull(new ConvexHull([
+    new Vector2(0),
+    new Vector2(-1, 1),
+    new Vector2(-1.1, 2),
+    new Vector2(1, 3),
+    new Vector2(4, 3),
+    new Vector2(2, 0)
+])));
 convexHull.add(new Transform(new Vector2(3.5)));
 
 engine.addEntity(convexHull);
@@ -45,6 +55,8 @@ engine.addEntity(convexHull);
 addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
+
+drawConvexHull(canvas, engine);
 
 convexHullTester(input, engine);
 
