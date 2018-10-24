@@ -51,6 +51,18 @@ export default class Vector2 {
         return new Vector2(x, y);
     }
 
+    distanceSquared(to: Vector2) {
+        return this.sub(to).lengthSquared();
+    }
+
+    distance(to: Vector2) {
+        return Math.sqrt(this.distanceSquared(to));
+    }
+
+    dot(vec: Vector2) {
+        return this.x*vec.x + this.y*vec.y;
+    }
+
     lengthSquared() {
         return this.x * this.x + this.y * this.y;
     }
