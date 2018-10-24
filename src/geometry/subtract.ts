@@ -94,7 +94,7 @@ const intersectionIndex = (shape: Vertices, start: Vector2, end: Vector2) => {
         }
 
         return {
-            index: i,
+            index: i+1, // Insert after this vertex.
             intersection
         };
     }
@@ -113,18 +113,32 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
             // Insert our vertex
 
     const result = [...first.vertices];
+    const insert: Vector2[] = [];
+    let insertAt = -1;
 
     for (let i = 0; i < second.vertices.length; ++i) {
         const start = second.vertices[i];
         const end = second.vertices[(i + 1) % second.vertices.length];
 
         const intersection = intersectionIndex(first, start, end);
-        if (!intersection) {
+        if (intersection) {
+            insert.push(intersection.intersection);
+
+            if (insertAt !== -1) {
+                break;
+            }
+
+            insertAt = intersection.index;
+        }
+
+        if (insertAt === -1) {
             continue;
         }
-        console.log(intersection);
-        result.splice(intersection.index + 1, 0, intersection.intersection);
+
+        insert.push(end);
     }
+
+    result.splice(insertAt, 0, ...insert);
 
     return new Vertices(result);
 }
