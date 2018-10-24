@@ -26,7 +26,7 @@ const boxPoly = makeBox(5, 2).translate(new Vector2(5));
 const circlePoly = makeCircle(1, 5).translate(new Vector2(5, 4));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
-const joined = betterSubtract(boxPoly, cutPoly);
+const joined = betterSubtract(boxPoly, circlePoly);
 
 // addShape(boxPoly);
 // addShape(cutPoly);

@@ -13,8 +13,8 @@ export const makeBox = (width: number, height: number) => {
 }
 
 export const makeCircle = (radius: number, triangles = 8) => {
-    const spoke = new Vector2(0, radius);
-    const angle = Math.PI/triangles * 2;
+    const spoke = new Vector2(0, -radius);
+    const angle = -Math.PI/triangles * 2;
     const vertices = [spoke];
 
     for (let i = 1; i < triangles; ++i) {
