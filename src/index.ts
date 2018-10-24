@@ -9,28 +9,43 @@ import convexHullTester from "./systems/convexHullTester";
 import drawConvexHull from "./systems/drawConvexHull";
 import { Vertices } from "./geometry/vertices";
 import { makeCircle, makeBox } from "./geometry/createPolygon";
+import { subtract } from "./geometry/subtract";
 
 window['engine'] = engine;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
-const blob = new Entity();
-blob.add(new Hull(new Vertices([
-    new Vector2(0),
-    new Vector2(-1, 1),
-    new Vector2(-1.1, 2),
-    new Vector2(1, 3),
-    new Vector2(4, 3),
-    new Vector2(2, 0)
-])));
-blob.add(new Transform(new Vector2(3.5)));
+const addShape = (shape: Vertices) => {
+    const s = new Entity();
+    s.add(new Hull(shape));
+    s.add(new Transform());
+    engine.addEntity(s);
+}
+const boxPoly = makeBox(5, 2).translate(new Vector2(5));
+const circlePoly = makeCircle(1, 5).translate(new Vector2(5, 4));
 
-const circle = new Entity();
-circle.add(new Hull(makeCircle(1)));
-circle.add(new Transform(new Vector2(7, 3)));
+const joined = subtract(boxPoly, circlePoly);
 
-engine.addEntity(blob);
-engine.addEntity(circle);
+// addShape(boxPoly);
+// addShape(circlePoly);
+addShape(joined);
+// const blob = new Entity();
+// blob.add(new Hull(new Vertices([
+//     new Vector2(0),
+//     new Vector2(-1, 1),
+//     new Vector2(-1.1, 2),
+//     new Vector2(1, 3),
+//     new Vector2(4, 3),
+//     new Vector2(2, 0)
+// ])));
+// blob.add(new Transform(new Vector2(3.5)));
+
+// const circle = new Entity();
+// circle.add(new Hull(makeCircle(1)));
+// circle.add(new Transform(new Vector2(7, 3)));
+
+// engine.addEntity(blob);
+// engine.addEntity(circle);
 
 addRenderer(canvas, engine);
 const input = new Input(document);

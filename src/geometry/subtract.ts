@@ -32,7 +32,7 @@ const findClosestEdgeIndex = (vertices: Vector2[], to: Vector2) => {
  * @param first The polygon to subtract from.
  * @param second The polygon to subtract.
  */
-const subtract = (first: Vertices, second: Vertices): Vertices => {
+export const subtract = (first: Vertices, second: Vertices): Vertices => {
     // If the bounding boxes don't overlap, no point doing anything
     // expensive.
     if (!first.bounds.intersects(second.bounds)) {
@@ -59,7 +59,7 @@ const subtract = (first: Vertices, second: Vertices): Vertices => {
     let resultVertices = [...first.vertices];
 
     // Insert our new vertices.
-    for (const vertex of second.vertices) {
+    for (const vertex of containingPoints) {
         // Find closest edge.
         const closestEdgeIndex = findClosestEdgeIndex(resultVertices, vertex);
 

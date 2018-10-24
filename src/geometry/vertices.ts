@@ -16,8 +16,16 @@ export class Vertices {
             maxX,
             maxY;
 
-        this.internalBounds = new AABB(new Vector2(), new Vector2());
-        throw new Error("Not yet implemented!");
+        for (const vertex of this.vertices) {
+            minX = minX ? Math.min(minX, vertex.x) : vertex.x;
+            maxX = maxX ? Math.max(maxX, vertex.x) : vertex.x;
+            minY = minY ? Math.min(minY, vertex.y) : vertex.y;
+            maxY = maxY ? Math.max(minY, vertex.y) : vertex.y;
+        }
+
+        const halfSize = new Vector2(maxX, maxY).sub(new Vector2(minX, minY)).div(2);
+        this.internalBounds = new AABB(new Vector2(), halfSize);
+        return this.internalBounds;
     }
 
     private internalCentroid: Vector2;
@@ -27,10 +35,18 @@ export class Vertices {
     }
 
     constructor(vertices: Vector2[]) {
+        if (!vertices) {
+            throw new Error("Vertices must be defined");
+        }
+
+        if (vertices.length < 3) {
+            throw new Error("You must provide at least 3 vertices");
+        }
+
         this.vertices = vertices;
     }
 
-    contains(point: Vector2) {
+    contains = (point: Vector2) => {
         for (let i = 0; i < this.vertices.length; ++i) {
             const next = i === this.vertices.length - 1 ? 0 : i + 1;
             const left = isLeft(this.vertices[i], this.vertices[next], point);
@@ -38,14 +54,6 @@ export class Vertices {
         }
 
         return  true;
-    }
-
-    subtract(remove: Vertices) {
-        if (!remove.bounds.intersects(this.bounds)) {
-            return;
-        }
-
-        // TODO assert that at least one point is outside this one.
     }
 
     translate(by: Vector2) {
