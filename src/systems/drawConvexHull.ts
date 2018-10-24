@@ -30,14 +30,20 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
 
                 context.fillStyle = colors[i % colors.length];
                 context.strokeStyle = 'black';
+                context.lineWidth = 1/PIXELS_A_METRE;
 
                 context.beginPath();
                 context.moveTo(curr.x, curr.y);
                 context.lineTo(next.x, next.y);
                 context.lineTo(centroid.x, centroid.y);
-                context.fill();
+                context.stroke();
             }
-            // context.fillStyle = box.color; -halfSize.y, size.x, size.y);
+
+            const pointSize = 0.2;
+            for (let i = 0; i < vertices.length; ++i) {
+                context.fillStyle = 'green';
+                context.fillRect(vertices[i].x - pointSize/2, vertices[i].y - pointSize/2, pointSize, pointSize);
+            }
 
             context.restore();
         });
