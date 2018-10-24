@@ -43,7 +43,7 @@ export class Vertices {
             throw new Error("You must provide at least 3 vertices");
         }
 
-        this.vertices = vertices;
+            this.vertices = vertices;
     }
 
     contains = (point: Vector2) => {
@@ -53,7 +53,7 @@ export class Vertices {
             if (!left) return false;
         }
 
-        return  true;
+        return true;
     }
 
     translate(by: Vector2) {
@@ -70,5 +70,27 @@ export class Vertices {
 
     average() {
         return this.vertices.reduce((prev, next) => prev.add(next), Vector2.zero).div(this.vertices.length);
+    }
+
+    /**
+     * Reduces the resolution of the vertices.
+     * @param resolution The minimum distance between to vertices for them to matter.
+     */
+    atResolution(resolution: number) {
+        const vertices = [this.vertices[0]];
+
+        const distanceSquared = resolution*resolution;
+        for (let i = 1; i < this.vertices.length; ++i) {
+            const last = vertices[vertices.length - 1];
+            const curr = this.vertices[i];
+
+            if (curr.distanceSquared(last) < distanceSquared) {
+                continue;
+            }
+
+            vertices.push(curr);
+        }
+
+        return new Vertices(vertices);
     }
 }
