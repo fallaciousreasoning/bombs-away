@@ -1,15 +1,7 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
 import { shortestDistanceToLine, lineIntersection, isLeft } from "./utils";
-
-interface IntersectionInfo {
-    shapeEdgeIndex: number;
-    removeEdgeIndex?: number;
-
-    startInside: boolean;
-
-    intercept: Vector2;
-}
+import { IntersectionInfo } from "./intersectionInfo";
 
 /**
  * Determines the edge, if any, that this line will intersect with
@@ -29,7 +21,7 @@ const getIntersectionInfo = (shape: Vertices, start: Vector2, end: Vector2): Int
         }
 
         return {
-            shapeEdgeIndex: i + 1, // Insert after this vertex.
+            firstIndex: i + 1, // Insert after this vertex.
             startInside: isLeft(edgeStart, edgeEnd, start), // Whether the line start-end starts inside the polygon.
             intercept
         };
@@ -51,7 +43,7 @@ export const subtract = (first: Vertices, second: Vertices) => {
             continue;
         }
 
-        info.removeEdgeIndex = i;
+        info.secondIndex = i;
         intersectionInfo.push(info);
     }
 
@@ -77,7 +69,7 @@ export const subtract = (first: Vertices, second: Vertices) => {
     const startInfo = intersectionInfo[closestToStart];
     const endInfo = intersectionInfo[1 - closestToStart];
 
-    let insertAt = startInfo.shapeEdgeIndex % first.vertices.length;
+    let insertAt = startInfo.firstIndex % first.vertices.length;
 
     // Inserts a vertex.
     const addVertex = (vertex: Vector2) => {
@@ -91,7 +83,7 @@ export const subtract = (first: Vertices, second: Vertices) => {
     const step = startInfo.startInside ? -1 : 1;
 
     // Get the index we're starting at.
-    let current = startInfo.removeEdgeIndex;
+    let current = startInfo.secondIndex;
 
     // If the start index is outside, we should always be one ahead (e.g. the end vertex).
     const offset = startInfo.startInside ? 0 : 1;
@@ -103,7 +95,7 @@ export const subtract = (first: Vertices, second: Vertices) => {
 
         // Move next.
         current = second.safeIndex(current + step);
-    } while (current != second.safeIndex(endInfo.removeEdgeIndex + offset));
+    } while (current != second.safeIndex(endInfo.secondIndex + offset));
 
     // Add the end intercept.
     addVertex(endInfo.intercept);

@@ -116,4 +116,19 @@ export class Vertices {
     getVertex(index: number) {
         return this.vertices[this.safeIndex(index)];
     }
+
+    /**
+     * Takes a continuous, looping slice of the vertices.
+     * @param from The index to start at.
+     * @param to The index to end at.
+     */
+    slice(from: number, to: number) {
+        const vertices = [];
+
+        while (from != to) {
+            vertices.push(this.getVertex(from++));
+        }
+
+        return new Vertices(vertices);
+    }
 }
