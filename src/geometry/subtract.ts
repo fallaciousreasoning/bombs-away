@@ -13,7 +13,7 @@ import { shortestDistanceToLine, lineIntersection, isLeft } from "./utils";
 const intersectionIndex = (shape: Vertices, start: Vector2, end: Vector2) => {
     for (let i = 0; i < shape.vertices.length; ++i) {
         const edgeStart = shape.vertices[i];
-        const edgeEnd = shape.vertices[(i + 1)%shape.vertices.length];
+        const edgeEnd = shape.vertices[(i + 1) % shape.vertices.length];
 
         const intersection = lineIntersection(edgeStart, edgeEnd, start, end);
         if (!intersection) {
@@ -21,7 +21,7 @@ const intersectionIndex = (shape: Vertices, start: Vector2, end: Vector2) => {
         }
 
         return {
-            index: i+1, // Insert after this vertex.
+            index: i + 1, // Insert after this vertex.
             startInside: isLeft(edgeStart, edgeEnd, start), // Whether the line start-end starts inside the polygon.
             intersection
         };
@@ -33,12 +33,13 @@ export const subtract = (first: Vertices, second: Vertices) => {
     // hopefully we can work around this (more than two intersections means we're cutting) (maybe cut with closest line to centroid?)
     const intersections: ReturnType<typeof intersectionIndex>[] = [];
     const vertexIndices: number[] = [];
-    
+
     for (let i = 0; i < second.length; ++i) {
         const start = second.getVertex(i);
         const end = second.getVertex(i + 1);
 
         const intersection = intersectionIndex(first, start, end);
+        const hash = intersection && intersection.intersection.hashCode();
         if (!intersection) {
             continue;
         }

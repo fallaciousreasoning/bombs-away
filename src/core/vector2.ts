@@ -91,4 +91,8 @@ export default class Vector2 {
     withY(y: number) {
         return new Vector2(this.x, y);
     }
+
+    hashCode() {
+        return (23 * 37 + this.x) * 37 + this.y;
+    }
 }
