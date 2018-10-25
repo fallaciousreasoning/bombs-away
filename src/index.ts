@@ -23,14 +23,14 @@ const addShape = (shape: Vertices) => {
     engine.addEntity(s);
 }
 const boxPoly = makeBox(5, 2).translate(new Vector2(5));
-const circlePoly = makeCircle(1, 10).translate(new Vector2(3.1, 3));
+const circlePoly = makeCircle(1, 10).translate(new Vector2(2.5, 5));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
 const joined = subtract(boxPoly, circlePoly);
 
 // addShape(boxPoly);
 // addShape(cutPoly);
-addShape(circlePoly);
+// addShape(circlePoly);
 addShape(joined);
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
