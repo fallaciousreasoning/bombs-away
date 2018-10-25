@@ -41,6 +41,7 @@ export const subtract = (first: Vertices, second: Vertices) => {
     // hopefully we can work around this (more than two intersections means we're cutting) (maybe cut with closest line to centroid?)
     const intersectionInfo: IntersectionInfo[] = [];
 
+    // Note: This doesn't work when the intercept is exactly on the border...
     for (let i = 0; i < second.length; ++i) {
         const start = second.getVertex(i);
         const end = second.getVertex(i + 1);
@@ -59,16 +60,13 @@ export const subtract = (first: Vertices, second: Vertices) => {
         return first;
     }
 
-    // TODO: Ensure there is at least one point in between them, otherwise return first.
-
     // Make a copy of the vertices, so we don't change first accidentally.
     const vertices: Vector2[] = [...first.vertices];
 
     // Attempt to work out which intersection should go first.
     const getFirstIntersection = () => {
-        // TODO: The assertion is wrong, need something to fallback on?
+        // We hit this if the vertices are exactly on the intersecting edge.
         if (intersectionInfo[0].startInside === intersectionInfo[1].startInside) {
-            console.log(intersectionInfo)
             throw new Error("You're wrong, they don't always have to start/end oppositely.")
         }
 
@@ -109,6 +107,12 @@ export const subtract = (first: Vertices, second: Vertices) => {
 
     // Add the end intercept.
     addVertex(endInfo.intercept);
+
+    // TODO move this check earlier.
+    // We can't make a cut if we don't add at least three vertices.
+    if (vertices.length < first.length + 3) {
+        return first;
+    }
 
     return new Vertices(vertices.filter(v => !second.contains(v)));
 }
