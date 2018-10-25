@@ -3,7 +3,7 @@ import Vector2 from "../core/vector2";
 import { IntersectionInfo } from "./intersectionInfo";
 import { lineIntersection } from "./utils";
 
-export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Vertices, Vertices] => {
+export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Vertices, Vertices?] => {
     let cutStart: IntersectionInfo;
     let cutEnd: IntersectionInfo;
 
@@ -12,6 +12,11 @@ export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Ver
         const end = shape.getVertex(i + 1);
 
         const intercept = lineIntersection(start, end, lineStart, lineEnd);
+
+        if (!intercept) {
+            continue;
+        }
+
         const info: IntersectionInfo = { firstIndex: i, intercept: intercept };
         
         if (cutStart) {
@@ -22,17 +27,21 @@ export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Ver
         cutStart = info;
     }
 
-    const a = shape.slice(cutStart.firstIndex, cutEnd.firstIndex);
+    if (!cutEnd) {
+        return [shape];
+    }
 
-    // Insert the cut vertices.
-    a.vertices.splice(0, 0, cutStart.intercept);
-    a.vertices.push(cutEnd.intercept);
+    window['debugPoints'].push(cutStart.intercept);
+    window['debugPoints'].push(cutEnd.intercept);
 
-    const b = shape.slice(cutEnd.firstIndex, cutStart.secondIndex);
+    const tempShape = new Vertices([...shape.vertices]);
+    tempShape.vertices.splice(cutStart.firstIndex, 0, cutStart.intercept);
+    tempShape.vertices.splice(cutEnd.firstIndex, 0, cutEnd.intercept);
 
-    // Insert the cut vertices.
-    b.vertices.splice(0, 0, cutEnd.intercept);
-    b.vertices.push(cutStart.intercept);
+    // TODO construct the new shapes!
+
+    const a = tempShape.slice(0, 0);
+    const b = tempShape.slice(1, 1);
 
     return [a, b]
 }

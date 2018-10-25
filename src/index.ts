@@ -10,6 +10,7 @@ import drawConvexHull from "./systems/drawConvexHull";
 import { Vertices } from "./geometry/vertices";
 import { makeCircle, makeBox } from "./geometry/createPolygon";
 import { subtract } from "./geometry/subtract";
+import { cut } from "./geometry/cut";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -28,10 +29,16 @@ const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
 const joined = subtract(boxPoly, circlePoly);
 
+const parts = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
+
 // addShape(boxPoly);
 // addShape(cutPoly);
 // addShape(circlePoly);
-addShape(joined);
+// addShape(joined);
+
+addShape(parts[0].translate(new Vector2(-3, 0)));
+addShape(parts[1]);
+
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
 //     new Vector2(0),

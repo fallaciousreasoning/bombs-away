@@ -38,16 +38,16 @@ export class Vertices {
         return this.vertices.length;
     }
 
-    constructor(vertices: Vector2[]) {
+    constructor(vertices: Vector2[], suppressWarnings?: boolean) {
         if (!vertices) {
             throw new Error("Vertices must be defined");
         }
 
-        if (vertices.length < 3) {
+        if (vertices.length < 3 && !suppressWarnings) {
             throw new Error("You must provide at least 3 vertices");
         }
 
-            this.vertices = vertices;
+        this.vertices = vertices;
     }
 
     contains = (point: Vector2) => {
@@ -83,7 +83,7 @@ export class Vertices {
     atResolution(resolution: number) {
         const vertices = [this.vertices[0]];
 
-        const distanceSquared = resolution*resolution;
+        const distanceSquared = resolution * resolution;
         for (let i = 1; i < this.vertices.length; ++i) {
             const last = vertices[vertices.length - 1];
             const curr = this.vertices[i];
@@ -103,8 +103,10 @@ export class Vertices {
      * @param index The index.
      */
     safeIndex(index: number) {
-        while (index < 0) index += this.vertices.length;
-        while (index >= this.vertices.length) index -= this.vertices.length;
+        index %= this.vertices.length;
+        if (index < 0) {
+            index += this.vertices.length;
+        }
 
         return index;
     }
@@ -126,9 +128,10 @@ export class Vertices {
         const vertices = [];
 
         while (from != to) {
-            vertices.push(this.getVertex(from++));
+            vertices.push(this.getVertex(from));
+            from = this.safeIndex(from + 1);
         }
 
-        return new Vertices(vertices);
+        return new Vertices(vertices, true);
     }
 }
