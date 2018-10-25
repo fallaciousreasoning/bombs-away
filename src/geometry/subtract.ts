@@ -224,5 +224,5 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
 
     // TODO remove points in first that are inside second.
 
-    return new Vertices(vertices);
+    return new Vertices(vertices.filter(v => !second.contains(v)));
 }
