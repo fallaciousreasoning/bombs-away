@@ -34,6 +34,10 @@ export class Vertices {
         return this.internalCentroid || (this.internalCentroid = this.average())
     }
 
+    get length() {
+        return this.vertices.length;
+    }
+
     constructor(vertices: Vector2[]) {
         if (!vertices) {
             throw new Error("Vertices must be defined");
@@ -92,5 +96,24 @@ export class Vertices {
         }
 
         return new Vertices(vertices);
+    }
+
+    /**
+     * Loops the index around the length of the array.
+     * @param index The index.
+     */
+    safeIndex(index: number) {
+        while (index < 0) index += this.vertices.length;
+        while (index >= this.vertices.length) index -= this.vertices.length;
+
+        return index;
+    }
+
+    /**
+     * Gets the vertex at the index (loops around the ends of the array).
+     * @param index The index of the vertex.
+     */
+    getVertex(index: number) {
+        return this.vertices[this.safeIndex(index)];
     }
 }
