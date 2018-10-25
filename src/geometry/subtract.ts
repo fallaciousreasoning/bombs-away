@@ -171,9 +171,10 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
     // TODO: Pretty sure theres a bug here when the two intersections
     // are not on the same edge (e.g. we have a point inside our shape)
     const getClosestIntersection = () => {
-        if (intersections[0].startInside === intersections[1].startInside) {
-            throw new Error("You're wrong, they don't always have to start/end oppositely.")
-        }
+        // TODO: The assertion is wrong, need something to fallback on?
+        // if (intersections[0].startInside === intersections[1].startInside) {
+        //     throw new Error("You're wrong, they don't always have to start/end oppositely.")
+        // }
 
         return intersections[0].startInside ? 1 : 0;
     }

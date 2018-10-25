@@ -23,7 +23,7 @@ const addShape = (shape: Vertices) => {
     engine.addEntity(s);
 }
 const boxPoly = makeBox(5, 2).translate(new Vector2(5));
-const circlePoly = makeCircle(1, 10).translate(new Vector2(7, 4));
+const circlePoly = makeCircle(1, 10).translate(new Vector2(3, 6));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
 const joined = betterSubtract(boxPoly, circlePoly);
