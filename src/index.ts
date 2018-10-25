@@ -9,7 +9,7 @@ import convexHullTester from "./systems/convexHullTester";
 import drawConvexHull from "./systems/drawConvexHull";
 import { Vertices } from "./geometry/vertices";
 import { makeCircle, makeBox } from "./geometry/createPolygon";
-import { subtract, betterSubtract } from "./geometry/subtract";
+import { subtract } from "./geometry/subtract";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -26,7 +26,7 @@ const boxPoly = makeBox(5, 2).translate(new Vector2(5));
 const circlePoly = makeCircle(1, 10).translate(new Vector2(3, 6));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
-const joined = betterSubtract(boxPoly, circlePoly);
+const joined = subtract(boxPoly, circlePoly);
 
 // addShape(boxPoly);
 // addShape(cutPoly);

@@ -27,55 +27,6 @@ const findClosestEdgeIndex = (vertices: Vector2[], to: Vector2) => {
 }
 
 /**
- * Subtracts second from first and returns the result.
- * If there is no overlap, this returns first.
- * @param first The polygon to subtract from.
- * @param second The polygon to subtract.
- */
-export const subtract = (first: Vertices, second: Vertices): Vertices => {
-    // If the bounding boxes don't overlap, no point doing anything
-    // expensive.
-    if (!first.bounds.intersects(second.bounds)) {
-        return first;
-    }
-
-    // Get all the points from second that are inside first.
-    const containingPoints = second.vertices.filter(first.contains);
-
-    // TODO: Case where all of first is inside second.
-    // TODO: Case where the hull is split in two?
-
-    // If there are no containing points, we don't have to change the shape.
-    if (containingPoints.length === 0) {
-        return first;
-    }
-
-    // Check there is a point outside our shape.
-    if (containingPoints.length === second.vertices.length) {
-        throw new Error("All points in second are inside first (can't make holes)");
-    }
-
-    // Make a copy of our vertices, so we don't modify first.
-    let resultVertices = [...first.vertices];
-
-    // Insert our new vertices.
-    for (const vertex of containingPoints) {
-        // Find closest edge.
-        const closestEdgeIndex = findClosestEdgeIndex(resultVertices, vertex);
-
-        // Insert in the middle of that edge.
-        resultVertices.splice(closestEdgeIndex + 1, 0, vertex);
-    }
-    
-    // TODO: Test if it works doing this before inserting new vertices.
-    // Remove all the points from first that are inside second.
-    resultVertices = resultVertices.filter(v => !second.contains(v));
-
-    // Create a new vertices to hold our result.
-    return new Vertices(resultVertices);
-}
-
-/**
  * Determines the edge, if any, that this line will intersect with
  * and the index of the edge it intersects with.
  * @param shape The shape to determine intersection with.
@@ -101,52 +52,14 @@ const intersectionIndex = (shape: Vertices, start: Vector2, end: Vector2) => {
     }
 }
 
-export const betterSubtract = (first: Vertices, second: Vertices) => {
+export const subtract = (first: Vertices, second: Vertices) => {
     // Naively assume that we aren't going to cut the shape in half.
     // hopefully we can work around this (more than two intersections means we're cutting) (maybe cut with closest line to centroid?)
-
-    // For each edge:
-        // Does it intersect with our shape? (<-- Candidate for optimization?)
-            // First intersection? Make a cut, set flag.
-            // Second intersection? Make a cut, break
-
-        // Have we made a cut?
-            // Insert our vertex
-
-    // const result = [...first.vertices];
-    // const insert: Vector2[] = [];
-    // let insertAt = -1;
-
-    // for (let i = 0; i < second.vertices.length; ++i) {
-    //     const start = second.vertices[i];
-    //     const end = second.vertices[(i + 1) % second.vertices.length];
-
-    //     const intersection = intersectionIndex(first, start, end);
-    //     if (intersection) {
-    //         insert.push(intersection.intersection);
-
-    //         if (insertAt !== -1) {
-    //             break;
-    //         }
-
-    //         insertAt = intersection.index;
-    //     }
-
-    //     if (insertAt === -1) {
-    //         continue;
-    //     }
-
-    //     insert.push(end);
-    // }
-
-    // // We reverse the inserted vertices, because we go around the wrong way..
-    // result.splice(insertAt, 0, ...insert.reverse());
-
     const intersections: ReturnType<typeof intersectionIndex>[] = [];
     const vertexIndices: number[] = [];
     
     let current = 0;
-    while (intersections.length < 2 && current < second.vertices.length) {
+    while (current < second.vertices.length) {
         const start = second.vertices[current];
         const end = second.vertices[(current + 1)%second.vertices.length];
         
