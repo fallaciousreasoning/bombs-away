@@ -1,6 +1,6 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { shortestDistanceToLine, lineIntersection } from "./utils";
+import { shortestDistanceToLine, lineIntersection, isLeft } from "./utils";
 
 /**
  * Finds the closest edge i - i+1 in vertices to a point
@@ -95,6 +95,7 @@ const intersectionIndex = (shape: Vertices, start: Vector2, end: Vector2) => {
 
         return {
             index: i+1, // Insert after this vertex.
+            startInside: isLeft(edgeStart, edgeEnd, start), // Whether the line start-end starts inside the polygon.
             intersection
         };
     }
@@ -112,34 +113,116 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
         // Have we made a cut?
             // Insert our vertex
 
-    const result = [...first.vertices];
-    const insert: Vector2[] = [];
-    let insertAt = -1;
+    // const result = [...first.vertices];
+    // const insert: Vector2[] = [];
+    // let insertAt = -1;
 
-    for (let i = 0; i < second.vertices.length; ++i) {
-        const start = second.vertices[i];
-        const end = second.vertices[(i + 1) % second.vertices.length];
+    // for (let i = 0; i < second.vertices.length; ++i) {
+    //     const start = second.vertices[i];
+    //     const end = second.vertices[(i + 1) % second.vertices.length];
+
+    //     const intersection = intersectionIndex(first, start, end);
+    //     if (intersection) {
+    //         insert.push(intersection.intersection);
+
+    //         if (insertAt !== -1) {
+    //             break;
+    //         }
+
+    //         insertAt = intersection.index;
+    //     }
+
+    //     if (insertAt === -1) {
+    //         continue;
+    //     }
+
+    //     insert.push(end);
+    // }
+
+    // // We reverse the inserted vertices, because we go around the wrong way..
+    // result.splice(insertAt, 0, ...insert.reverse());
+
+    const intersections: ReturnType<typeof intersectionIndex>[] = [];
+    const vertexIndices: number[] = [];
+    
+    let current = 0;
+    while (intersections.length < 2 && current < second.vertices.length) {
+        current++;
+
+        const start = second.vertices[current];
+        const end = second.vertices[(current + 1)%second.vertices.length];
 
         const intersection = intersectionIndex(first, start, end);
-        if (intersection) {
-            insert.push(intersection.intersection);
-
-            if (insertAt !== -1) {
-                break;
-            }
-
-            insertAt = intersection.index;
-        }
-
-        if (insertAt === -1) {
+        if (!intersection) {
             continue;
         }
 
-        insert.push(end);
+        intersections.push(intersection);
+        vertexIndices.push(current);
     }
 
-    // We reverse the inserted vertices, because we go around the wrong way..
-    result.splice(insertAt, 0, ...insert.reverse());
+    if (intersections.length < 2) {
+        return first;
+    }
 
-    return new Vertices(result);
+    const vertices: Vector2[] = [...first.vertices];
+
+    // Attempt to work out which intersection should go first.
+    // TODO: Pretty sure theres a bug here when the two intersections
+    // are not on the same edge (e.g. we have a point inside our shape)
+    const getClosestIntersection = () => {
+        const startIndex = intersections[0].index;
+        const startVertex = first.vertices[startIndex];
+
+        return startVertex.distance(intersections[0].intersection)
+            < startVertex.distance(intersections[1].intersection)
+            ? 0 : 1;
+    }
+
+    const closestToStart = getClosestIntersection();
+    const startIntersection = intersections[closestToStart];
+    const startVertexNumber = vertexIndices[closestToStart];
+    const endIntersection = intersections[1 - closestToStart];
+    const endVertexNumber = vertexIndices[1 - closestToStart];
+
+    let insertAt = startIntersection.index;
+
+    // Inserts a vertex.
+    const addVertex = (vertex: Vector2) => {
+        vertices.splice(insertAt, 0, vertex);
+    }
+
+    // Add the start intersection point.
+    addVertex(startIntersection.intersection);
+
+    // If the start of our edge is in the shape, we should iterate backwards to get points inside the shape.
+    const step = startIntersection.startInside ? -1 : 1;
+
+    // Loops an index inside second.vertices.
+    const looped = (index: number) => {
+        if (index < 0) index = second.vertices.length - 1;
+        if (index >= second.vertices.length) index = 0;
+        return index;
+    }
+
+    // Get the index we're starting at.
+    current = startVertexNumber;
+    // If the start index is inside, we should always be one ahead (e.g. the end vertex).
+    const offset = startIntersection.startInside ? 0 : 1;
+    current += offset;
+
+    do {
+        // Insert start or end depending on our flag.
+        addVertex(second.vertices[current]);
+
+        // Step
+        current = looped(current + step);
+    } while (current != looped(endVertexNumber + offset));
+
+    // Add the end intersection point.
+    addVertex(endIntersection.intersection);
+
+    // TODO remove points in first that are inside second.
+
+    return new Vertices(vertices);
 }
