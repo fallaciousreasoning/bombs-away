@@ -36,7 +36,7 @@ const parts = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
 // addShape(circlePoly);
 // addShape(joined);
 
-addShape(parts[0].translate(new Vector2(-3, 0)));
+addShape(parts[0].translate(new Vector2(0, 2)));
 addShape(parts[1]);
 
 // const blob = new Entity();

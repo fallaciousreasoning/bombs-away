@@ -4,8 +4,7 @@ import { IntersectionInfo } from "./intersectionInfo";
 import { lineIntersection } from "./utils";
 
 export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Vertices, Vertices?] => {
-    let cutStart: IntersectionInfo;
-    let cutEnd: IntersectionInfo;
+    const interceptMap = new Map<number, Vector2>();
 
     for (let i = 0; i < shape.length; ++i) {
         const start = shape.getVertex(i);
@@ -17,31 +16,38 @@ export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Ver
             continue;
         }
 
-        const info: IntersectionInfo = { firstIndex: i, intercept: intercept };
-        
-        if (cutStart) {
-            cutEnd = info;
-            break;
-        }
+        interceptMap.set(i, intercept);
 
-        cutStart = info;
+        // We only need two intercepts for a cut.
+        if (interceptMap.size >= 2) break;
     }
 
-    if (!cutEnd) {
+    // We needs at least two intercepts for a cut.
+    if (interceptMap.size < 2) {
         return [shape];
     }
 
-    window['debugPoints'].push(cutStart.intercept);
-    window['debugPoints'].push(cutEnd.intercept);
+    let buildingA = true;
+    const a = [];
+    const b = [];
 
-    const tempShape = new Vertices([...shape.vertices]);
-    tempShape.vertices.splice(cutStart.firstIndex, 0, cutStart.intercept);
-    tempShape.vertices.splice(cutEnd.firstIndex, 0, cutEnd.intercept);
+    for (let i = 0; i < shape.length; ++i) {
+        const vertex = shape.getVertex(i);
 
-    // TODO construct the new shapes!
+        if (buildingA) a.push(vertex);
+        else b.push(vertex);
 
-    const a = tempShape.slice(0, 0);
-    const b = tempShape.slice(1, 1);
+        const intercept = interceptMap.get(i);
+        if (!intercept) {
+            continue;
+        }
 
-    return [a, b]
+        a.push(intercept);
+        b.push(intercept);
+        buildingA = !buildingA;
+    }
+
+    console.log(a, b)
+
+    return [new Vertices(a), new Vertices(b)]
 }
