@@ -147,10 +147,10 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
     
     let current = 0;
     while (intersections.length < 2 && current < second.vertices.length) {
-        current++;
-
         const start = second.vertices[current];
         const end = second.vertices[(current + 1)%second.vertices.length];
+        
+        current++;
 
         const intersection = intersectionIndex(first, start, end);
         if (!intersection) {
@@ -172,8 +172,13 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
     // are not on the same edge (e.g. we have a point inside our shape)
     const getClosestIntersection = () => {
         const startIndex = intersections[0].index;
-        const startVertex = first.vertices[startIndex];
+        const startVertex = first.vertices[startIndex % first.vertices.length];
 
+        if (intersections[0].startInside === intersections[1].startInside) {
+            throw new Error("You're wrong, they don't always have to start/end oppositely.")
+        }
+
+        // TODO I'm pretty sure this can be simplified.
         return startVertex.distance(intersections[0].intersection)
             < startVertex.distance(intersections[1].intersection)
             ? 0 : 1;
@@ -185,7 +190,7 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
     const endIntersection = intersections[1 - closestToStart];
     const endVertexNumber = vertexIndices[1 - closestToStart];
 
-    let insertAt = startIntersection.index;
+    let insertAt = startIntersection.index % first.vertices.length;
 
     // Inserts a vertex.
     const addVertex = (vertex: Vector2) => {
@@ -208,8 +213,8 @@ export const betterSubtract = (first: Vertices, second: Vertices) => {
     // Get the index we're starting at.
     current = startVertexNumber;
     // If the start index is inside, we should always be one ahead (e.g. the end vertex).
-    const offset = startIntersection.startInside ? 0 : 1;
-    current += offset;
+    const offset = !startIntersection.startInside ? 0 : 1;
+    current = looped(current + offset);
 
     do {
         // Insert start or end depending on our flag.

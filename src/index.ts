@@ -30,7 +30,7 @@ const joined = betterSubtract(boxPoly, circlePoly);
 
 // addShape(boxPoly);
 // addShape(cutPoly);
-addShape(circlePoly);
+// addShape(circlePoly);
 addShape(joined);
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
