@@ -47,7 +47,5 @@ export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Ver
         buildingA = !buildingA;
     }
 
-    console.log(a, b)
-
     return [new Vertices(a), new Vertices(b)]
 }
