@@ -6,7 +6,7 @@ import Vector2 from "../core/vector2";
  * @param end The end of the line
  * @param point The point
  */
-const cross = (start: Vector2, end: Vector2, point: Vector2) => {
+export const cross = (start: Vector2, end: Vector2, point: Vector2) => {
     return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
 }
 
