@@ -5,11 +5,11 @@ test('line point cross values are correct', () => {
     const start = Vector2.zero;
     const end = Vector2.unitX;
 
-    const left = new Vector2(1, -1);
-    expect(cross(start, end, left)).toBeLessThan(0);
+    const left = new Vector2(1, 1);
+    expect(cross(start, end, left)).toBeGreaterThan(0);
 
-    const right = new Vector2(1, 1);
-    expect(cross(start, end, right)).toBeGreaterThan(0);
+    const right = new Vector2(1, -1);
+    expect(cross(start, end, right)).toBeLessThan(0);
 
     const on = Vector2.unitX;
     expect(cross(start, end, on)).toBe(0);
@@ -19,7 +19,7 @@ test('isLeft is sensible', () => {
     const start = Vector2.zero;
     const end = Vector2.unitX;
 
-    const left = new Vector2(1, -1);
+    const left = new Vector2(1, 1);
     expect(cross(start, end, left)).toBeTruthy();
 
     const on = Vector2.unitX;
@@ -30,7 +30,7 @@ test('isLeftOn is sensible', () => {
     const start = Vector2.zero;
     const end = Vector2.unitX;
 
-    const left = new Vector2(1, -1);
+    const left = new Vector2(1, 1);
     expect(isLeftOn(start, end, left)).toBeTruthy();
 
     const on = Vector2.unitX;
@@ -41,7 +41,7 @@ test('isRight is sensible', () => {
     const start = Vector2.zero;
     const end = Vector2.unitX;
 
-    const right = new Vector2(1, 1);
+    const right = new Vector2(1, -1);
     expect(isRight(start, end, right)).toBeTruthy();
 
     const on = Vector2.unitX;
@@ -52,7 +52,7 @@ test('isRightOn is sensible', () => {
     const start = Vector2.zero;
     const end = Vector2.unitX;
 
-    const right = new Vector2(1, 1);
+    const right = new Vector2(1, -1);
     expect(isRightOn(start, end, right)).toBeTruthy();
 
     const on = Vector2.unitX;

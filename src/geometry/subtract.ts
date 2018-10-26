@@ -1,6 +1,6 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { shortestDistanceToLine, lineIntersection, isLeft, isRight } from "./lineUtils";
+import { shortestDistanceToLine, lineIntersection, isLeft } from "./lineUtils";
 import { IntersectionInfo } from "./intersectionInfo";
 
 /**
@@ -22,7 +22,7 @@ const getIntersectionInfo = (shape: Vertices, start: Vector2, end: Vector2): Int
 
         return {
             firstIndex: i + 1, // Insert after this vertex.
-            startInside: isRight(edgeStart, edgeEnd, start), // Whether the line start-end starts inside the polygon.
+            startInside: isLeft(edgeStart, edgeEnd, start), // Whether the line start-end starts inside the polygon.
             intercept
         };
     }
