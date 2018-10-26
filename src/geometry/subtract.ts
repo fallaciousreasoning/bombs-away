@@ -1,6 +1,6 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { shortestDistanceToLine, lineIntersection, isLeft } from "./utils";
+import { shortestDistanceToLine, lineIntersection, isLeft } from "./lineUtils";
 import { IntersectionInfo } from "./intersectionInfo";
 
 /**

@@ -1,6 +1,6 @@
 import Vector2 from "../core/vector2";
 import { AABB } from "../core/aabb";
-import { isLeft, isRight } from "./utils";
+import { isLeft, isRight } from "./lineUtils";
 
 export class Vertices {
     vertices: Vector2[];

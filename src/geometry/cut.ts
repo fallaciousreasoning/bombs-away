@@ -1,7 +1,7 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
 import { IntersectionInfo } from "./intersectionInfo";
-import { lineIntersection } from "./utils";
+import { lineIntersection } from "./lineUtils";
 
 export const cut = (shape: Vertices, lineStart: Vector2, lineEnd: Vector2): [Vertices, Vertices?] => {
     const interceptMap = new Map<number, Vector2>();

@@ -1,6 +1,6 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { isLeft, isRightOn, lineIntersection, isRight, isLeftOn } from "./utils";
+import { isLeft, isRightOn, lineIntersection, isRight, isLeftOn } from "./lineUtils";
 
 const inv = <T>(func: (...args: Vector2[]) => T, vertices: Vertices, ...indices: (number | Vector2)[]) =>
     func(...indices.map(i => typeof i === 'number' ? vertices.getVertex(i) : i));

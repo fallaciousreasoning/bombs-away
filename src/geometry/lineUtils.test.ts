@@ -1,5 +1,5 @@
 import Vector2 from "../core/vector2";
-import { cross, isRight, isRightOn, isLeftOn } from "./utils";
+import { cross, isRight, isRightOn, isLeftOn } from "./lineUtils";
 
 test('line point cross values are correct', () => {
     const start = Vector2.zero;
