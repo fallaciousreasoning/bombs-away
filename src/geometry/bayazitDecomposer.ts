@@ -1,13 +1,30 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { isLeft, isRightOn, lineIntersection, isRight, isLeftOn } from "./lineUtils";
+import { isLeft, isRightOn, isRight, isLeftOn } from "./lineUtils";
 
 const inv = <T>(func: (...args: Vector2[]) => T, vertices: Vertices, ...indices: (number | Vector2)[]) =>
     func(...indices.map(i => typeof i === 'number' ? vertices.getVertex(i) : i));
 
+const lineIntersect = (p1: Vector2, p2: Vector2, q1: Vector2, q2: Vector2) => {
+    let a1 = p2.y - p1.y;
+    let b1 = p1.x - p2.x;
+    let c1 = a1 * p1.x + b1 * p1.y;
+    let a2 = q2.y - q1.y;
+    let b2 = q1.x - q2.x;
+    let c2 = a2 * q1.x + b2 * q1.y;
+    let det = a1 * b2 - a2 * b1;
+
+    if (Math.abs(det) < 0.00005) {
+        // lines are not parallel
+        return new Vector2((b2 * c1 - b1 * c2) / det,
+            (a1 * c2 - a2 * c1) / det);
+    }
+    return Vector2.zero;
+}
+
 function canSee(i: number, j: number, vertices: Vertices) {
     if (vertices.isReflexAt(i)) {
-        if (inv(isLeftOn, vertices, i, i - 1, j) && inv(isRightOn, vertices, i, i + 1, j)) 
+        if (inv(isLeftOn, vertices, i, i - 1, j) && inv(isRightOn, vertices, i, i + 1, j))
             return false;
     }
     else {
@@ -28,7 +45,7 @@ function canSee(i: number, j: number, vertices: Vertices) {
         if (vertices.safeIndex(k + 1) == i || k == i || vertices.safeIndex(k + 1) == j || k == j)
             continue; // Ignore incident edges.
 
-        if (inv(lineIntersection, vertices, i, j, k, k + 1))
+        if (inv(lineIntersect, vertices, i, j, k, k + 1))
             return false;
     }
 
@@ -65,10 +82,10 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                 let point: Vector2;
                 if (invoke(isLeft, i - 1, i, j) && invoke(isRightOn, i - 1, i, j - 1)) {
                     // Find the point of intersection.
-                    point = invoke(lineIntersection, i - 1, i, j - 1, j);
+                    point = invoke(lineIntersect, i - 1, i, j - 1, j);
                     if (invoke(isRight, i + 1, i, point)) {
                         // Find the distance to the intercept.
-                        distance = invoke(point.distanceSquared, i);
+                        distance = point.distanceSquared(vertices.getVertex(i));
                         if (distance < lowerDistance) {
                             // Only keep the closest intersection.
                             lowerDistance = distance;
@@ -79,9 +96,9 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                 }
 
                 if (invoke(isLeft, i + 1, i, j + 1) && invoke(isRightOn, i + 1, i, j)) {
-                    point = invoke(lineIntersection, i, i + 1, j, j + 1);
+                    point = invoke(lineIntersect, i, i + 1, j, j + 1);
                     if (invoke(isLeft, i - 1, i, point)) {
-                        distance = invoke(point.distanceSquared, i);
+                        distance = point.distanceSquared(vertices.getVertex(i));
                         if (distance < upperDistance) {
                             upperDistance = distance;
                             upperIntercept = point;
@@ -107,7 +124,7 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
 
                 while (upperIndex < lowerIndex)
                     upperIndex += vertices.length;
-                
+
                 for (let j = lowerIndex; j <= upperIndex; ++j) {
                     if (!canSee(i, j, vertices)) continue;
 
@@ -135,11 +152,9 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
             result.push(...convexPartition(upperPoly));
             return result;
         }
-
-        // If we reach here, the polygon is already convex, so return it.
-        result.push(vertices);
-        return result;
     }
 
+    // If we reach here, the polygon is already convex, so return it.
+    result.push(vertices);
     return result;
 }

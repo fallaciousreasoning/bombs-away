@@ -37,7 +37,10 @@ console.log(decomposedPolys)
 // addShape(cutPoly);
 // addShape(circlePoly);
 addShape(joinedPoly);
-addShape(decomposedPolys[0], 'red')
+const colors = ['red', 'blue', 'yellow', 'gray', 'pink']
+
+for (let i = 0; i < decomposedPolys.length; ++i)
+    addShape(decomposedPolys[i], colors[i])
 
 // addShape(cutPolys[0]);
 // addShape(cutPolys[1]);
