@@ -1,6 +1,6 @@
 import Vector2 from "../core/vector2";
 import { AABB } from "../core/aabb";
-import { isLeft } from "./utils";
+import { isLeft, isRight } from "./utils";
 
 export class Vertices {
     vertices: Vector2[];
@@ -133,5 +133,9 @@ export class Vertices {
         }
 
         return new Vertices(vertices, true);
+    }
+
+    isReflexAt(index: number) {
+        return isRight(this.getVertex(index - 1), this.getVertex(index), this.getVertex(index + 1));
     }
 }

@@ -63,6 +63,10 @@ export default class Vector2 {
         return this.x*vec.x + this.y*vec.y;
     }
 
+    cross(vec: Vector2) {
+        return this.x*vec.y - this.y * vec.x;
+    }
+
     lengthSquared() {
         return this.x * this.x + this.y * this.y;
     }
@@ -94,5 +98,9 @@ export default class Vector2 {
 
     hashCode() {
         return (23 * 37 + this.x) * 37 + this.y;
+    }
+
+    abs() {
+        return new Vector2(Math.abs(this.x), Math.abs(this.y));
     }
 }

@@ -6,7 +6,7 @@ import Vector2 from "../core/vector2";
  * @param end The end of the line
  * @param point The point
  */
-export const cross = (start: Vector2, end: Vector2, point: Vector2) => {
+const cross = (start: Vector2, end: Vector2, point: Vector2) => {
     return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
 }
 
@@ -21,6 +21,17 @@ export const isLeft = (start: Vector2, end: Vector2, point: Vector2) => {
 }
 
 /**
+ * Determine whether the point 'point' is to the left or on the line from start to end.
+ * @param start The start point of the line.
+ * @param end The end point of the line.
+ * @param point The point to determine the 'leftness' of.
+ */
+export const isLeftOn = (start: Vector2, end: Vector2, point: Vector2) => {
+    return cross(start, end, point) <= 0;
+}
+
+
+/**
  * Determine whether the point 'point' is to the right of the line from start to end.
  * @param start The start point of the line.
  * @param end The end point of the line.
@@ -28,6 +39,16 @@ export const isLeft = (start: Vector2, end: Vector2, point: Vector2) => {
  */
 export const isRight = (start: Vector2, end: Vector2, point: Vector2) => {
     return cross(start, end, point) > 0;
+}
+
+/**
+ * Determine whether the point 'point' is to the right or on the line from start to end.
+ * @param start The start point of the line.
+ * @param end The end point of the line.
+ * @param point The point to determine the 'rightness' of.
+ */
+export const isRightOn = (start: Vector2, end: Vector2, point: Vector2) => {
+    return cross(start, end, point) >= 0;
 }
 
 /**

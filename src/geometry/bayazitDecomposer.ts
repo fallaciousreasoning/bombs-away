@@ -1,5 +1,145 @@
 import { Vertices } from "./vertices";
+import Vector2 from "../core/vector2";
+import { isLeft, isRightOn, lineIntersection, isRight, isLeftOn } from "./utils";
 
+const inv = <T>(func: (...args: Vector2[]) => T, vertices: Vertices, ...indices: (number | Vector2)[]) =>
+    func(...indices.map(i => typeof i === 'number' ? vertices.getVertex(i) : i));
+
+function canSee(i: number, j: number, vertices: Vertices) {
+    if (vertices.isReflexAt(i)) {
+        if (inv(isLeftOn, vertices, i, i - 1, j) && inv(isRightOn, vertices, i, i + 1, j)) 
+            return false;
+    }
+    else {
+        if (inv(isRightOn, vertices, i, i + 1, j) || inv(isLeftOn, vertices, i, i - 1, j))
+            return false;
+    }
+
+    if (vertices.isReflexAt(j)) {
+        if (inv(isLeftOn, vertices, j, j - 1, i) && inv(isRightOn, vertices, j, j + 1, i))
+            return false;
+    }
+    else {
+        if (inv(isRightOn, vertices, j, j + 1, i) || inv(isLeftOn, vertices, j, j - 1, i))
+            return false;
+    }
+
+    for (let k = 0; k < vertices.length; ++k) {
+        if (vertices.safeIndex(k + 1) == i || k == i || vertices.safeIndex(k + 1) == j || k == j)
+            continue; // Ignore incident edges.
+
+        if (inv(lineIntersection, vertices, i, j, k, k + 1))
+            return false;
+    }
+
+    return true;
+}
+
+/**
+ * Convex decomposition algorithm created by Mark Bayazit
+ * based on: https://github.com/VelcroPhysics/VelcroPhysics/blob/master/VelcroPhysics/Tools/Triangulation/Bayazit/BayazitDecomposer.cs
+ * @param vertices The vertices to decompose.
+ */
 export const convexPartition = (vertices: Vertices): Vertices[] => {
-    return [];
+    const invoke = <T>(func: (...args: Vector2[]) => T, ...indices: (number | Vector2)[]) =>
+        inv(func, vertices, ...indices);
+
+    const result: Vertices[] = [];
+
+    let lowerIntercept = new Vector2();
+    let upperIntercept = new Vector2(); // intersection points
+    let lowerIndex = 0;
+    let upperIndex = 0;
+    let lowerPoly: Vertices;
+    let upperPoly: Vertices;
+
+    for (let i = 0; i < vertices.length; ++i) {
+        if (vertices.isReflexAt(i)) {
+            let upperDistance: number,
+                lowerDistance: number;
+            lowerDistance = upperDistance = Number.MAX_SAFE_INTEGER;
+
+            for (let j = 0; j < vertices.length; ++j) {
+                // If the line intersects with an edge.
+                let distance: number;
+                let point: Vector2;
+                if (invoke(isLeft, i - 1, i, j) && invoke(isRightOn, i - 1, i, j - 1)) {
+                    // Find the point of intersection.
+                    point = invoke(lineIntersection, i - 1, i, j - 1, j);
+                    if (invoke(isRight, i + 1, i, point)) {
+                        // Find the distance to the intercept.
+                        distance = invoke(point.distanceSquared, i);
+                        if (distance < lowerDistance) {
+                            // Only keep the closest intersection.
+                            lowerDistance = distance;
+                            lowerIntercept = point;
+                            lowerIndex = j;
+                        }
+                    }
+                }
+
+                if (invoke(isLeft, i + 1, i, j + 1) && invoke(isRightOn, i + 1, i, j)) {
+                    point = invoke(lineIntersection, i, i + 1, j, j + 1);
+                    if (invoke(isLeft, i - 1, i, point)) {
+                        distance = invoke(point.distanceSquared, i);
+                        if (distance < upperDistance) {
+                            upperDistance = distance;
+                            upperIntercept = point;
+                            upperIndex = j;
+                        }
+                    }
+                }
+            }
+
+            // If there are no vertices to connect to, choose a point in the middle.
+            if (lowerIndex === vertices.safeIndex(upperIndex + 1)) {
+                const point = lowerIntercept.add(upperIntercept).mul(0.5);
+
+                lowerPoly = vertices.slice(i, upperIndex);
+                lowerPoly.vertices.push(point);
+
+                upperPoly = vertices.slice(lowerIndex, i);
+                upperPoly.vertices.push(point);
+            }
+            else {
+                let highestScore = 0,
+                    bestIndex = lowerIndex;
+
+                while (upperIndex < lowerIndex)
+                    upperIndex += vertices.length;
+                
+                for (let j = lowerIndex; j <= upperIndex; ++j) {
+                    if (!canSee(i, j, vertices)) continue;
+
+                    let score = 1 / (vertices.getVertex(i).distanceSquared(vertices.getVertex(j)) + 1);
+                    if (vertices.isReflexAt(j)) {
+                        if (invoke(isRightOn, j - 1, j, i) && invoke(isLeftOn, j + 1, j, i))
+                            score += 3
+                        else score += 2;
+                    }
+                    else {
+                        score += 1;
+                    }
+
+                    if (score > highestScore) {
+                        bestIndex = j;
+                        highestScore = score;
+                    }
+                }
+                lowerPoly = vertices.slice(i, Math.floor(bestIndex));
+                upperPoly = vertices.slice(Math.floor(bestIndex), i);
+            }
+
+            // TODO convert to tail recursion.
+            result.push(...convexPartition(lowerPoly));
+            result.push(...convexPartition(upperPoly));
+            return result;
+        }
+
+        // If we reach here, the polygon is already convex, so return it.
+        result.push(vertices);
+        return result;
+    }
+
+    return result;
 }
