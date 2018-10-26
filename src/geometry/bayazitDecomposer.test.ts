@@ -2,6 +2,7 @@ import { makeBox, makeCircle } from './createPolygon';
 import { subtract } from './subtract';
 import { convexPartition } from './bayazitDecomposer';
 import Vector2 from '../core/vector2';
+import { Vertices } from './vertices';
 
 test('non concave polygon is not changed', () => {
     const circle = makeCircle(1, 50);
@@ -26,4 +27,46 @@ test("bayazit makes no concave polygons", () => {
             expect(polygon.isReflexAt(i)).toBeFalsy();
         }
     }
-})
+});
+
+test("polygon is correctly decomposed", () => {
+    const input = `
+        7.5 4
+        5.5 4
+        5.5 5
+        4.5 5
+        4.5 4
+        2.5 4
+        2.5 6
+        7.5 6
+    `;
+
+    const output = `5.5 5
+5.5 4
+7.5 4
+7.5 6
+=====
+7.5 6
+2.5 6
+4.5 5
+5.5 5
+=====
+2.5 6
+2.5 4
+4.5 4
+4.5 5`;
+
+    const points = input.trim().split('\n')
+        .map(line => line.trim().split(' ').map(parseFloat))
+        .map(parts => new Vector2(parts[0], parts[1]))
+        .reverse();
+
+    console.log(points);
+    const vertices = new Vertices(points);
+
+    const decomposed = convexPartition(vertices);
+    const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
+    console.log(result)
+
+    expect(result).toBe(output);
+});

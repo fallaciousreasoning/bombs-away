@@ -21,7 +21,7 @@ const area = (a: Vector2, b: Vector2, c: Vector2) => {
  * @param point The point to determine the 'leftness' of.
  */
 export const isLeft = (start: Vector2, end: Vector2, point: Vector2) => {
-    return cross(start, end, point) < 0;
+    return cross(start, end, point) > 0;
 }
 
 /**
@@ -31,7 +31,7 @@ export const isLeft = (start: Vector2, end: Vector2, point: Vector2) => {
  * @param point The point to determine the 'leftness' of.
  */
 export const isLeftOn = (start: Vector2, end: Vector2, point: Vector2) => {
-    return cross(start, end, point) <= 0;
+    return cross(start, end, point) >= 0;
 }
 
 
@@ -42,7 +42,7 @@ export const isLeftOn = (start: Vector2, end: Vector2, point: Vector2) => {
  * @param point The point to determine the 'rightness' of.
  */
 export const isRight = (start: Vector2, end: Vector2, point: Vector2) => {
-    return cross(start, end, point) > 0;
+    return cross(start, end, point) < 0;
 }
 
 /**
@@ -52,7 +52,7 @@ export const isRight = (start: Vector2, end: Vector2, point: Vector2) => {
  * @param point The point to determine the 'rightness' of.
  */
 export const isRightOn = (start: Vector2, end: Vector2, point: Vector2) => {
-    return cross(start, end, point) >= 0;
+    return cross(start, end, point) <= 0;
 }
 
 /**

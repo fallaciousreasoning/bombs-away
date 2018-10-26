@@ -53,7 +53,7 @@ export class Vertices {
     contains = (point: Vector2) => {
         for (let i = 0; i < this.vertices.length; ++i) {
             const next = i === this.vertices.length - 1 ? 0 : i + 1;
-            const left = isLeft(this.vertices[i], this.vertices[next], point);
+            const left = isRight(this.vertices[i], this.vertices[next], point);
             if (!left) return false;
         }
 
