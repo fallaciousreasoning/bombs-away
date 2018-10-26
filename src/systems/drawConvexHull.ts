@@ -29,7 +29,7 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
                 const next = vertices[i === vertices.length - 1 ? 0 : i + 1];
 
                 context.fillStyle = colors[i % colors.length];
-                context.strokeStyle = 'black';
+                context.strokeStyle = hull.color;
                 context.lineWidth = 1/PIXELS_A_METRE;
 
                 context.beginPath();

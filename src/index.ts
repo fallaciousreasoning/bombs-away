@@ -17,9 +17,9 @@ window['debugPoints'] = [];
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
-const addShape = (shape: Vertices) => {
+const addShape = (shape: Vertices, color?: string) => {
     const s = new Entity();
-    s.add(new Hull(shape));
+    s.add(new Hull(shape, color));
     s.add(new Transform());
     engine.addEntity(s);
 }
@@ -27,17 +27,17 @@ const boxPoly = makeBox(5, 2).translate(new Vector2(5));
 const circlePoly = makeCircle(1, 10).translate(new Vector2(2.5, 5));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
-const joined = subtract(boxPoly, circlePoly);
+const joinedPoly = subtract(boxPoly, cutPoly);
 
-const parts = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
+const partsPolys = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
 
 // addShape(boxPoly);
 // addShape(cutPoly);
 // addShape(circlePoly);
-// addShape(joined);
+addShape(joinedPoly);
 
-addShape(parts[0].translate(new Vector2(0, 2)));
-addShape(parts[1]);
+// addShape(partsPolys[0]);
+// addShape(partsPolys[1]);
 
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
