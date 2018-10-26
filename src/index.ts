@@ -11,6 +11,7 @@ import { Vertices } from "./geometry/vertices";
 import { makeCircle, makeBox } from "./geometry/createPolygon";
 import { subtract } from "./geometry/subtract";
 import { cut } from "./geometry/cut";
+import { convexPartition } from "./geometry/bayazitDecomposer";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -28,16 +29,18 @@ const circlePoly = makeCircle(1, 10).translate(new Vector2(2.5, 5));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
 const joinedPoly = subtract(boxPoly, cutPoly);
-
-const partsPolys = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
+const cutPolys = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
+const decomposedPolys = convexPartition(joinedPoly);
+console.log(decomposedPolys)
 
 // addShape(boxPoly);
 // addShape(cutPoly);
 // addShape(circlePoly);
 addShape(joinedPoly);
+addShape(decomposedPolys[0], 'red')
 
-// addShape(partsPolys[0]);
-// addShape(partsPolys[1]);
+// addShape(cutPolys[0]);
+// addShape(cutPolys[1]);
 
 // const blob = new Entity();
 // blob.add(new Hull(new Vertices([
