@@ -29,6 +29,8 @@ const circlePoly = makeCircle(1, 10).translate(new Vector2(2.5, 5));
 const cutPoly = makeBox(1, 2).translate(new Vector2(5, 4))
 
 const joinedPoly = subtract(boxPoly, cutPoly);
+joinedPoly.vertices.reverse();
+console.log(joinedPoly.vertices.map(v => `${v.x} ${v.y}`).join("\n"))
 const cutPolys = cut(boxPoly, new Vector2(5, -2), new Vector2(5, 8));
 const decomposedPolys = convexPartition(joinedPoly);
 console.log(decomposedPolys)
