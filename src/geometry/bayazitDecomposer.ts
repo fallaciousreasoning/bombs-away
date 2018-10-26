@@ -5,6 +5,16 @@ import { isLeft, isRightOn, isRight, isLeftOn } from "./lineUtils";
 const inv = <T>(func: (...args: Vector2[]) => T, vertices: Vertices, ...indices: (number | Vector2)[]) =>
     func(...indices.map(i => typeof i === 'number' ? vertices.getVertex(i) : i));
 
+const copy = (i: number, j: number, vertices: Vertices) => {
+    // while (j < i) j += vertices.length;
+
+    const result = [];
+    for (; i != j; i = vertices.safeIndex(i + 1))
+        result.push(vertices.vertices[i % vertices.vertices.length]);
+
+    return new Vertices(result, true);
+}
+
 const lineIntersect = (p1: Vector2, p2: Vector2, q1: Vector2, q2: Vector2) => {
     let a1 = p2.y - p1.y;
     let b1 = p1.x - p2.x;
@@ -41,6 +51,7 @@ function canSee(i: number, j: number, vertices: Vertices) {
             return false;
     }
 
+    console.log('therte', vertices)
     for (let k = 0; k < vertices.length; ++k) {
         if (vertices.safeIndex(k + 1) == i || k == i || vertices.safeIndex(k + 1) == j || k == j)
             continue; // Ignore incident edges.
@@ -82,7 +93,7 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                 let point: Vector2;
                 if (invoke(isLeft, i - 1, i, j) && invoke(isRightOn, i - 1, i, j - 1)) {
                     // Find the point of intersection.
-                    point = invoke(lineIntersect, i - 1, i, j - 1, j);
+                    point = invoke(lineIntersect, i - 1, i, j, j - 1);
                     if (invoke(isRight, i + 1, i, point)) {
                         // Find the distance to the intercept.
                         distance = point.distanceSquared(vertices.getVertex(i));
@@ -96,7 +107,7 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                 }
 
                 if (invoke(isLeft, i + 1, i, j + 1) && invoke(isRightOn, i + 1, i, j)) {
-                    point = invoke(lineIntersect, i, i + 1, j, j + 1);
+                    point = invoke(lineIntersect, i + 1, i, j, j + 1);
                     if (invoke(isLeft, i - 1, i, point)) {
                         distance = point.distanceSquared(vertices.getVertex(i));
                         if (distance < upperDistance) {
@@ -112,11 +123,12 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
             if (lowerIndex === vertices.safeIndex(upperIndex + 1)) {
                 const point = lowerIntercept.add(upperIntercept).mul(0.5);
 
-                lowerPoly = vertices.slice(i, upperIndex);
+                lowerPoly = copy(i, upperIndex, vertices);
                 lowerPoly.vertices.push(point);
 
-                upperPoly = vertices.slice(lowerIndex, i);
+                upperPoly = copy(lowerIndex, i, vertices);
                 upperPoly.vertices.push(point);
+                console.log("Here!");
             }
             else {
                 let highestScore = 0,
@@ -126,6 +138,7 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                     upperIndex += vertices.length;
 
                 for (let j = lowerIndex; j <= upperIndex; ++j) {
+                    console.log("here..?")
                     if (!canSee(i, j, vertices)) continue;
 
                     let score = 1 / (vertices.getVertex(i).distanceSquared(vertices.getVertex(j)) + 1);
@@ -143,8 +156,8 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                         highestScore = score;
                     }
                 }
-                lowerPoly = vertices.slice(i, Math.floor(bestIndex));
-                upperPoly = vertices.slice(Math.floor(bestIndex), i);
+                lowerPoly = copy(i, Math.floor(bestIndex), vertices);
+                upperPoly = copy(Math.floor(bestIndex), i, vertices);
             }
 
             // TODO convert to tail recursion.

@@ -10,6 +10,10 @@ export const cross = (start: Vector2, end: Vector2, point: Vector2) => {
     return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
 }
 
+const area = (a: Vector2, b: Vector2, c: Vector2) => {
+    return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)
+}
+
 /**
  * Determine whether the point 'point' is to the left of the line from start to end.
  * @param start The start point of the line.
