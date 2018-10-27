@@ -29,7 +29,7 @@ const player = new Entity();
 player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 1)));
-player.add(new Body(true));
+player.add(new Body(1));
 
 const ground = new Entity();
 ground.add(boxCollider(10, 1));
@@ -38,7 +38,7 @@ ground.add(new Transform(new Vector2(5, 5)));
 const block = new Entity();
 block.add(boxCollider(1, 2));
 block.add(new Transform(new Vector2(7, 3)));
-block.add(new Body(true)); 
+block.add(new Body(100));
 
 engine.addEntity(player);
 engine.addEntity(ground);

@@ -3,12 +3,12 @@ import Vector2 from "../core/vector2";
 export default class Body {
     type: 'body' = 'body';
 
-    isDynamic: boolean;
+    isDynamic = true;
 
     velocity = new Vector2();
-    density = 1.0;
+    density: number;
 
-    constructor(isDynamic?: boolean){
-        this.isDynamic = isDynamic;
+    constructor(density=1){
+        this.density = density;
     }
 }

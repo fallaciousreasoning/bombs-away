@@ -1,5 +1,21 @@
 import { Engine } from "../engine";
 import Vector2 from "../core/vector2";
+import { Entity } from "../entity";
+
+const getMass = (entity: Entity) => {
+    const body = entity.get('body');
+    if (!body || body.density === 0) {
+        return 0;
+    }
+
+    const collider = entity.get('collider');
+    return body.density * collider.vertices.area;
+}
+
+const getInvMass = (entity: Entity) => {
+    const mass = getMass(entity);
+    return mass == 0 ? 0 : 1/mass;
+}
 
 export default function naivePhysicsResolver(engine: Engine) {
     engine.makeSystem('transform', 'body')
@@ -23,9 +39,15 @@ export default function naivePhysicsResolver(engine: Engine) {
             if (velocityAlongNormal > 0)
                 return;
 
-            const magnitude = -(1 + message.elasticity) * velocityAlongNormal;
+            // Work out how we're going to hand out the collision response.
+            const movedMass = getMass(message.moved);
+            const invMass = movedMass == 0 ? 0 : 1/movedMass;
+            const totalInvMass = getInvMass(message.hit) + invMass;
+
+            const magnitude = -(1 + message.elasticity) * velocityAlongNormal / totalInvMass;
             let impulse = normal
-                .mul(magnitude);
+                .mul(magnitude)
+                .mul(invMass);
 
             movedBody.velocity = movedBody
                 .velocity

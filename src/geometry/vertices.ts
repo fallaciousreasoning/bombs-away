@@ -57,8 +57,9 @@ export class Vertices {
     }
 
     get area() {
-        if (!this.area) return this.area;
+        if (this.internalArea) return this.internalArea;
 
+        this.internalArea = 0;
         for (let i = 0; i < this.length; ++i) {
             const p = this.getVertex(i);
             const q = this.getVertex(i + 1);
