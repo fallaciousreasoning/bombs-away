@@ -162,4 +162,29 @@ export class Vertices {
     isReflexAt(index: number) {
         return isRight(this.getVertex(index - 1), this.getVertex(index), this.getVertex(index + 1));
     }
+
+    /**
+     * Gets the point(s) furtherest in a direction in the polygon.
+     * @param direction The direction.
+     */
+    getSupports(direction: Vector2) {
+        let supports: Vector2[] = [];
+        let best: number;
+
+        for (const vec of this.vertices) {
+            const projection = vec.dot(direction);
+
+            // TODO: Epsilon!
+            if (projection === best) {
+                supports.push(vec);
+            }
+
+            if (!best || projection > best) {
+                supports = [vec];
+                best = projection;
+            }
+        }
+
+        return supports;
+    }
 }
