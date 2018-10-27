@@ -30,16 +30,14 @@ test("bayazit makes no concave polygons", () => {
 });
 
 test("polygon is correctly decomposed", () => {
-    const input = `
-        7.5 4
-        5.5 4
-        5.5 5
-        4.5 5
-        4.5 4
-        2.5 4
-        2.5 6
-        7.5 6
-    `;
+    const input = `7.5 6
+2.5 6
+2.5 4
+4.5 4
+4.5 5
+5.5 5
+5.5 4
+7.5 4`;
 
     const output = `5.5 5
 5.5 4
@@ -58,15 +56,12 @@ test("polygon is correctly decomposed", () => {
 
     const points = input.trim().split('\n')
         .map(line => line.trim().split(' ').map(parseFloat))
-        .map(parts => new Vector2(parts[0], parts[1]))
-        .reverse();
+        .map(parts => new Vector2(parts[0], parts[1]));
 
-    console.log(points);
     const vertices = new Vertices(points);
 
     const decomposed = convexPartition(vertices);
     const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
-    console.log(result)
 
     expect(result).toBe(output);
 });
