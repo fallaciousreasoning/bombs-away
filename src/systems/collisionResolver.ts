@@ -14,7 +14,7 @@ export default function naivePhysicsResolver(engine: Engine) {
 
             const elasticity = 0.5;
 
-            const magnitude = -(1 + elasticity)*velocityAlongNormal;
+            const magnitude = -(1 + elasticity) * velocityAlongNormal;
             let impulse = normal
                 .mul(magnitude);
 
@@ -22,12 +22,14 @@ export default function naivePhysicsResolver(engine: Engine) {
                 .velocity
                 .sub(impulse);
 
-            message.moved.transform.position = message
-                .moved
-                .transform
-                .position
-                .sub(message.normal
-                    .mul(message.penetration));
+            // Positional correction, so we don't sink into things.
+            if (message.penetration > 0.005)
+                message.moved.transform.position = message
+                    .moved
+                    .transform
+                    .position
+                    .sub(message.normal
+                        .mul(message.penetration).mul(0.1));
 
         });
 }
