@@ -4,6 +4,8 @@ import { Vertices } from "../geometry/vertices";
 export interface Collider {
     type: 'collider';
 
+    elasticity: number;
+
     vertices: Vertices;
     isTrigger?: boolean;
 }

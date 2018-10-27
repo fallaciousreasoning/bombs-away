@@ -23,9 +23,7 @@ export default function naivePhysicsResolver(engine: Engine) {
             if (velocityAlongNormal > 0)
                 return;
 
-            const elasticity = 0.5;
-
-            const magnitude = -(1 + elasticity) * velocityAlongNormal;
+            const magnitude = -(1 + message.elasticity) * velocityAlongNormal;
             let impulse = normal
                 .mul(magnitude);
 

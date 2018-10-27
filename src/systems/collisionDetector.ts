@@ -45,6 +45,7 @@ class CollisionManager {
         this.message.type = type as any;
         this.message.hit = island.a;
         this.message.moved = island.b;
+        this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
         this.message.normal = island.manifold.normal.negate();
         this.message.penetration = island.manifold.penetration;
         this.engine.broadcastMessage(this.message);
