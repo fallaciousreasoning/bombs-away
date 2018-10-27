@@ -9,6 +9,7 @@ interface CollisionInfo {
     penetration: number;
 
     elasticity: number;
+    friction: number;
     velocityAlongNormal: number;
 }
 

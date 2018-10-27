@@ -46,6 +46,8 @@ class CollisionManager {
         this.message.hit = island.a;
         this.message.moved = island.b;
         this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
+        // Friction is sqrt(a^2 + b^2)
+        this.message.friction = Math.sqrt(island.a.collider.friction*island.a.collider.friction + island.b.collider.friction*island.b.collider.friction);
         this.message.normal = island.manifold.normal.negate();
         this.message.penetration = island.manifold.penetration;
         this.engine.broadcastMessage(this.message);
