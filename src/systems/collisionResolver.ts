@@ -22,12 +22,12 @@ export default function naivePhysicsResolver(engine: Engine) {
                 .velocity
                 .sub(impulse);
 
-            // message.moved.transform.position = message
-            //     .moved
-            //     .transform
-            //     .position
-            //     .sub(message.normal
-            //         .mul(message.penetration));
+            message.moved.transform.position = message
+                .moved
+                .transform
+                .position
+                .sub(message.normal
+                    .mul(message.penetration));
 
         });
 }
