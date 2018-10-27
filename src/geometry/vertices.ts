@@ -125,6 +125,9 @@ export class Vertices {
      * @param to The index to end at.
      */
     slice(from: number, to: number) {
+        from = this.safeIndex(from);
+        to = this.safeIndex(to);
+        
         const vertices = [];
 
         while (from != to) {
