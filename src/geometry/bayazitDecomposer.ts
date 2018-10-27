@@ -61,11 +61,13 @@ function canSee(i: number, j: number, vertices: Vertices) {
  * based on: https://github.com/VelcroPhysics/VelcroPhysics/blob/master/VelcroPhysics/Tools/Triangulation/Bayazit/BayazitDecomposer.cs
  * @param vertices The vertices to decompose.
  */
-export const convexPartition = (vertices: Vertices): Vertices[] => {
+export const convexPartition = (vertices: Vertices, result?: Vertices[]): Vertices[] => {
     const invoke = <T>(func: (...args: Vector2[]) => T, ...indices: (number | Vector2)[]) =>
         inv(func, vertices, ...indices);
 
-    const result: Vertices[] = [];
+    if (!result) {
+        result = [];
+    }
 
     let lowerIntercept = new Vector2();
     let upperIntercept = new Vector2(); // intersection points
@@ -154,10 +156,8 @@ export const convexPartition = (vertices: Vertices): Vertices[] => {
                 upperPoly = vertices.slice(Math.round(bestIndex), i + 1);
             }
 
-
-            // TODO convert to tail recursion.
-            result.push(...convexPartition(lowerPoly));
-            result.push(...convexPartition(upperPoly));
+            convexPartition(lowerPoly, result);
+            convexPartition(upperPoly, result);
             return result;
         }
     }
