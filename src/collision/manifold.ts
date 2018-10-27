@@ -31,13 +31,13 @@ export class Manifold {
     }
 
     private compute(a: Vertices, b: Vertices, mul: 1 | -1) {
-        const aimAt = new Vector2(); // TODO vec from a to b
+        const aimAt = a.centroid.sub(b.centroid); // TODO vec from a to b
 
         for (let i = 0; i < a.length; ++i) {
             const normal = a.normals[i];
 
             // TODO: No point worrying about normals pointing away from the other shape.
-            // if (aimAt.dot(normal) > 0) continue;
+            if (aimAt.dot(normal) > 0) continue;
             
             const aMinMax = getMinMax(normal, a);
             const bMinMax = getMinMax(normal, b);

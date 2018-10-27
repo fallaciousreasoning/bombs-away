@@ -13,7 +13,6 @@ export default function addPlayerController(input: Input, engine: Engine) {
         if (input.getAxis('jump')) {
             jumpImpulse = -player.jumpImpulse;
         }
-        console.log(horizontal)
         body.velocity = new Vector2(horizontal * 10 * message.step + body.velocity.x, jumpImpulse || body.velocity.y);
     });
 }
