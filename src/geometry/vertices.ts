@@ -179,7 +179,7 @@ export class Vertices {
                 supports.push(vec);
             }
 
-            if (!best || projection > best) {
+            if (projection > best || !best) {
                 supports = [vec];
                 best = projection;
             }
