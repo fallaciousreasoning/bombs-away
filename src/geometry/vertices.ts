@@ -5,6 +5,8 @@ import { isLeft, isRight } from "./lineUtils";
 export class Vertices {
     vertices: Vector2[];
     private internalBounds: AABB;
+    private internalCentroid: Vector2;
+    private internalNormals: Vector2[];
 
     get bounds() {
         if (this.internalBounds) {
@@ -28,10 +30,29 @@ export class Vertices {
         return this.internalBounds;
     }
 
-    private internalCentroid: Vector2;
-
     get centroid() {
         return this.internalCentroid || (this.internalCentroid = this.average())
+    }
+
+    get normals() {
+        if (this.internalNormals) {
+            return this.internalNormals;
+        }
+
+        this.internalNormals = [];
+        for (let i = 0; i < this.length; ++i) {
+            const current = this.getVertex(i);
+            const next = this.getVertex(i + 1);
+
+            const normal = new Vector2(
+                next.x - current.x,
+                -(next.y - current.y)
+            ).normalized();
+            
+            this.internalNormals.push(normal);
+        }
+
+        return this.internalNormals;
     }
 
     get length() {
