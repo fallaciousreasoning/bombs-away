@@ -3,6 +3,7 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import { Entityish } from "./system";
+import { Manifold } from '../collision/manifold';
 
 type CollisionEntity = Entityish<['body', 'transform', 'collider']>;
 
@@ -52,34 +53,20 @@ class CollisionManager {
         this.islandPool.release(message);
     }
 
-    collidesRectangleRectangle(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
+    collides(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
         const aToB = b.transform.position.sub(a.transform.position);
-        const xOverlap = (a.collider.width + b.collider.width) / 2 - Math.abs(aToB.x);
-
+    
         // See if we have an existing collision.
         const h = hash(a, b);
         let message = this.islands.get(h);
 
-        if (xOverlap < 0) {
+        const manifold = new Manifold(a.collider, b.collider);
+
+        // TODO what about resting on the edge?
+
+        if (manifold.penetration === 0) {
             this.onNoCollision(message);
             return;
-        }
-
-        const yOverlap = (a.collider.height + b.collider.height) / 2 - Math.abs(aToB.y);
-
-        if (yOverlap < 0) {
-            this.onNoCollision(message);
-            return;
-        }
-
-        let normal: Vector2;
-        let penetration: number;
-        if (xOverlap < yOverlap) {
-            normal = new Vector2(aToB.x < 0 ? -1 : 1, 0);
-            penetration = xOverlap;
-        } else {
-            normal = new Vector2(0, aToB.y < 0 ? -1 : 1);
-            penetration = yOverlap;
         }
 
         // If we don't have an existing collision.
@@ -95,8 +82,8 @@ class CollisionManager {
         // TODO: Probably should cast a/b to any here.
         message.hit = <any>b;
         message.moved = <any>a;
-        message.normal = normal;
-        message.penetration = penetration;
+        message.normal = manifold.normal;
+        message.penetration = manifold.penetration;
         message.hash = h;
         this.islands.set(message.hash, message);
 
@@ -145,7 +132,7 @@ export default function addPhysics(engine: Engine) {
                     const b = entities[j];
 
                     // TODO: Work out what collision method to use.
-                    const message = collisionManager.collidesRectangleRectangle(a, b);
+                    const message = collisionManager.collides(a, b);
                     if (!message) {
                         continue;
                     }

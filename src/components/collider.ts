@@ -1,10 +1,10 @@
 import Vector2 from "../core/vector2";
+import { Vertices } from "../geometry/vertices";
 
-type Box = {
-    collider: 'box';
+type Polygon = {
+    collider: 'polygon';
 
-    width: number;
-    height: number;
+    vertices: Vertices;
     isTrigger?: boolean;
 }
 
@@ -23,4 +23,4 @@ type Circle = {
     isTrigger: true;
 }
 
-export type Collider = { type: 'collider' } & (Box/* | Line | Circle*/); // TODO enable more shapes.
+export type Collider = { type: 'collider' } & (Vertices/* | Line | Circle*/); // TODO enable more shapes.
