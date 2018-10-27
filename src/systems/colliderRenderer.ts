@@ -7,16 +7,16 @@ export const PIXELS_A_METRE = 64;
 
 const colors = ['red', 'yellow', 'blue'];
 
-export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine) {
+export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) {
     const context = canvas.getContext('2d');
 
     engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
 
     engine
-        .makeSystem("hull", "transform")
-        .onEach('tick', ({ transform, hull }) => {
-            const vertices = hull.hull.vertices;
-            const centroid = hull.hull.centroid;
+        .makeSystem("collider", "transform")
+        .onEach('tick', ({ transform, collider }) => {
+            const vertices = collider.vertices.vertices;
+            const centroid = collider.vertices.centroid;
 
             context.save();
 
@@ -29,7 +29,7 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
                 const next = vertices[i === vertices.length - 1 ? 0 : i + 1];
 
                 context.fillStyle = colors[i % colors.length];
-                context.strokeStyle = hull.color;
+                context.strokeStyle = collider.color || 'black';
                 context.lineWidth = 1/PIXELS_A_METRE;
 
                 context.beginPath();
@@ -46,7 +46,7 @@ export default function drawConvexHull(canvas: HTMLCanvasElement, engine: Engine
             }
 
             context.fillStyle = 'blue';
-            context.fillRect(hull.hull.centroid.x-pointSize/2, hull.hull.centroid.y-pointSize/2, pointSize, pointSize);
+            context.fillRect(centroid.x-pointSize/2, centroid.y-pointSize/2, pointSize, pointSize);
 
             context.restore();
         });

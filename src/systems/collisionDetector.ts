@@ -60,7 +60,7 @@ class CollisionManager {
         const h = hash(a, b);
         let message = this.islands.get(h);
 
-        const manifold = new Manifold(a.collider, b.collider);
+        const manifold = new Manifold(a.collider.vertices, b.collider.vertices)
 
         // TODO what about resting on the edge?
 

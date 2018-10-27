@@ -23,4 +23,4 @@ type Circle = {
     isTrigger: true;
 }
 
-export type Collider = { type: 'collider' } & (Vertices/* | Line | Circle*/); // TODO enable more shapes.
+export type Collider = { type: 'collider', color?: string } & (Polygon/* | Line | Circle*/); // TODO enable more shapes.
