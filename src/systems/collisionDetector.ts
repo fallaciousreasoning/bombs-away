@@ -6,6 +6,15 @@ import { Entityish } from "./system";
 import { Manifold } from '../collision/manifold';
 import { Entity } from "../entity";
 
+interface Island {
+    a: Entityish<['collider', 'transform']>;
+    b: Entityish<['collider', 'transform']>;
+
+    manifold: Manifold;
+    type: 'trigger' | 'collision';
+    hash: number;
+}
+
 const hash = (a: {id: number}, b: {id: number}) => {
     const min = Math.min(a.id, b.id);
     const max = Math.max(a.id, b.id);
@@ -14,45 +23,56 @@ const hash = (a: {id: number}, b: {id: number}) => {
 }
 
 class CollisionManager {
-    private islandPool = new Pool<Collision | Trigger>(() => ({
-        type: 'collision',
-        hit: undefined,
-        moved: undefined,
-        movedAmount: undefined,
-        normal: undefined,
-        penetration: 0,
-        hash: undefined
+    private islandPool = new Pool<Island>(() => ({
+        a: undefined,
+        b: undefined,
+        manifold: undefined,
+        hash: undefined,
+        type: 'collision'
     }), (i) => {
-        // Reset the type.
-        i.type = "collision";
+        i.type = 'collision';
     });
 
     private engine: Engine;
-    private islands: Map<number, Collision | Trigger> = new Map();
+    private islands: Map<number, Island> = new Map();
+    private message: Collision = {} as any;
 
     constructor(engine: Engine) {
         this.engine = engine;
     }
 
-    onNoCollision(message: Collision | Trigger) {
+    private reflexiveMessageBroadcast(type: string, island: Island) {
+        this.message.type = type as any;
+        this.message.hit = island.a;
+        this.message.moved = island.b;
+        this.message.normal = island.manifold.normal.negate();
+        this.message.penetration = island.manifold.penetration;
+        this.engine.broadcastMessage(this.message);
+
+        this.message.hit = island.b;
+        this.message.moved = island.a;
+        this.message.normal = island.manifold.normal;
+        this.engine.broadcastMessage(this.message);
+    }
+
+    onNoCollision(island: Island) {
         // If there was no existing collision, return.
-        if (!message) {
+        if (!island) {
             return;
         }
 
         // Otherwise, we've separated.
-        // Hacky set type, so we don't thrash the GC. Reset by the pool.
-        (<any>message)['type'] = message.type == 'collision'
+        const type = island.a.collider.isTrigger || island.b.collider.isTrigger
             ? 'collision-exit'
-            : 'collision-enter'; 
-        this.engine.broadcastMessage(message);
+            : 'trigger-exit'; 
+        this.reflexiveMessageBroadcast(type, island);
 
         // Clean up.
-        this.islands.delete(message.hash);
-        this.islandPool.release(message);
+        this.islands.delete(island.hash);
+        this.islandPool.release(island);
     }
 
-    collides(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
+    run(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
         const aVertices = a.collider.vertices
             .rotate(a.transform.rotation)
             .translate(a.transform.position);
@@ -63,46 +83,41 @@ class CollisionManager {
         
         // See if we have an existing collision.
         const h = hash(a, b);
-        let message = this.islands.get(h);
+        let island = this.islands.get(h);
 
         const manifold = new Manifold(aVertices, bVertices);
 
         // TODO what about resting on the edge?
 
         if (manifold.penetration === 0) {
-            this.onNoCollision(message);
+            this.onNoCollision(island);
             return;
         }
 
+        const isTrigger = a.collider.isTrigger || b.collider.isTrigger;
+        const entered = !island;
+
         // If we don't have an existing collision.
-        if (!message) {
-            message = this.islandPool.get();
-            message.hash = h;
+        if (!island) {
+            island = this.islandPool.get();
+            island.hash = h;
+            island.a = a;
+            island.b = b;
 
-            (<any>message).type = false //a.body.isTrigger || b.body.isTrigger
-                ? "trigger-enter"
-                : "collision-enter";
+            this.islands.set(island.hash, island);
         }
 
-        // TODO: Probably should cast a/b to any here.
-        message.hit = <any>b;
-        message.moved = <any>a;
-        message.normal = manifold.normal;
-        message.penetration = manifold.penetration;
-        message.hash = h;
-        this.islands.set(message.hash, message);
+        island.manifold = manifold;
 
-        if (<any>message.type === "collision-enter") {
-            this.engine.broadcastMessage(message);
-            (<any>message['type']) = "collision";
+        if (entered) {
+            this.reflexiveMessageBroadcast(isTrigger
+                ? 'trigger-enter'
+                : 'collision-enter', island);
         }
 
-        if (<any>message.type === "trigger-enter") {
-            this.engine.broadcastMessage(message);
-            (<any>message['type']) = "trigger";
-        }
-
-        return message;
+        this.reflexiveMessageBroadcast(isTrigger
+            ? 'trigger'
+            : 'collision', island);
     }
 }
 
@@ -136,15 +151,7 @@ export default function addPhysics(engine: Engine) {
                     const b = collidable[j] as Entityish<['transform', 'collider']>;
                     if (a.id == b.id) continue;
 
-                    // TODO: Work out what collision method to use.
-                    const message = collisionManager.collides(a, b);
-                    if (!message) {
-                        continue;
-                    }
-
-                    // TODO: Move this in with all the other messages.
-                    message.movedAmount = movedAmount;
-                    engine.broadcastMessage(message);
+                    collisionManager.run(a, b);
                 }
             }
         });

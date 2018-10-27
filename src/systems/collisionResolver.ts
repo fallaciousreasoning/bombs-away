@@ -4,13 +4,18 @@ import Vector2 from "../core/vector2";
 export default function naivePhysicsResolver(engine: Engine) {
     engine.makeSystem('transform', 'body')
         .onMessage("collision", (message) => {
+            const movedBody = message.moved.get('body');
+            
+            if (!movedBody) {
+                return;
+            }
+            
             const normal = message.normal;
-            const aBody = message.moved.body;
             const bBody = message.hit.get('body');
 
             const relativeVelocity = bBody
-                ? bBody.velocity.sub(aBody.velocity)
-                : Vector2.zero.sub(aBody.velocity);
+                ? bBody.velocity.sub(movedBody.velocity)
+                : Vector2.zero.sub(movedBody.velocity);
 
             const velocityAlongNormal = normal.dot(relativeVelocity);
 
@@ -24,7 +29,7 @@ export default function naivePhysicsResolver(engine: Engine) {
             let impulse = normal
                 .mul(magnitude);
 
-            message.moved.body.velocity = aBody
+            movedBody.velocity = movedBody
                 .velocity
                 .sub(impulse);
 
