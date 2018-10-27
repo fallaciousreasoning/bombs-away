@@ -1,7 +1,15 @@
 import { Vertices } from "./vertices";
 import Vector2 from "../core/vector2";
-import { shortestDistanceToLine, lineIntersection, isLeft } from "./lineUtils";
-import { IntersectionInfo } from "./intersectionInfo";
+import { lineIntersection, isLeft } from "./lineUtils";
+
+interface IntersectionInfo {
+    firstIndex: number;
+    secondIndex?: number;
+
+    startInside: boolean;
+
+    intercept: Vector2;
+}
 
 /**
  * Determines the edge, if any, that this line will intersect with
