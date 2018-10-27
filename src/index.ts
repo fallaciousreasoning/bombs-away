@@ -37,7 +37,8 @@ ground.add(new Transform(new Vector2(5, 5)));
 
 const block = new Entity();
 block.add(boxCollider(1, 2));
-block.add(new Transform(new Vector2(9.5, 3)));
+block.add(new Transform(new Vector2(7, 3)));
+block.add(new Body(true)); 
 
 engine.addEntity(player);
 engine.addEntity(ground);
