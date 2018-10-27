@@ -6,6 +6,7 @@ export default class Body {
     isDynamic: boolean;
 
     velocity = new Vector2();
+    density = 1.0;
 
     constructor(isDynamic?: boolean){
         this.isDynamic = isDynamic;
