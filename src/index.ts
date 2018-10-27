@@ -16,6 +16,7 @@ import { circleCollider, boxCollider } from "./collision/colliderFactory";
 import Body from "./components/body";
 import addGravity from "./systems/addGravity";
 import addPhysics from "./systems/collisionDetector";
+import naivePhysicsResolver from "./systems/collisionResolver";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -42,6 +43,7 @@ window['input'] = input;
 drawCollider(canvas, engine);
 addGravity(engine);
 addPhysics(engine);
+naivePhysicsResolver(engine);
 
 convexHullTester(input, engine);
 

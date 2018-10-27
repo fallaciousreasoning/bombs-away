@@ -54,13 +54,19 @@ class CollisionManager {
     }
 
     collides(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
-        const aToB = b.transform.position.sub(a.transform.position);
-    
+        const aVertices = a.collider.vertices
+            .rotate(a.transform.rotation)
+            .translate(a.transform.position);
+
+        const bVertices = b.collider.vertices
+            .rotate(b.transform.rotation)
+            .translate(b.transform.position);
+        
         // See if we have an existing collision.
         const h = hash(a, b);
         let message = this.islands.get(h);
 
-        const manifold = new Manifold(a.collider.vertices, b.collider.vertices)
+        const manifold = new Manifold(aVertices, bVertices);
 
         // TODO what about resting on the edge?
 

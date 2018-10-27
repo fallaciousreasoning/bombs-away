@@ -22,7 +22,9 @@ export class Manifold {
     
 
     constructor(a: Vertices, b: Vertices) {
-        if (!(this.compute(a, b, 1) || this.compute(a, b, -1))) {
+        const ab = this.compute(a, b, 1);
+        const ba = this.compute(b, a, -1);
+        if (!(ab && ba)) {
             this.penetration = 0;
             this.normal = Vector2.zero;
         }
@@ -44,7 +46,7 @@ export class Manifold {
             if (!collides) return false;
 
             const penetration = Math.min(aMinMax.max, bMinMax.max) - Math.max(aMinMax.min, bMinMax.min);
-            if (penetration < this.penetration) {
+            if (penetration < this.penetration || !this.penetration) {
                 this.penetration = penetration;
                 this.normal = normal.mul(mul);
             }
