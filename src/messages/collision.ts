@@ -30,8 +30,8 @@ export interface CollisionEnter {
 export interface CollisionExit {
     type: 'collision-exit';
 
-    moved: Entityish<['body', 'transform']>;
-    hit: Entityish<['body', 'transform']>;
+    moved: Entityish<['body', 'collider', 'transform']>;
+    hit: Entityish<['collider', 'transform']>;
 }
 
 export interface Trigger {

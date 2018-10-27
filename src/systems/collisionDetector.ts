@@ -4,8 +4,7 @@ import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import { Entityish } from "./system";
 import { Manifold } from '../collision/manifold';
-
-type CollisionEntity = Entityish<['body', 'transform', 'collider']>;
+import { Entity } from "../entity";
 
 const hash = (a: {id: number}, b: {id: number}) => {
     const min = Math.min(a.id, b.id);
@@ -109,6 +108,7 @@ class CollisionManager {
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
+    const collidable = engine.getFamily('collider', 'transform').entities;
 
     engine
         .makeSystem('body', 'collider', 'transform')
@@ -132,10 +132,9 @@ export default function addPhysics(engine: Engine) {
                 if (!body.isDynamic) continue;
 
                 // Inner loop over all other bodies.
-                for (let j = 0; j < entities.length; ++j) {
-                    if (i == j) continue;
-
-                    const b = entities[j];
+                for (let j = 0; j < collidable.length; ++j) {
+                    const b = collidable[j] as Entityish<['transform', 'collider']>;
+                    if (a.id == b.id) continue;
 
                     // TODO: Work out what collision method to use.
                     const message = collisionManager.collides(a, b);

@@ -27,19 +27,17 @@ const canvas = document.getElementById('root') as HTMLCanvasElement;
 
 const player = new Entity();
 player.add(new Player());
-player.add(circleCollider(1, 8));
+player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 1)));
 player.add(new Body(true));
 
 const ground = new Entity();
 ground.add(boxCollider(10, 1));
 ground.add(new Transform(new Vector2(5, 5)));
-ground.add(new Body());
 
 const block = new Entity();
 block.add(boxCollider(1, 2));
 block.add(new Transform(new Vector2(9.5, 3)));
-block.add(new Body());
 
 engine.addEntity(player);
 engine.addEntity(ground);

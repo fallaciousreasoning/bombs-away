@@ -5,7 +5,13 @@ export default function naivePhysicsResolver(engine: Engine) {
     engine.makeSystem('transform', 'body')
         .onMessage("collision", (message) => {
             const normal = message.normal;
-            const relativeVelocity = message.hit.body.velocity.sub(message.moved.body.velocity);
+            const aBody = message.moved.body;
+            const bBody = message.hit.get('body');
+
+            const relativeVelocity = bBody
+                ? bBody.velocity.sub(aBody.velocity)
+                : Vector2.zero.sub(aBody.velocity);
+
             const velocityAlongNormal = normal.dot(relativeVelocity);
 
             // If we're already moving apart, don't do anything.
@@ -18,7 +24,7 @@ export default function naivePhysicsResolver(engine: Engine) {
             let impulse = normal
                 .mul(magnitude);
 
-            message.moved.body.velocity = message.moved.body
+            message.moved.body.velocity = aBody
                 .velocity
                 .sub(impulse);
 

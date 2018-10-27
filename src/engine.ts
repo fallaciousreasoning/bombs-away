@@ -19,7 +19,7 @@ export class Engine {
     broadcastMessage(event: Message) {
         for (const system of this.systems) {
             if (system[event.type]) {
-                const entities = this.getFamily(system.types).entities;
+                const entities = this.getFamily(...system.types).entities;
                 system[event.type](entities, event);
             }
         }
@@ -41,7 +41,7 @@ export class Engine {
         return system;
     }
 
-    getFamily(types: ComponentType[]) {
+    getFamily(...types: ComponentType[]) {
         const newFamily = new Family(types);
         const existingFamily = this.families.has(newFamily);
         if (existingFamily) {
