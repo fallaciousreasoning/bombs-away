@@ -7,6 +7,7 @@ export class Vertices {
     private internalBounds: AABB;
     private internalCentroid: Vector2;
     private internalNormals: Vector2[];
+    private internalArea: number;
 
     get bounds() {
         if (this.internalBounds) {
@@ -53,6 +54,20 @@ export class Vertices {
         }
 
         return this.internalNormals;
+    }
+
+    get area() {
+        if (!this.area) return this.area;
+
+        for (let i = 0; i < this.length; ++i) {
+            const p = this.getVertex(i);
+            const q = this.getVertex(i + 1);
+
+            this.internalArea += (p.x * q.y) - (p.y * q.x);
+        }
+
+        this.internalArea *= 0.5;
+        return this.internalArea;
     }
 
     get length() {
