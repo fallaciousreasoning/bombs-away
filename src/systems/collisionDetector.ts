@@ -45,6 +45,8 @@ class CollisionManager {
         this.message.type = type as any;
         this.message.hit = island.a;
         this.message.moved = island.b;
+        // TODO: Actually get contacts, this isn't accurate for edge/edge collisions :'(
+        this.message.contacts = island.manifold.supportPoints;
         this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
         // Friction is sqrt(a^2 + b^2)
         this.message.friction = Math.sqrt(island.a.collider.friction * island.a.collider.friction + island.b.collider.friction * island.b.collider.friction);
@@ -111,7 +113,6 @@ class CollisionManager {
         }
 
         island.manifold = manifold;
-        window['debugPoints'].push(...island.manifold.supportPoints);
 
         if (entered) {
             this.reflexiveMessageBroadcast(isTrigger
@@ -132,10 +133,6 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
-
-            window['debugPoints'] = [];
-            // TODO: Loop should go over all entities with collider + transform, not just ones with bodies
-
             // Outer loop over all dynamic bodies.
             for (let i = 0; i < entities.length; ++i) {
                 const a = entities[i];

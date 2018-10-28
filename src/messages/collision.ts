@@ -11,6 +11,7 @@ interface CollisionInfo {
     elasticity: number;
     friction: number;
     velocityAlongNormal: number;
+    contacts: Vector2[];
 }
 
 export type Collision = {

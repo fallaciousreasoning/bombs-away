@@ -7,11 +7,13 @@ export const PIXELS_A_METRE = 64;
 
 const colors = ['red', 'yellow', 'blue'];
 
-export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, drawNormals = false) {
+export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, drawContacts = false, drawNormals = false) {
     const context = canvas.getContext('2d');
+    const renderPoint = (position: { x: number, y: number }, size = 0.2) => context.fillRect(position.x - size / 2, position.y - size / 2, size, size);
 
     engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
-
+    const contacts: Vector2[] = [];
+    const pointSize = 0.2;
     engine
         .makeSystem("collider", "transform")
         .onEach('tick', ({ transform, collider }) => {
@@ -53,7 +55,6 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
                 context.stroke();
             }
 
-            const pointSize = 0.2;
             for (let i = 0; i < vertices.length; ++i) {
                 context.fillStyle = 'green';
                 const vertex = vertices.getVertex(i);
@@ -66,22 +67,36 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
             context.restore();
         });
 
-    engine.makeSystem().onMessage('tick', () => {
-        const points: { x: number, y: number }[] = window['debugPoints'];
-        if (!points) {
-            return;
-        }
+    engine
+        .makeSystem()
+        .onMessage('collision', message => {
+            contacts.push(...message.contacts);
+        })
+        .onMessage('tick', () => {
+            const points: { x: number, y: number }[] = window['debugPoints'];
+            if (!points && !drawContacts) {
+                return;
+            }
 
-        context.save();
+            context.save();
 
-        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
-        context.fillStyle = "red";
+            context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+            context.fillStyle = "red";
 
-        const pointSize = 0.5;
-        for (const point of points) {
-            context.fillRect(point.x - pointSize / 2, point.y - pointSize / 2, pointSize, pointSize);
-        }
+            const pointSize = 0.2;
+            if (drawContacts) {
+                context.fillStyle = 'red';
+                for (const contact of contacts)
+                    context.fillRect(contact.x - pointSize / 2, contact.y - pointSize / 2, pointSize, pointSize)
+            }
 
-        context.restore();
-    });
+            for (const point of points) {
+                renderPoint(point);
+            }
+
+            context.restore();
+
+            // Clear the array of contact points.
+            contacts.length = 0;
+        });
 }

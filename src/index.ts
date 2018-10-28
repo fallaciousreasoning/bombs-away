@@ -63,7 +63,7 @@ addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
-drawCollider(canvas, engine);
+drawCollider(canvas, engine, true);
 addGravity(engine);
 addPlayerController(input, engine);
 addPhysics(engine);
