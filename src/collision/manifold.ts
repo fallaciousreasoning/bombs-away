@@ -32,12 +32,12 @@ export class Manifold {
     }
 
     private compute(a: Vertices, b: Vertices, mul: 1 | -1) {
-        const aimAt = a.centroid.sub(b.centroid); // TODO vec from a to b
+        const aimAt = a.centroid.sub(b.centroid); // TODO use transform.position instead?
 
         for (let i = 0; i < a.length; ++i) {
             const normal = a.normals[i];
 
-            // TODO: No point worrying about normals pointing away from the other shape.
+            // No point worrying about normals pointing away from the other shape.
             if (aimAt.dot(normal) > 0) continue;
             
             const aMinMax = getMinMax(normal, a);

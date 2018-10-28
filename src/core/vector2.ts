@@ -76,7 +76,8 @@ export default class Vector2 {
     }
 
     normalized() {
-        return this.div(this.length());
+        const length = this.length();
+        return length ? this.div(this.length()) : Vector2.zero;
     }
 
     toDegrees() {

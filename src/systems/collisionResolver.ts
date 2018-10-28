@@ -14,22 +14,22 @@ const getMass = (entity: Entity) => {
 
 const getInvMass = (entity: Entity) => {
     const mass = getMass(entity);
-    return mass == 0 ? 0 : 1/mass;
+    return mass == 0 ? 0 : 1 / mass;
 }
 
 export default function naivePhysicsResolver(engine: Engine) {
     engine.makeSystem('transform', 'body')
         .onMessage("collision", (message) => {
             const movedBody = message.moved.get('body');
-            
+
             if (!movedBody) {
                 return;
             }
-            
+
             const normal = message.normal;
             const bBody = message.hit.get('body');
 
-            const relativeVelocity = bBody
+            let relativeVelocity = bBody
                 ? bBody.velocity.sub(movedBody.velocity)
                 : Vector2.zero.sub(movedBody.velocity);
 
@@ -41,7 +41,7 @@ export default function naivePhysicsResolver(engine: Engine) {
 
             // Work out how we're going to hand out the collision response.
             const movedMass = getMass(message.moved);
-            const invMass = movedMass == 0 ? 0 : 1/movedMass;
+            const invMass = movedMass == 0 ? 0 : 1 / movedMass;
             const totalInvMass = getInvMass(message.hit) + invMass;
 
             const magnitude = -(1 + message.elasticity) * velocityAlongNormal / totalInvMass;
@@ -52,6 +52,22 @@ export default function naivePhysicsResolver(engine: Engine) {
             movedBody.velocity = movedBody
                 .velocity
                 .sub(impulse);
+
+            relativeVelocity = bBody
+                ? bBody.velocity.sub(movedBody.velocity)
+                : Vector2.zero.sub(movedBody.velocity);
+            const tangent = relativeVelocity
+                .sub(normal.mul(relativeVelocity.dot(normal)))
+                .normalized();
+
+            const velocityAlongTangent = tangent.dot(relativeVelocity);
+            const frictionMagnitude = velocityAlongTangent / totalInvMass;
+            const frictionImpulse = tangent
+                .mul(frictionMagnitude)
+                .mul(invMass)
+                .mul(-message.friction);
+
+            movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
 
             // Positional correction, so we don't sink into things.
             if (message.penetration > 0.005)
