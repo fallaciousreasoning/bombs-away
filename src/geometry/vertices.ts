@@ -1,6 +1,7 @@
 import Vector2 from "../core/vector2";
 import { AABB } from "../core/aabb";
 import { isLeft, isRight } from "./lineUtils";
+import { epsilon } from "../collision/collisionSettings";
 
 export class Vertices {
     vertices: Vector2[];
@@ -190,12 +191,10 @@ export class Vertices {
         for (const vec of this.vertices) {
             const projection = vec.dot(direction);
 
-            // TODO: Epsilon!
-            if (projection === best) {
+            if (Math.abs(projection - best) < epsilon) {
                 supports.push(vec);
             }
-
-            if (projection > best || !best) {
+            else if (projection > best || !best) {
                 supports = [vec];
                 best = projection;
             }
