@@ -19,8 +19,7 @@ const getMinMax = (dir: Vector2, of: Vertices) => {
 export class Manifold {
     penetration: number;
     normal: Vector2;
-    supportPoints: Vector2[] = [];
-    
+    contacts: Vector2[] = [];
 
     constructor(a: Vertices, b: Vertices) {
         const ab = this.compute(a, b, 1);
@@ -39,7 +38,7 @@ export class Manifold {
 
             // No point worrying about normals pointing away from the other shape.
             if (aimAt.dot(normal) > 0) continue;
-            
+
             const aMinMax = getMinMax(normal, a);
             const bMinMax = getMinMax(normal, b);
 
@@ -50,7 +49,24 @@ export class Manifold {
             if (penetration < this.penetration || !this.penetration) {
                 this.penetration = penetration;
                 this.normal = normal.mul(mul);
-                this.supportPoints = b.getSupports(normal.negate());
+                const supportPoints = b.getSupports(normal.negate());
+
+                // If we only have one support point, that's our contact.
+                if (supportPoints.length <= 1) {
+                    this.contacts = supportPoints;
+                    continue;
+                }
+
+                // The two faces must be parallel, so we have
+                // four potential contact points.
+                supportPoints.push(...a.getSupports(normal));
+
+                // Sort the points by where they are on the tangent.
+                const tangent = new Vector2(-normal.y, normal.x);
+                supportPoints.sort((a, b) => a.dot(tangent) - b.dot(tangent));
+
+                // We want the middle two contact points.
+                this.contacts = [supportPoints[1], supportPoints[2]];
             }
         }
 

@@ -46,7 +46,7 @@ class CollisionManager {
         this.message.hit = island.a;
         this.message.moved = island.b;
         // TODO: Actually get contacts, this isn't accurate for edge/edge collisions :'(
-        this.message.contacts = island.manifold.supportPoints;
+        this.message.contacts = island.manifold.contacts;
         this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
         // Friction is sqrt(a^2 + b^2)
         this.message.friction = Math.sqrt(island.a.collider.friction * island.a.collider.friction + island.b.collider.friction * island.b.collider.friction);
