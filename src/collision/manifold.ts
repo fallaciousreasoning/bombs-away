@@ -19,6 +19,7 @@ const getMinMax = (dir: Vector2, of: Vertices) => {
 export class Manifold {
     penetration: number;
     normal: Vector2;
+    supportPoints: Vector2[] = [];
     
 
     constructor(a: Vertices, b: Vertices) {
@@ -49,6 +50,7 @@ export class Manifold {
             if (penetration < this.penetration || !this.penetration) {
                 this.penetration = penetration;
                 this.normal = normal.mul(mul);
+                this.supportPoints = b.getSupports(normal.negate());
             }
         }
 

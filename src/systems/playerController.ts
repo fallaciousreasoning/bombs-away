@@ -6,8 +6,8 @@ import { Engine } from "../engine";
 
 export default function addPlayerController(input: Input, engine: Engine) {
     engine
-    .makeSystem('player', 'body')
-    .onEach('tick', ({ player, body }: { player: Player, body: Body }, message) => {
+    .makeSystem('player', 'body', 'transform')
+    .onEach('tick', ({ player, body, transform }, message) => {
         const horizontal = input.getAxis('horizontal');
         let jumpImpulse = 0;
         if (input.getAxis('jump')) {

@@ -46,8 +46,8 @@ export class Vertices {
             const next = this.getVertex(i + 1);
 
             const normal = new Vector2(
-                (next.x - current.x),
-                -(next.y - current.y)
+                (next.y - current.y),
+                -(next.x - current.x)
             ).normalized();
             
             this.internalNormals.push(normal);

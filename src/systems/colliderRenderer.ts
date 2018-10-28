@@ -7,7 +7,7 @@ export const PIXELS_A_METRE = 64;
 
 const colors = ['red', 'yellow', 'blue'];
 
-export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) {
+export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, drawNormals = false) {
     const context = canvas.getContext('2d');
 
     engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
@@ -15,7 +15,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
     engine
         .makeSystem("collider", "transform")
         .onEach('tick', ({ transform, collider }) => {
-            const vertices = collider.vertices.vertices;
+            const vertices = collider.vertices;
             const centroid = collider.vertices.centroid;
 
             context.save();
@@ -24,35 +24,50 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             context.translate(transform.position.x, transform.position.y);
             context.rotate(transform.rotation);
 
+            context.beginPath();
+            context.strokeStyle = collider.color || 'black';
             for (let i = 0; i < vertices.length; ++i) {
-                const curr = vertices[i];
-                const next = vertices[i === vertices.length - 1 ? 0 : i + 1];
+                const curr = vertices.getVertex(i);
+                const next = vertices.getVertex(i + 1);
 
-                context.fillStyle = colors[i % colors.length];
-                context.strokeStyle = collider.color || 'black';
-                context.lineWidth = 1/PIXELS_A_METRE;
-
-                context.beginPath();
+                context.lineWidth = 1 / PIXELS_A_METRE;
                 context.moveTo(curr.x, curr.y);
                 context.lineTo(next.x, next.y);
                 context.lineTo(centroid.x, centroid.y);
+            }
+            context.stroke();
+
+            if (drawNormals) {
+                context.beginPath();
+                context.strokeStyle = 'green';
+                for (let i = 0; i < vertices.length; ++i) {
+                    const curr = vertices.getVertex(i);
+                    const next = vertices.getVertex(i + 1);
+
+                    const start = curr.add(next).mul(0.5);
+                    const end = start.add(vertices.normals[i]);
+
+                    context.moveTo(start.x, start.y);
+                    context.lineTo(end.x, end.y);
+                }
                 context.stroke();
             }
 
             const pointSize = 0.2;
             for (let i = 0; i < vertices.length; ++i) {
                 context.fillStyle = 'green';
-                context.fillRect(vertices[i].x - pointSize/2, vertices[i].y - pointSize/2, pointSize, pointSize);
+                const vertex = vertices.getVertex(i);
+                context.fillRect(vertex.x - pointSize / 2, vertex.y - pointSize / 2, pointSize, pointSize);
             }
 
             context.fillStyle = 'blue';
-            context.fillRect(centroid.x-pointSize/2, centroid.y-pointSize/2, pointSize, pointSize);
+            context.fillRect(centroid.x - pointSize / 2, centroid.y - pointSize / 2, pointSize, pointSize);
 
             context.restore();
         });
 
     engine.makeSystem().onMessage('tick', () => {
-        const points: {x: number, y:number}[] = window['debugPoints'];
+        const points: { x: number, y: number }[] = window['debugPoints'];
         if (!points) {
             return;
         }
@@ -64,7 +79,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
 
         const pointSize = 0.5;
         for (const point of points) {
-            context.fillRect(point.x - pointSize/2, point.y - pointSize/2, pointSize, pointSize);
+            context.fillRect(point.x - pointSize / 2, point.y - pointSize / 2, pointSize, pointSize);
         }
 
         context.restore();

@@ -15,7 +15,7 @@ interface Island {
     hash: number;
 }
 
-const hash = (a: {id: number}, b: {id: number}) => {
+const hash = (a: { id: number }, b: { id: number }) => {
     const min = Math.min(a.id, b.id);
     const max = Math.max(a.id, b.id);
 
@@ -47,7 +47,7 @@ class CollisionManager {
         this.message.moved = island.b;
         this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
         // Friction is sqrt(a^2 + b^2)
-        this.message.friction = Math.sqrt(island.a.collider.friction*island.a.collider.friction + island.b.collider.friction*island.b.collider.friction);
+        this.message.friction = Math.sqrt(island.a.collider.friction * island.a.collider.friction + island.b.collider.friction * island.b.collider.friction);
         this.message.normal = island.manifold.normal.negate();
         this.message.penetration = island.manifold.penetration;
         this.engine.broadcastMessage(this.message);
@@ -67,7 +67,7 @@ class CollisionManager {
         // Otherwise, we've separated.
         const type = island.a.collider.isTrigger || island.b.collider.isTrigger
             ? 'collision-exit'
-            : 'trigger-exit'; 
+            : 'trigger-exit';
         this.reflexiveMessageBroadcast(type, island);
 
         // Clean up.
@@ -83,7 +83,7 @@ class CollisionManager {
         const bVertices = b.collider.vertices
             .rotate(b.transform.rotation)
             .translate(b.transform.position);
-        
+
         // See if we have an existing collision.
         const h = hash(a, b);
         let island = this.islands.get(h);
@@ -111,6 +111,7 @@ class CollisionManager {
         }
 
         island.manifold = manifold;
+        window['debugPoints'].push(...island.manifold.supportPoints);
 
         if (entered) {
             this.reflexiveMessageBroadcast(isTrigger
@@ -131,6 +132,8 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
+
+            window['debugPoints'] = [];
             // TODO: Loop should go over all entities with collider + transform, not just ones with bodies
 
             // Outer loop over all dynamic bodies.

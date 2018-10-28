@@ -40,6 +40,21 @@ block.add(boxCollider(1, 2));
 block.add(new Transform(new Vector2(7, 3)));
 block.add(new Body(100));
 
+const ramp = new Entity();
+ramp.add({
+    type: 'collider',
+    elasticity: 0.5,
+    friction: 0,
+    isTrigger: false,
+    vertices: new Vertices([
+        new Vector2(-1, 0),
+        new Vector2(-1, -1),
+        new Vector2(1, 0)
+    ])
+});
+ramp.add(new Transform(new Vector2(7, 2)));
+
+engine.addEntity(ramp);
 engine.addEntity(player);
 engine.addEntity(ground);
 engine.addEntity(block);
