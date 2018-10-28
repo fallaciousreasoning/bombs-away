@@ -9,4 +9,6 @@ export interface Collider {
 
     vertices: Vertices;
     isTrigger?: boolean;
+
+    color?: string;
 }
