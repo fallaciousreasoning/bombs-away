@@ -2,9 +2,10 @@ import { Manifold } from '../collision/manifold';
 import { Pool } from "../core/pool";
 import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
+import solve from './collisionResolver';
 import { Entityish } from "./system";
 
-interface Island {
+export interface Island {
     a: Entityish<['collider', 'transform']>;
     b: Entityish<['collider', 'transform']>;
 
@@ -119,6 +120,8 @@ class CollisionManager {
         this.reflexiveMessageBroadcast(isTrigger
             ? 'trigger'
             : 'collision', island);
+
+        solve(island);
     }
 }
 
@@ -129,7 +132,7 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
-            const steps = 5;
+            const steps = 1;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
             // Outer loop over all dynamic bodies.

@@ -1,6 +1,6 @@
 import Vector2 from "../core/vector2";
-import { Engine } from "../engine";
 import { Entity } from "../entity";
+import { Island } from "./collisionDetector";
 
 /**
  * Calculates the inertia for a shape.
@@ -21,21 +21,21 @@ const getInertia = (entity: Entity) => {
         const v1 = collider.vertices.getVertex(i);
         const v2 = collider.vertices.getVertex(i + 1);
 
-        let a  = Math.abs(v2.cross(v1));
+        let a = Math.abs(v2.cross(v1));
         let b = v1.lengthSquared() + v1.dot(v2) + v2.lengthSquared();
 
         denominator += a * b;
         numerator += a;
     }
-    
-    const inertia = (mass/6) * (numerator/denominator);
+
+    const inertia = (mass / 6) * (numerator / denominator);
     return inertia;
 }
 
 const getInvInertia = (entity: Entity) => {
     const inertia = getInertia(entity);
 
-    return inertia == 0 ? 0 : 1/inertia;
+    return inertia == 0 ? 0 : 1 / inertia;
 }
 
 const getMass = (entity: Entity) => {
@@ -61,80 +61,86 @@ const velocityAtPoint = (entity: Entity, at: Vector2) => {
     }
 
     const relativePoint = at.sub(transform.position);
-    const pointVelocity = Vector2.cross(body.angularVelocity, relativePoint); 
+    const pointVelocity = Vector2.cross(body.angularVelocity, relativePoint);
     return body.velocity.add(pointVelocity);
 }
 
-export default function naivePhysicsResolver(engine: Engine) {
-    engine.makeSystem('transform', 'body')
-        .onMessage("collision", (message) => {
-            const movedBody = message.moved.get('body');
+export default function solve(island: Island) {
+    const aBody = island.a.get('body');
+    const bBody = island.b.get('body');
 
-            if (!movedBody) {
-                return;
-            }
+    const normal = island.manifold.normal;
 
-            const normal = message.normal;
-            const bBody = message.hit.get('body');
+    const contact = island.manifold.contacts
+        .reduce((prev, next) => prev.add(next), Vector2.zero).div(island.manifold.contacts.length);
 
-            const contact = message.contacts.reduce((prev, next) => prev.add(next), Vector2.zero).div(message.contacts.length);
-            const aVelocity = velocityAtPoint(message.moved, contact);
-            const bVelocity = velocityAtPoint(message.hit, contact);
+    const aVelocity = velocityAtPoint(island.a, contact);
+    const bVelocity = velocityAtPoint(island.b, contact);
 
-            let relativeVelocity = bVelocity.sub(aVelocity);
+    let relativeVelocity = bVelocity.sub(aVelocity);
 
-            const velocityAlongNormal = normal.dot(relativeVelocity);
+    const velocityAlongNormal = normal.dot(relativeVelocity);
 
-            // If we're already moving apart, don't do anything.
-            if (velocityAlongNormal > 0)
-                return;
+    // If we're already moving apart, don't do anything.
+    if (velocityAlongNormal >= 0)
+        return;
 
 
-            // Work out how we're going to hand out the collision response.
-            const invMass = getInvMass(message.moved);
-            const totalInvMass = getInvMass(message.hit) + invMass;
-            const invInertia = getInvInertia(message.moved);
-            const bInvIntertia = getInvInertia(message.hit)
-            const aInertiaDivisor = Math.pow(contact.sub(message.moved.transform.position).cross(normal), 2) * invInertia;
-            const bInertiaDivisor = Math.pow(contact.sub(message.hit.transform.position).cross(normal), 2) * bInvIntertia;
+    // Work out how we're going to hand out the collision response.
+    const aInvMass = getInvMass(island.a);
+    const bInvMass = getInvMass(island.b);
+    const totalInvMass = bInvMass + aInvMass;
 
-            let magnitude = -(1 + message.elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
-            magnitude/=message.contacts.length;
+    const aInvInertia = getInvInertia(island.a);
+    const bInvIntertia = getInvInertia(island.b);
+    const aInertiaDivisor = Math.pow(contact.sub(island.a.transform.position).cross(normal), 2) * aInvInertia;
+    const bInertiaDivisor = Math.pow(contact.sub(island.b.transform.position).cross(normal), 2) * bInvIntertia;
 
-            let impulse = normal
-                .mul(magnitude);
+    const elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
 
-            movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
+    let magnitude = -(1 + elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
+    magnitude /= island.manifold.contacts.length;
 
-            relativeVelocity = bBody
-                ? bBody.velocity.sub(movedBody.velocity)
-                : Vector2.zero.sub(movedBody.velocity);
-            const tangent = relativeVelocity
-                .sub(normal.mul(relativeVelocity.dot(normal)))
-                .normalized();
+    let impulse = normal
+        .mul(magnitude);
 
-            // TODO: Friction.
-            // const velocityAlongTangent = tangent.dot(relativeVelocity);
-            // const frictionMagnitude = velocityAlongTangent / totalInvMass;
-            // const frictionImpulse = tangent
-            //     .mul(frictionMagnitude)
-            //     .mul(invMass)
-            //     .mul(-message.friction);
+    for (const contact of island.manifold.contacts){
+        aBody && aBody.applyForce(impulse.mul(-1), contact.sub(island.a.transform.position), aInvMass, aInvInertia);
+        bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
+    }
 
-            // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
+    // relativeVelocity = bBody
+    //     ? bBody.velocity.sub(aBody.velocity)
+    //     : Vector2.zero.sub(aBody.velocity);
+    // const tangent = relativeVelocity
+    //     .sub(normal.mul(relativeVelocity.dot(normal)))
+    //     .normalized();
 
-            // Positional correction, so we don't sink into things.
-            // if (message.penetration > 0.005)
-            //     message.moved.transform.position = message
-            //         .moved
-            //         .transform
-            //         .position
-            //         .sub(message.normal
-            //             .mul(message.penetration).mul(0.5));
-            const percent = 0.9;
-            const slop = 0.01;
-            const toMove = Math.max(message.penetration - slop, 0);
-            const correction = message.normal.mul(toMove * percent);
-            message.moved.transform.position = message.moved.transform.position.sub(correction);
-        });
+    // TODO: Friction.
+    // const velocityAlongTangent = tangent.dot(relativeVelocity);
+    // const frictionMagnitude = velocityAlongTangent / totalInvMass;
+    // const frictionImpulse = tangent
+    //     .mul(frictionMagnitude)
+    //     .mul(invMass)
+    //     .mul(-message.friction);
+
+    // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
+
+    // Positional correction, so we don't sink into things.
+    // if (message.penetration > 0.005)
+    //     message.moved.transform.position = message
+    //         .moved
+    //         .transform
+    //         .position
+    //         .sub(message.normal
+    //             .mul(message.penetration).mul(0.5));
+    const slop = 0.000;
+    // if (island.manifold.penetration < slop) {
+    //     return;
+    // }
+    const percentCorrection = 0.5;
+
+    const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
+    island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
+    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(-1));
 }

@@ -11,7 +11,6 @@ import addGravity from "./systems/addGravity";
 import addRenderer from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
-import naivePhysicsResolver from "./systems/collisionResolver";
 import convexHullTester from "./systems/convexHullTester";
 import addPlayerController from "./systems/playerController";
 
@@ -62,7 +61,6 @@ drawCollider(canvas, engine, true);
 addGravity(engine);
 addPlayerController(input, engine);
 addPhysics(engine);
-naivePhysicsResolver(engine);
 convexHullTester(input, engine);
 
 
