@@ -1,25 +1,35 @@
-import { Engine } from "../engine";
 import Vector2 from "../core/vector2";
+import { Engine } from "../engine";
 import { Entity } from "../entity";
 
-// TODO: Not this.
+/**
+ * Calculates the inertia for a shape.
+ * Based on formula here:
+ * https://www.gamedev.net/forums/topic/342822-moment-of-inertia-of-a-polygon-2d/
+ * @param entity The entity to get inertia for.
+ */
 const getInertia = (entity: Entity) => {
     const mass = getMass(entity);
     const collider = entity.get('collider');
 
-    // TODO: Not this, we should use transform.position
-    const centreOfMass = collider.vertices.centroid;
+    if (collider.vertices.length === 1) return 0;
 
-    // TODO: Not this, we're assuming the centroid is the centre of the shape.
-    let prevDist: number;
+    let denominator = 0;
+    let numerator = 0;
+
     for (let i = 0; i < collider.vertices.length; ++i) {
-        if (!prevDist) {
-            prevDist = collider.vertices.getVertex(i - 1).distance(centreOfMass);
-        }
+        const v1 = collider.vertices.getVertex(i);
+        const v2 = collider.vertices.getVertex(i + 1);
 
-        const distance = collider.vertices.getVertex(i).distance(centreOfMass);
+        let a  = Math.abs(v2.cross(v1));
+        let b = v1.lengthSquared() + v1.dot(v2) + v2.lengthSquared();
+
+        denominator += a * b;
+        numerator += a;
     }
-    return 0;
+    
+    const inertia = (mass/6) * (numerator/denominator);
+    return inertia;
 }
 
 const getInvInertia = (entity: Entity) => {

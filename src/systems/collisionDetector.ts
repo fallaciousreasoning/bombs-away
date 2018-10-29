@@ -1,10 +1,8 @@
+import { Manifold } from '../collision/manifold';
 import { Pool } from "../core/pool";
-import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import { Entityish } from "./system";
-import { Manifold } from '../collision/manifold';
-import { Entity } from "../entity";
 
 interface Island {
     a: Entityish<['collider', 'transform']>;
@@ -91,8 +89,6 @@ class CollisionManager {
         let island = this.islands.get(h);
 
         const manifold = new Manifold(aVertices, bVertices);
-
-        // TODO what about resting on the edge?
 
         if (manifold.penetration === 0) {
             this.onNoCollision(island);

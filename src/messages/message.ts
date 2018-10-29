@@ -2,4 +2,4 @@ import { Collision, CollisionEnter, CollisionExit, Trigger, TriggerEnter, Trigge
 import { Destroy } from "./destroy";
 import { Tick } from "./tick";
 
-export type Message = Collision | CollisionEnter | CollisionExit | Trigger | TriggerEnter | TriggerExit | Destroy | Tick;
+export type Message = Destroy | Tick | Collision | CollisionEnter | CollisionExit | Trigger | TriggerEnter | TriggerExit;

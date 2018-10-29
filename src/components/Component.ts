@@ -15,4 +15,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Damage | FlipWithMouse | Health | Hull | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon | Collider;
+export type Component = Collider | AliveForTime | Body | Bounce | Box | Damage | FlipWithMouse | Health | Hull | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon;

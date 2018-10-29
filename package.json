@@ -17,8 +17,7 @@
     "typescript": "^3.0.3",
     "webpack": "^4.17.1"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "jest": {
     "roots": [
       "<rootDir>/src"
