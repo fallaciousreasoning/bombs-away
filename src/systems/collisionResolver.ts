@@ -98,11 +98,14 @@ export default function naivePhysicsResolver(engine: Engine) {
             const aInertiaDivisor = Math.pow(contact.sub(message.moved.transform.position).cross(normal), 2) * invInertia;
             const bInertiaDivisor = Math.pow(contact.sub(message.hit.transform.position).cross(normal), 2) * bInvIntertia;
 
-            const magnitude = -(1 + message.elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
+            let magnitude = -(1 + message.elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
+            magnitude/=message.contacts.length;
+
             let impulse = normal
                 .mul(magnitude);
 
-            movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
+            for (const contact of message.contacts)
+                movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
 
             relativeVelocity = bBody
                 ? bBody.velocity.sub(movedBody.velocity)

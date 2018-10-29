@@ -24,7 +24,7 @@ const player = new Entity();
 player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 1)));
-player.add(new Body(10));
+player.add(new Body(1));
 
 const ground = new Entity();
 ground.add(boxCollider(10, 1));
@@ -33,7 +33,7 @@ ground.add(new Transform(new Vector2(5, 5)));
 const block = new Entity();
 block.add(boxCollider(1, 2));
 block.add(new Transform(new Vector2(7, 3)));
-block.add(new Body(1));
+block.add(new Body(10));
 
 const ramp = new Entity();
 ramp.add({
@@ -47,7 +47,7 @@ ramp.add({
         new Vector2(1, 0)
     ])
 });
-ramp.add(new Transform(new Vector2(2, 2)));
+ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);
 engine.addEntity(player);
