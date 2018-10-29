@@ -67,6 +67,10 @@ export default class Vector2 {
         return this.x*vec.y - this.y * vec.x;
     }
 
+    static cross(first: number, second: Vector2) {
+        return new Vector2(-first * second.y, first * second.x);
+    }
+
     lengthSquared() {
         return this.x * this.x + this.y * this.y;
     }

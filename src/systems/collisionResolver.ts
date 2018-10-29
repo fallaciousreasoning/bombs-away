@@ -53,6 +53,18 @@ const getInvMass = (entity: Entity) => {
     return mass == 0 ? 0 : 1 / mass;
 }
 
+const velocityAtPoint = (entity: Entity, at: Vector2) => {
+    const body = entity.get('body');
+    const transform = entity.get('transform');
+    if (!body) {
+        return Vector2.zero;
+    }
+
+    const relativePoint = at.sub(transform.position);
+    const pointVelocity = Vector2.cross(body.angularVelocity, relativePoint); 
+    return body.velocity.add(pointVelocity);
+}
+
 export default function naivePhysicsResolver(engine: Engine) {
     engine.makeSystem('transform', 'body')
         .onMessage("collision", (message) => {
@@ -65,9 +77,11 @@ export default function naivePhysicsResolver(engine: Engine) {
             const normal = message.normal;
             const bBody = message.hit.get('body');
 
-            let relativeVelocity = bBody
-                ? bBody.velocity.sub(movedBody.velocity)
-                : Vector2.zero.sub(movedBody.velocity);
+            const contact = message.contacts.reduce((prev, next) => prev.add(next), Vector2.zero).div(message.contacts.length);
+            const aVelocity = velocityAtPoint(message.moved, contact);
+            const bVelocity = velocityAtPoint(message.hit, contact);
+
+            let relativeVelocity = bVelocity.sub(aVelocity);
 
             const velocityAlongNormal = normal.dot(relativeVelocity);
 
@@ -75,21 +89,20 @@ export default function naivePhysicsResolver(engine: Engine) {
             if (velocityAlongNormal > 0)
                 return;
 
-            const contacts = message.contacts.reduce((prev, next) => prev.add(next), Vector2.zero).div(message.contacts.length);
 
             // Work out how we're going to hand out the collision response.
             const invMass = getInvMass(message.moved);
             const totalInvMass = getInvMass(message.hit) + invMass;
             const invInertia = getInvInertia(message.moved);
-            const bInvIntertia = getInertia(message.hit)
-            const aInertiaDivisor = Math.pow(contacts.sub(message.moved.transform.position).cross(normal), 2) * invInertia;
-            const bInertiaDivisor = Math.pow(contacts.sub(message.hit.transform.position).cross(normal), 2) * bInvIntertia;
+            const bInvIntertia = getInvInertia(message.hit)
+            const aInertiaDivisor = Math.pow(contact.sub(message.moved.transform.position).cross(normal), 2) * invInertia;
+            const bInertiaDivisor = Math.pow(contact.sub(message.hit.transform.position).cross(normal), 2) * bInvIntertia;
 
             const magnitude = -(1 + message.elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
             let impulse = normal
                 .mul(magnitude);
 
-            movedBody.applyForce(impulse.mul(-1), message.contacts[0], invMass, invInertia);
+            movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
 
             relativeVelocity = bBody
                 ? bBody.velocity.sub(movedBody.velocity)
@@ -98,14 +111,15 @@ export default function naivePhysicsResolver(engine: Engine) {
                 .sub(normal.mul(relativeVelocity.dot(normal)))
                 .normalized();
 
-            const velocityAlongTangent = tangent.dot(relativeVelocity);
-            const frictionMagnitude = velocityAlongTangent / totalInvMass;
-            const frictionImpulse = tangent
-                .mul(frictionMagnitude)
-                .mul(invMass)
-                .mul(-message.friction);
+            // TODO: Friction.
+            // const velocityAlongTangent = tangent.dot(relativeVelocity);
+            // const frictionMagnitude = velocityAlongTangent / totalInvMass;
+            // const frictionImpulse = tangent
+            //     .mul(frictionMagnitude)
+            //     .mul(invMass)
+            //     .mul(-message.friction);
 
-            movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
+            // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
 
             // Positional correction, so we don't sink into things.
             if (message.penetration > 0.005)
