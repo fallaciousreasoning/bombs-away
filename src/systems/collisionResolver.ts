@@ -131,7 +131,7 @@ export default function naivePhysicsResolver(engine: Engine) {
                     .transform
                     .position
                     .sub(message.normal
-                        .mul(message.penetration).mul(0.1));
+                        .mul(message.penetration).mul(0.5));
 
         });
 }
