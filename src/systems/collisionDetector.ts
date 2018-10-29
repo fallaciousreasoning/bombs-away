@@ -146,6 +146,7 @@ export default function addPhysics(engine: Engine) {
                 // Move the entity.
                 const movedAmount = body.velocity.mul(message.step);
                 a.transform.position = a.transform.position.add(movedAmount);
+                a.transform.rotation += body.angularVelocity * message.step;
 
                 if (!body.isDynamic) continue;
 

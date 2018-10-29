@@ -57,7 +57,7 @@ ramp.add(new Transform(new Vector2(7, 2)));
 engine.addEntity(ramp);
 engine.addEntity(player);
 engine.addEntity(ground);
-engine.addEntity(block);
+// engine.addEntity(block);
 
 addRenderer(canvas, engine);
 const input = new Input(document);

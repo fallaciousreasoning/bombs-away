@@ -14,4 +14,11 @@ export default class Body {
     constructor(density=1){
         this.density = density;
     }
+
+    applyForce(force: Vector2, at: Vector2, invMass: number, invInertia: number=1) {
+        const impulse = force.mul(invMass);
+        this.velocity = this.velocity.add(impulse);
+
+        this.angularVelocity += invInertia * at.cross(force);
+    }
 }
