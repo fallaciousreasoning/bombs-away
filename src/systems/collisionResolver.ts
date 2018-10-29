@@ -104,8 +104,7 @@ export default function naivePhysicsResolver(engine: Engine) {
             let impulse = normal
                 .mul(magnitude);
 
-            for (const contact of message.contacts)
-                movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
+            movedBody.applyForce(impulse.mul(-1), contact.sub(message.moved.transform.position), invMass, invInertia);
 
             relativeVelocity = bBody
                 ? bBody.velocity.sub(movedBody.velocity)
@@ -125,13 +124,17 @@ export default function naivePhysicsResolver(engine: Engine) {
             // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
 
             // Positional correction, so we don't sink into things.
-            if (message.penetration > 0.005)
-                message.moved.transform.position = message
-                    .moved
-                    .transform
-                    .position
-                    .sub(message.normal
-                        .mul(message.penetration).mul(0.5));
-
+            // if (message.penetration > 0.005)
+            //     message.moved.transform.position = message
+            //         .moved
+            //         .transform
+            //         .position
+            //         .sub(message.normal
+            //             .mul(message.penetration).mul(0.5));
+            const percent = 0.9;
+            const slop = 0.01;
+            const toMove = Math.max(message.penetration - slop, 0);
+            const correction = message.normal.mul(toMove * percent);
+            message.moved.transform.position = message.moved.transform.position.sub(correction);
         });
 }

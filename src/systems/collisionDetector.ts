@@ -129,6 +129,9 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
+            const steps = 5;
+            const step = message.step / steps;
+            for (let _ = 0; _ < steps; ++_) {
             // Outer loop over all dynamic bodies.
             for (let i = 0; i < entities.length; ++i) {
                 const a = entities[i];
@@ -140,9 +143,9 @@ export default function addPhysics(engine: Engine) {
                 }
 
                 // Move the entity.
-                const movedAmount = body.velocity.mul(message.step);
+                const movedAmount = body.velocity.mul(step);
                 a.transform.position = a.transform.position.add(movedAmount);
-                a.transform.rotation += body.angularVelocity * message.step;
+                a.transform.rotation += body.angularVelocity * step;
 
                 if (!body.isDynamic) continue;
 
@@ -154,5 +157,6 @@ export default function addPhysics(engine: Engine) {
                     collisionManager.run(a, b);
                 }
             }
+        }
         });
 }
