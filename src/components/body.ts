@@ -19,6 +19,6 @@ export default class Body {
         const impulse = force.mul(invMass);
         this.velocity = this.velocity.add(impulse);
 
-        this.angularVelocity += invInertia * at.cross(force);
+        this.angularVelocity += invInertia * at.cross(force) / 4;
     }
 }

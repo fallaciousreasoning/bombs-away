@@ -77,7 +77,7 @@ export default function solve(island: Island) {
     const aVelocity = velocityAtPoint(island.a, contact);
     const bVelocity = velocityAtPoint(island.b, contact);
 
-    const relativeVelocity = bVelocity.sub(aVelocity);
+    let relativeVelocity = bVelocity.sub(aVelocity);
     const velocityAlongNormal = normal.dot(relativeVelocity);
 
     // If we're already moving apart, don't do anything.
@@ -107,20 +107,23 @@ export default function solve(island: Island) {
         bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
     }
 
-    // relativeVelocity = bBody
-    //     ? bBody.velocity.sub(aBody.velocity)
-    //     : Vector2.zero.sub(aBody.velocity);
-    // const tangent = relativeVelocity
-    //     .sub(normal.mul(relativeVelocity.dot(normal)))
-    //     .normalized();
+    // Friction
+    relativeVelocity = velocityAtPoint(island.b, contact).sub(velocityAtPoint(island.a, contact));
+    const tangent = relativeVelocity
+        .sub(normal.mul(relativeVelocity.dot(normal)))
+        .normalized();
+
+    const friction = (island.a.collider.friction + island.b.collider.friction) / 2;
 
     // TODO: Friction.
-    // const velocityAlongTangent = tangent.dot(relativeVelocity);
-    // const frictionMagnitude = velocityAlongTangent / totalInvMass;
-    // const frictionImpulse = tangent
-    //     .mul(frictionMagnitude)
-    //     .mul(invMass)
-    //     .mul(-message.friction);
+    const velocityAlongTangent = tangent.dot(relativeVelocity);
+    const frictionMagnitude = velocityAlongTangent / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
+    const frictionImpulse = tangent
+        .mul(frictionMagnitude)
+        .mul(friction);
+
+    aBody && aBody.applyForce(frictionImpulse, contact.sub(island.a.transform.position), aInvMass, aInvInertia);
+    bBody && bBody.applyForce(frictionImpulse.mul(-1), contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
 
     // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
 

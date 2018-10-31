@@ -41,7 +41,7 @@ const player = new Entity();
 player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 3)));
-player.add(new Body(1));
+player.add(new Body(10));
 
 const ground = new Entity();
 ground.add(boxCollider(10, 1));
