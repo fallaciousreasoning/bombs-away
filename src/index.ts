@@ -13,6 +13,7 @@ import addRenderer from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
 import convexHullTester from "./systems/convexHullTester";
+import { deformTerrain } from "./systems/deformTerrain";
 import addPlayerController from "./systems/playerController";
 import addSpawn from "./systems/spawnSystem";
 
@@ -35,7 +36,7 @@ const makeBomb = (spawn: Entity) => {
 
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
-bomber.add(new Transform(new Vector2(5, 0)));
+bomber.add(new Transform(new Vector2(9, 0)));
 
 const player = new Entity();
 player.add(new Player());
@@ -44,8 +45,8 @@ player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(10));
 
 const ground = new Entity();
-ground.add(boxCollider(10, 1));
-ground.add(new Transform(new Vector2(5, 5)));
+ground.add(boxCollider(10, 11));
+ground.add(new Transform(new Vector2(5, 10)));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -83,5 +84,6 @@ addGravity(engine);
 addPlayerController(input, engine);
 addPhysics(engine);
 convexHullTester(input, engine);
+deformTerrain(engine);
 
 

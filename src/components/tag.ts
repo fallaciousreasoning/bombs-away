@@ -1,3 +1,5 @@
+import { Entity } from "../entity";
+
 export class Tag {
     type: "tag" = "tag";
 
@@ -8,4 +10,9 @@ export class Tag {
     }
 
     hasTag = (tag: string) => this.tags.has(tag);
+}
+
+export const hasTag = (entity: Entity, tag: string) => {
+    const t = entity.get('tag');
+    return t && t.hasTag(tag);
 }
