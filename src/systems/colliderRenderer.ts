@@ -1,13 +1,27 @@
-import Line from "../components/line";
-import { Transform } from "../components/transform";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 
 export const PIXELS_A_METRE = 64;
 
-const colors = ['red', 'yellow', 'blue'];
+interface DebugRenderConfig {
+    drawEdges: boolean;
+    drawVertices: boolean;
+    drawContacts: boolean;
+    drawCentroids: boolean;
+    drawNormals: boolean;
+}
 
-export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, drawContacts = false, drawNormals = false) {
+const config: DebugRenderConfig = {
+    drawEdges: true,
+    drawVertices: false,
+    drawContacts: true,
+    drawCentroids: false,
+    drawNormals: false,
+};
+
+window['renderConfig'] = config;
+
+export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) {
     const context = canvas.getContext('2d');
     const renderPoint = (position: { x: number, y: number }, size = 0.2) => context.fillRect(position.x - size / 2, position.y - size / 2, size, size);
 
@@ -26,20 +40,21 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
             context.translate(transform.position.x, transform.position.y);
             context.rotate(transform.rotation);
 
-            context.beginPath();
-            context.strokeStyle = collider.color || 'black';
-            for (let i = 0; i < vertices.length; ++i) {
-                const curr = vertices.getVertex(i);
-                const next = vertices.getVertex(i + 1);
+            if (config.drawEdges) {
+                context.beginPath();
+                context.strokeStyle = collider.color || 'black';
+                for (let i = 0; i < vertices.length; ++i) {
+                    const curr = vertices.getVertex(i);
+                    const next = vertices.getVertex(i + 1);
 
-                context.lineWidth = 1 / PIXELS_A_METRE;
-                context.moveTo(curr.x, curr.y);
-                context.lineTo(next.x, next.y);
-                context.lineTo(centroid.x, centroid.y);
+                    context.lineWidth = 1 / PIXELS_A_METRE;
+                    context.moveTo(curr.x, curr.y);
+                    context.lineTo(next.x, next.y);
+                }
+                context.stroke();
             }
-            context.stroke();
 
-            if (drawNormals) {
+            if (config.drawNormals) {
                 context.beginPath();
                 context.strokeStyle = 'green';
                 for (let i = 0; i < vertices.length; ++i) {
@@ -55,14 +70,18 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
                 context.stroke();
             }
 
-            for (let i = 0; i < vertices.length; ++i) {
-                context.fillStyle = 'green';
-                const vertex = vertices.getVertex(i);
-                context.fillRect(vertex.x - pointSize / 2, vertex.y - pointSize / 2, pointSize, pointSize);
+            if (config.drawVertices) {
+                for (let i = 0; i < vertices.length; ++i) {
+                    context.fillStyle = 'green';
+                    const vertex = vertices.getVertex(i);
+                    context.fillRect(vertex.x - pointSize / 2, vertex.y - pointSize / 2, pointSize, pointSize);
+                }
             }
 
-            context.fillStyle = 'blue';
-            context.fillRect(centroid.x - pointSize / 2, centroid.y - pointSize / 2, pointSize, pointSize);
+            if (config.drawCentroids) {
+                context.fillStyle = 'blue';
+                context.fillRect(centroid.x - pointSize / 2, centroid.y - pointSize / 2, pointSize, pointSize);
+            }
 
             context.restore();
         });
@@ -74,7 +93,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
         })
         .onMessage('tick', () => {
             const points: { x: number, y: number }[] = window['debugPoints'];
-            if (!points && !drawContacts) {
+            if (!points && !config.drawContacts) {
                 return;
             }
 
@@ -84,7 +103,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine, 
             context.fillStyle = "red";
 
             const pointSize = 0.2;
-            if (drawContacts) {
+            if (config.drawContacts) {
                 context.fillStyle = 'red';
                 for (const contact of contacts)
                     context.fillRect(contact.x - pointSize / 2, contact.y - pointSize / 2, pointSize, pointSize)
