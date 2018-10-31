@@ -134,13 +134,20 @@ export default function solve(island: Island) {
     //         .position
     //         .sub(message.normal
     //             .mul(message.penetration).mul(0.5));
-    const slop = 0.001;
+    const slop = 0.01;
     // if (island.manifold.penetration < slop) {
     //     return;
     // }
-    const percentCorrection = 0.99;
+    const percentCorrection = 0.8;
 
     const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
+
+    const away = island.a.transform.position.sub(contact).normalized();
+    const correctionAwayFromContact = away.dot(correction);
+
+    if (correctionAwayFromContact > 0) {
+        return;
+    }
     island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
-    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(-1));
+    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(1));
 }

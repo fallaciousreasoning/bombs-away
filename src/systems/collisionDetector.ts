@@ -132,7 +132,7 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem('body', 'collider', 'transform')
         .on('tick', (entities, message) => {
-            const steps = 3;
+            const steps = 5;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
             // Outer loop over all dynamic bodies.
