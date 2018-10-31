@@ -88,7 +88,7 @@ engine.addEntity(block);
 // engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(ground);
-engine.addEntity(bomber);
+// engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
