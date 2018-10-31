@@ -1,14 +1,13 @@
 import { Entity } from "../entity";
-import { Transform } from "./transform";
 
 export default class Spawn {
     type: 'spawn' = 'spawn';
     spawnRate = 5;
     tillNextSpawn: number;
 
-    buildSpawn: (spawn: Spawn, at: Transform) => Entity;
+    buildSpawn: (parent: Entity) => Entity;
 
-    constructor(buildSpawn: (spawn: Spawn, at: Transform) => Entity) {
+    constructor(buildSpawn: (parent: Entity) => Entity) {
         this.buildSpawn = buildSpawn;
     }
 }

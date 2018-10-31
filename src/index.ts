@@ -1,6 +1,7 @@
 import { boxCollider, circleCollider } from "./collision/colliderFactory";
 import Body from "./components/body";
 import Player from "./components/player";
+import Spawn from "./components/spawn";
 import { Transform } from "./components/transform";
 import Input from "./core/input";
 import Vector2 from "./core/vector2";
@@ -13,11 +14,28 @@ import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
 import convexHullTester from "./systems/convexHullTester";
 import addPlayerController from "./systems/playerController";
+import addSpawn from "./systems/spawnSystem";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
+
+const makeBomb = (spawn: Entity) => {
+    const bomb = new Entity();
+
+    bomb.add(new Transform(spawn.get('transform').position));
+    bomb.add(boxCollider(1, 1));
+
+    const body = new Body();
+    bomb.add(body);
+
+    return bomb;
+}
+
+const bomber = new Entity();
+bomber.add(new Spawn(makeBomb));
+bomber.add(new Transform(new Vector2(5, 0)));
 
 const player = new Entity();
 player.add(new Player());
@@ -52,11 +70,13 @@ engine.addEntity(ramp);
 engine.addEntity(player);
 engine.addEntity(ground);
 engine.addEntity(block);
+engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
+addSpawn(engine);
 drawCollider(canvas, engine);
 addGravity(engine);
 addPlayerController(input, engine);
