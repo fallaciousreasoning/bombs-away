@@ -134,11 +134,11 @@ export default function solve(island: Island) {
     //         .position
     //         .sub(message.normal
     //             .mul(message.penetration).mul(0.5));
-    const slop = 0.000;
+    const slop = 0.001;
     // if (island.manifold.penetration < slop) {
     //     return;
     // }
-    const percentCorrection = 0.5;
+    const percentCorrection = 0.99;
 
     const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
     island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
