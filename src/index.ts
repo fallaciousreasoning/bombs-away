@@ -2,6 +2,7 @@ import { boxCollider, circleCollider } from "./collision/colliderFactory";
 import Body from "./components/body";
 import Player from "./components/player";
 import Spawn from "./components/spawn";
+import { Tag } from "./components/tag";
 import { Transform } from "./components/transform";
 import Input from "./core/input";
 import Vector2 from "./core/vector2";
@@ -25,6 +26,7 @@ const canvas = document.getElementById('root') as HTMLCanvasElement;
 const makeBomb = (spawn: Entity) => {
     const bomb = new Entity();
 
+    bomb.add(new Tag('deforms'));
     bomb.add(new Transform(spawn.get('transform').position));
     bomb.add(boxCollider(1, 1));
 
@@ -45,6 +47,7 @@ player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(10));
 
 const ground = new Entity();
+ground.add(new Tag('terrain'));
 ground.add(boxCollider(10, 11));
 ground.add(new Transform(new Vector2(5, 10)));
 
