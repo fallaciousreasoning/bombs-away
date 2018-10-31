@@ -77,14 +77,12 @@ export default function solve(island: Island) {
     const aVelocity = velocityAtPoint(island.a, contact);
     const bVelocity = velocityAtPoint(island.b, contact);
 
-    let relativeVelocity = bVelocity.sub(aVelocity);
-
+    const relativeVelocity = bVelocity.sub(aVelocity);
     const velocityAlongNormal = normal.dot(relativeVelocity);
 
     // If we're already moving apart, don't do anything.
     if (velocityAlongNormal >= 0)
         return;
-
 
     // Work out how we're going to hand out the collision response.
     const aInvMass = getInvMass(island.a);
@@ -138,16 +136,16 @@ export default function solve(island: Island) {
     // if (island.manifold.penetration < slop) {
     //     return;
     // }
-    const percentCorrection = 0.8;
+    const percentCorrection = 1;
 
     const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
 
     const away = island.a.transform.position.sub(contact).normalized();
     const correctionAwayFromContact = away.dot(correction);
 
-    if (correctionAwayFromContact > 0) {
+    if (correctionAwayFromContact >= 0) {
         return;
     }
     island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
-    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(1));
+    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(-1));
 }

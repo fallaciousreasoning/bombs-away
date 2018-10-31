@@ -40,7 +40,7 @@ bomber.add(new Transform(new Vector2(5, 0)));
 const player = new Entity();
 player.add(new Player());
 player.add(circleCollider(1, 9));
-player.add(new Transform(new Vector2(5, 1)));
+player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(1));
 
 const ground = new Entity();
@@ -48,7 +48,7 @@ ground.add(boxCollider(10, 1));
 ground.add(new Transform(new Vector2(5, 5)));
 
 const block = new Entity();
-block.add(boxCollider(1, 2));
+block.add(boxCollider(1, 1));
 block.add(new Transform(new Vector2(7, 3), Math.PI/2));
 block.add(new Body(10));
 
@@ -67,10 +67,11 @@ ramp.add({
 ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);
+engine.addEntity(block);
+engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(ground);
-engine.addEntity(block);
-engine.addEntity(bomber);
+// engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
