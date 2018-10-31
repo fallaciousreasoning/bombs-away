@@ -1,13 +1,9 @@
 import { hasTag, Tag } from "../components/tag";
 import { Transform } from "../components/transform";
-import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { Entity } from "../entity";
 import { convexPartition } from "../geometry/bayazitDecomposer";
-import { makeBox } from "../geometry/createPolygon";
 import { subtract } from "../geometry/subtract";
-
-const explosionShape = makeBox(1, 1).translate(new Vector2(0, 0.9));
 
 export const deformTerrain = (engine: Engine) => {
     engine.makeSystem()
@@ -23,7 +19,7 @@ export const deformTerrain = (engine: Engine) => {
             engine.removeEntity(island.moved);
             engine.removeEntity(island.hit)
 
-            const removeShape = explosionShape.translate(island.moved.transform.position);
+            const removeShape = island.moved.collider.vertices.translate(island.moved.transform.position);
             const fromShape = island.hit.collider.vertices.translate(island.hit.transform.position);
 
             const subtracted = subtract(fromShape, removeShape);

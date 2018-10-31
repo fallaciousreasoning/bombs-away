@@ -1,5 +1,6 @@
 import { boxCollider, circleCollider } from "./collision/colliderFactory";
 import Body from "./components/body";
+import Explodes from "./components/explodes";
 import Player from "./components/player";
 import Spawn from "./components/spawn";
 import { Tag } from "./components/tag";
@@ -9,6 +10,7 @@ import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
 import { Vertices } from "./geometry/vertices";
+import explode from "./systems/addExplosion";
 import addGravity from "./systems/addGravity";
 import addRenderer from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
@@ -23,10 +25,21 @@ window['debugPoints'] = [];
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
+const makeExplosion = (from: Entity) => {
+    const explosion = new Entity();
+
+    explosion.add(new Tag('deforms'));
+    explosion.add(new Transform(from.get('transform').position));
+    explosion.add(circleCollider(2));
+    explosion.add(new Body());
+
+    return explosion;
+}
+
 const makeBomb = (spawn: Entity) => {
     const bomb = new Entity();
 
-    bomb.add(new Tag('deforms'));
+    bomb.add(new Explodes(makeExplosion));
     bomb.add(new Transform(spawn.get('transform').position));
     bomb.add(boxCollider(1, 1));
 
@@ -72,10 +85,10 @@ ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);
 engine.addEntity(block);
-engine.addEntity(makeBomb(bomber));
+// engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(ground);
-// engine.addEntity(bomber);
+engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
@@ -88,5 +101,6 @@ addPlayerController(input, engine);
 addPhysics(engine);
 convexHullTester(input, engine);
 deformTerrain(engine);
+explode(engine);
 
 

@@ -75,6 +75,10 @@ export class Engine {
     }
 
     removeEntity(entityish: { id: number }) {
+        if (!entityish.id) {
+            return;
+        }
+
         let entity: Entity;
         let index: number;
         for (let i = 0; i < this.entities.items.length; ++i) {
@@ -88,6 +92,8 @@ export class Engine {
         if (!entity) {
             return;
         }
+
+        entity.id = undefined;
 
         destroyMessage.entity = entity;
         this.broadcastMessage(destroyMessage);

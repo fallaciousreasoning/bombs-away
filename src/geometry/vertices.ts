@@ -1,7 +1,7 @@
-import Vector2 from "../core/vector2";
-import { AABB } from "../core/aabb";
-import { isLeft, isRight } from "./lineUtils";
 import { epsilon } from "../collision/collisionSettings";
+import { AABB } from "../core/aabb";
+import Vector2 from "../core/vector2";
+import { isRight } from "./lineUtils";
 
 export class Vertices {
     vertices: Vector2[];
@@ -81,9 +81,9 @@ export class Vertices {
             throw new Error("Vertices must be defined");
         }
 
-        if (vertices.length < 3 && !suppressWarnings) {
-            throw new Error("You must provide at least 3 vertices");
-        }
+        // if (vertices.length < 3 && !suppressWarnings) {
+        //     throw new Error("You must provide at least 3 vertices");
+        // }
 
         this.vertices = vertices;
     }
