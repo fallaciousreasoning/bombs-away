@@ -7,7 +7,7 @@ import { subtract } from "../geometry/subtract";
 
 export const deformTerrain = (engine: Engine) => {
     engine.makeSystem()
-        .onMessage('collision-enter', island => {
+        .onMessage('trigger-enter', island => {
             const isCutty = hasTag(island.moved, 'deforms');
             const isCuttable = hasTag(island.hit, 'terrain');
 

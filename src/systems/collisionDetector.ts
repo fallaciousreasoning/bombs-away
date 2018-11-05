@@ -121,6 +121,9 @@ class CollisionManager {
             ? 'trigger'
             : 'collision', island);
 
+        // Don't try and solve trigger collisions.
+        if (island.a.collider.isTrigger || island.b.collider.isTrigger) return;
+
         solve(island);
     }
 }
@@ -130,36 +133,36 @@ export default function addPhysics(engine: Engine) {
     const collidable = engine.getFamily('collider', 'transform').entities;
 
     engine
-        .makeSystem('body', 'collider', 'transform')
+        .makeSystem('collider', 'transform')
         .on('tick', (entities, message) => {
             const steps = 1;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
-            // Outer loop over all dynamic bodies.
-            for (let i = 0; i < entities.length; ++i) {
-                const a = entities[i];
-                const body = a.get('body');
+                // Outer loop over all dynamic bodies.
+                for (let i = 0; i < entities.length; ++i) {
+                    const a = entities[i];
 
-                // Can't update entity with no body.
-                if (!body) {
-                    continue;
-                }
 
-                // Move the entity.
-                const movedAmount = body.velocity.mul(step);
-                a.transform.position = a.transform.position.add(movedAmount);
-                a.transform.rotation += body.angularVelocity * step;
+                    const body = a.get('body');
 
-                if (!body.isDynamic) continue;
+                    // Can't update entity with no body.
+                    if (body) {
+                        // Move the entity.
+                        const movedAmount = body.velocity.mul(step);
+                        a.transform.position = a.transform.position.add(movedAmount);
+                        a.transform.rotation += body.angularVelocity * step;
 
-                // Inner loop over all other bodies.
-                for (let j = 0; j < collidable.length; ++j) {
-                    const b = collidable[j] as Entityish<['transform', 'collider']>;
-                    if (a.id == b.id) continue;
+                        if (!body.isDynamic) continue;
+                    }
 
-                    collisionManager.run(a, b);
+                    // Inner loop over all other bodies.
+                    for (let j = 0; j < collidable.length; ++j) {
+                        const b = collidable[j] as Entityish<['transform', 'collider']>;
+                        if (a.id == b.id) continue;
+
+                        collisionManager.run(a, b);
+                    }
                 }
             }
-        }
         });
 }

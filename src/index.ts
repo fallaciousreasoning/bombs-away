@@ -30,8 +30,8 @@ const makeExplosion = (from: Entity) => {
 
     explosion.add(new Tag('deforms'));
     explosion.add(new Transform(from.get('transform').position));
-    explosion.add(circleCollider(2));
-    explosion.add(new Body());
+    explosion.add(boxCollider(2, 2));
+    explosion.get('collider').isTrigger = true;
 
     return explosion;
 }
@@ -51,7 +51,7 @@ const makeBomb = (spawn: Entity) => {
 
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
-bomber.add(new Transform(new Vector2(9, 0)));
+bomber.add(new Transform(new Vector2(8.5, 0)));
 
 const player = new Entity();
 player.add(new Player());
@@ -85,7 +85,7 @@ ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);
 engine.addEntity(block);
-// engine.addEntity(makeBomb(bomber));
+engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(ground);
 // engine.addEntity(bomber);
