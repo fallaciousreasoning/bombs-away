@@ -20,7 +20,7 @@ const toPolybool = (vertices: Vertices): PolyboolPoly => {
 const fromPolybool = (poly: PolyboolPoly): Vertices[] => {
     return poly.regions.map(r => {
         return new Vertices(
-            r.map(point => new Vector2(point[0], point[1]))
+            r.map(point => new Vector2(point[0], point[1])).reverse()
         );
     });
 }

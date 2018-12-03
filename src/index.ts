@@ -1,6 +1,7 @@
 import { boxCollider, circleCollider } from "./collision/colliderFactory";
 import Body from "./components/body";
 import Explodes from "./components/explodes";
+import Health from "./components/health";
 import Player from "./components/player";
 import Spawn from "./components/spawn";
 import { Tag } from "./components/tag";
@@ -18,6 +19,7 @@ import addPhysics from "./systems/collisionDetector";
 import convexHullTester from "./systems/convexHullTester";
 import { deformTerrain } from "./systems/deformTerrain";
 import addPlayerController from "./systems/playerController";
+import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
 
 window['engine'] = engine;
@@ -32,6 +34,7 @@ const makeExplosion = (from: Entity) => {
     explosion.add(new Transform(from.get('transform').position));
     explosion.add(boxCollider(2, 2));
     explosion.get('collider').isTrigger = true;
+    explosion.add(new Health(1));
 
     return explosion;
 }
@@ -101,6 +104,7 @@ addPlayerController(input, engine);
 addPhysics(engine);
 convexHullTester(input, engine);
 deformTerrain(engine);
+removeDeadThings(engine);
 explode(engine);
 
 

@@ -3,7 +3,7 @@ import { Transform } from "../components/transform";
 import { Engine } from "../engine";
 import { Entity } from "../entity";
 import { convexPartition } from "../geometry/naiveDecomposer";
-import { subtract } from "../geometry/subtract";
+import { difference } from "../geometry/polyboolSubtract";
 
 export const deformTerrain = (engine: Engine) => {
     engine.makeSystem()
@@ -16,16 +16,18 @@ export const deformTerrain = (engine: Engine) => {
             }
 
             // Remove the cutty entity.
-            engine.removeEntity(island.moved);
+            const health = island.moved.get('health');
+            if (health) {
+                health.health = 0;
+            }
             engine.removeEntity(island.hit)
 
             const removeShape = island.moved.collider.vertices.translate(island.moved.transform.position);
             const fromShape = island.hit.collider.vertices.translate(island.hit.transform.position);
 
-            const subtracted = subtract(fromShape, removeShape);
-            const decomposed = convexPartition(subtracted);
+            const diffed = difference(fromShape, removeShape);
+            const decomposed = diffed.reduce((prev, next) => [...prev, ...convexPartition(next)], []);
 
-            // For now, we can only deal with one bit.
             
             for (const vertices of decomposed) {
                 let centroid = vertices.centroid;
