@@ -33,7 +33,7 @@ const makeExplosion = (from: Entity) => {
 
     explosion.add(new Tag('deforms'));
     explosion.add(new Transform(from.get('transform').position));
-    explosion.add(circleCollider(2));
+    explosion.add(circleCollider(1));
     explosion.get('collider').isTrigger = true;
     explosion.add(new Health(1));
 

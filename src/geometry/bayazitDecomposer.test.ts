@@ -1,7 +1,6 @@
 import Vector2 from '../core/vector2';
 import { convexPartition } from './bayazitDecomposer';
 import { makeBox, makeCircle } from './createPolygon';
-import { subtract } from './subtract';
 import { Vertices } from './vertices';
 
 test('non concave polygon is not changed', () => {
@@ -13,20 +12,6 @@ test('non concave polygon is not changed', () => {
 
     const decomposedBox = convexPartition(box);
     expect(decomposedBox[0]).toBe(box);
-});
-
-test("bayazit makes no concave polygons", () => {
-    const box = makeBox(5, 2);
-    const circle = makeCircle(1, 8).translate(new Vector2(0, -1));
-
-    const subtracted = subtract(box, circle);
-    const decomposed = convexPartition(subtracted);
-
-    for (const polygon of decomposed) {
-        for (let i = 0; i < polygon.length; ++i) {
-            expect(polygon.isReflexAt(i)).toBeFalsy();
-        }
-    }
 });
 
 test("polygon is correctly decomposed", () => {
