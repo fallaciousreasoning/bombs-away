@@ -112,4 +112,18 @@ export default class Vector2 {
     negate() {
         return new Vector2(-this.x, -this.y);
     }
+
+    static min(...args: Vector2[]) {
+        let result: Vector2;
+        for (let i = 0; i < args.length; ++i) {
+            const cur = args[i];
+
+            if (!result) result = cur;
+
+            if (cur.x < result.x) result._x = cur.x;
+            if (cur.y < result.y) result._y = cur.y;
+        }   
+
+        return result;
+    }
 }
