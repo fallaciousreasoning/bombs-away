@@ -7,10 +7,10 @@ import Vector2 from "../core/vector2";
  * @param point The point
  */
 export const cross = (start: Vector2, end: Vector2, point: Vector2) => {
-    return (end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
+    return area(start, end, point); //(end.x - start.x) * (point.y - start.y) - (end.y - start.y) * (point.x - start.x);
 }
 
-const area = (a: Vector2, b: Vector2, c: Vector2) => {
+export const area = (a: Vector2, b: Vector2, c: Vector2) => {
     return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)
 }
 

@@ -1,7 +1,7 @@
+import Vector2 from '../core/vector2';
+import { convexPartition } from './bayazitDecomposer';
 import { makeBox, makeCircle } from './createPolygon';
 import { subtract } from './subtract';
-import { convexPartition } from './bayazitDecomposer';
-import Vector2 from '../core/vector2';
 import { Vertices } from './vertices';
 
 test('non concave polygon is not changed', () => {
@@ -59,6 +59,41 @@ test("polygon is correctly decomposed", () => {
         .map(parts => new Vector2(parts[0], parts[1]));
 
     const vertices = new Vertices(points);
+    console.log(vertices.area)
+
+    const decomposed = convexPartition(vertices);
+    const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
+
+    expect(result).toBe(output);
+});
+
+test("polygon does not regress", () => {
+    const input = `10 15.5
+9.5 5.125
+9.5 5.752777777777778
+7.5 5.752777777777778
+7.5 5.125
+0 15.5`;
+
+    const output = `9.5 5.752778
+9.5 5.125
+10 15.5
+=======
+10 15.5
+0 15.5
+7.5 5.752778
+9.5 5.752778
+=======
+0 15.5
+7.5 5.125
+7.5 5.752778`;
+
+    const points = input.trim().split('\n')
+        .map(line => line.trim().split(' ').map(parseFloat))
+        .map(parts => new Vector2(parts[0], parts[1]));
+
+    const vertices = new Vertices(points);
+    console.log(vertices.area);
 
     const decomposed = convexPartition(vertices);
     const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');

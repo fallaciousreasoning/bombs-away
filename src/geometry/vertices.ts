@@ -86,6 +86,19 @@ export class Vertices {
         // }
 
         this.vertices = vertices;
+        this.forceCounterClockwise();
+        this.internalArea = undefined;
+    }
+
+    isCounterClockwise() {
+        return this.area > 0;
+    }
+
+    forceCounterClockwise() {
+        if (this.isCounterClockwise()) 
+            return;
+
+        this.vertices = this.vertices.reverse();
     }
 
     contains = (point: Vector2) => {

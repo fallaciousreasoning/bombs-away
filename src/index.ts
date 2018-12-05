@@ -24,6 +24,7 @@ import addSpawn from "./systems/spawnSystem";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
+window['polyString'] = (polys) => polys.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 
@@ -32,7 +33,7 @@ const makeExplosion = (from: Entity) => {
 
     explosion.add(new Tag('deforms'));
     explosion.add(new Transform(from.get('transform').position));
-    explosion.add(boxCollider(2, 2));
+    explosion.add(circleCollider(2));
     explosion.get('collider').isTrigger = true;
     explosion.add(new Health(1));
 
@@ -88,16 +89,16 @@ ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);
 engine.addEntity(block);
-engine.addEntity(makeBomb(bomber));
+// engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(ground);
-// engine.addEntity(bomber);
+engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
-addSpawn(engine);
+addSpawn(engine, input);
 drawCollider(canvas, engine);
 addGravity(engine);
 addPlayerController(input, engine);

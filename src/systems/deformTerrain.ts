@@ -2,7 +2,7 @@ import { hasTag, Tag } from "../components/tag";
 import { Transform } from "../components/transform";
 import { Engine } from "../engine";
 import { Entity } from "../entity";
-import { convexPartition } from "../geometry/naiveDecomposer";
+import { convexPartition } from "../geometry/bayazitDecomposer";
 import { difference } from "../geometry/polyboolSubtract";
 
 export const deformTerrain = (engine: Engine) => {
