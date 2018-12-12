@@ -5,15 +5,15 @@ const vertexSeparator = '\n';
 const dimensionSeparator = ' ';
 
 export const polygonsToString = (polygons: Vertices[]) => {
-    return polygons.map(verticesToString).join("=====\n");
+    return polygons.map(verticesToString).join("\n=====\n");
 }
 
 export const verticesToString = (vertices: Vertices) => {
-    return vertices.vertices.map(v => `${v.x}${dimensionSeparator}${v.y}`).join(vertexSeparator);
+    return vertices.vertices.map(v => `${Math.round(v.x*100)/100}${dimensionSeparator}${Math.round(v.y*100)/100}`).join(vertexSeparator);
 }
 
 export const polygonsFromString = (polygonsString: string) => {
-    return polygonsString.split("=====\n").map(verticesFromString);
+    return polygonsString.split("\n=====\n").map(verticesFromString);
 }
 
 export const verticesFromString = (verticesString: string) => {
