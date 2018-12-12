@@ -44,7 +44,6 @@ test("polygon is correctly decomposed", () => {
         .map(parts => new Vector2(parts[0], parts[1]));
 
     const vertices = new Vertices(points);
-    console.log(vertices.area)
 
     const decomposed = convexPartition(vertices);
     const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
@@ -78,7 +77,6 @@ test("polygon does not regress", () => {
         .map(parts => new Vector2(parts[0], parts[1]));
 
     const vertices = new Vertices(points);
-    console.log(vertices.area);
 
     const decomposed = convexPartition(vertices);
     const result = decomposed.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
