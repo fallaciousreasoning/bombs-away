@@ -113,10 +113,10 @@ export default class Vector2 {
         return new Vector2(-this.x, -this.y);
     }
 
-    equals(vec: Vector2, tolerance=1e-7) {
+    equals(vec: Vector2, tolerance=1.192092896e-07) {
         if (!vec) return false;
 
-        return Math.abs(vec.x - this.x) < tolerance && Math.abs(vec.y - this.y) < tolerance;
+        return this.sub(vec).lengthSquared() < tolerance;
     }
 
     static min(...args: Vector2[]) {

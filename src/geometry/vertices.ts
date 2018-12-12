@@ -1,7 +1,7 @@
 import { epsilon } from "../collision/collisionSettings";
 import { AABB } from "../core/aabb";
 import Vector2 from "../core/vector2";
-import { isRight } from "./lineUtils";
+import { isLeft, isRight } from "./lineUtils";
 
 export class Vertices {
     vertices: Vector2[];
@@ -104,7 +104,7 @@ export class Vertices {
     contains = (point: Vector2) => {
         for (let i = 0; i < this.vertices.length; ++i) {
             const next = i === this.vertices.length - 1 ? 0 : i + 1;
-            const left = isRight(this.vertices[i], this.vertices[next], point);
+            const left = isLeft(this.vertices[i], this.vertices[next], point);
             if (!left) return false;
         }
 

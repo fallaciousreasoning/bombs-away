@@ -3,7 +3,7 @@ import { Transform } from "../components/transform";
 import { Engine } from "../engine";
 import { Entity } from "../entity";
 import { convexPartition } from "../geometry/bayazitDecomposer";
-import { difference } from "../geometry/polyboolSubtract";
+import { difference } from "../geometry/yuPengClipper";
 
 export const deformTerrain = (engine: Engine) => {
     engine.makeSystem()

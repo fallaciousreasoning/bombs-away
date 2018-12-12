@@ -148,8 +148,9 @@ const calculateResultChain = (subjectInfo: CoeffEdge[], clipInfo: CoeffEdge[]) =
      */
     const calculateBeta = (point: Vector2, info: CoeffEdge) => {
         let result = 0;
-        if (pointInSimplex(point, info.edge))
+        if (pointInSimplex(point, info.edge)) {
             result = info.coeff;
+        }
 
         if (pointOnLineSegment(Vector2.zero, info.edge.edgeStart, point)
             || pointOnLineSegment(Vector2.zero, info.edge.edgeEnd, point))
@@ -172,23 +173,27 @@ const calculateResultChain = (subjectInfo: CoeffEdge[], clipInfo: CoeffEdge[]) =
             }
         }
 
-        if (edgeCharacter == 0)
+        if (edgeCharacter == 0) {
             resultSimplices.push(subjectInfo[i].edge);
+        }
     }
-
+    
     for (let i = 0; i < clipInfo.length; ++i) {
         let edgeCharacter = 0;
         const edge = clipInfo[i].edge;
         if (!contains(resultSimplices, edge)
-            && !contains(resultSimplices, edge.reverse())) {
-                edgeCharacter = 0;
+        && !contains(resultSimplices, edge.reverse())) {
+            edgeCharacter = 0;
                 for (let j = 0; j < subjectInfo.length; ++j) {
                     if (!contains(subjectInfo, edge)
-                        && !contains(subjectInfo, edge.reverse()))
-                        edgeCharacter += calculateBeta(edge.center, subjectInfo[j]);
+                    && !contains(subjectInfo, edge.reverse())) {
+                        edgeCharacter += calculateBeta(clipInfo[i].edge.center, subjectInfo[j]);
+                        }
                 }
 
-                if (edgeCharacter == 1) resultSimplices.push(edge.reverse());
+                if (edgeCharacter == 1) {
+                    resultSimplices.push(edge.reverse());
+                }
             }
     }
 
