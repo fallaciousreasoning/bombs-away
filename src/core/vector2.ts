@@ -113,6 +113,12 @@ export default class Vector2 {
         return new Vector2(-this.x, -this.y);
     }
 
+    equals(vec: Vector2, tolerance=1e-7) {
+        if (!vec) return false;
+
+        return Math.abs(vec.x - this.x) < tolerance && Math.abs(vec.y - this.y) < tolerance;
+    }
+
     static min(...args: Vector2[]) {
         let result: Vector2;
         for (let i = 0; i < args.length; ++i) {
