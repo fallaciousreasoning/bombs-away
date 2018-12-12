@@ -4,8 +4,16 @@ import { Vertices } from "./vertices";
 const vertexSeparator = '\n';
 const dimensionSeparator = ' ';
 
+export const polygonsToString = (polygons: Vertices[]) => {
+    return polygons.map(verticesToString).join("=====\n");
+}
+
 export const verticesToString = (vertices: Vertices) => {
     return vertices.vertices.map(v => `${v.x}${dimensionSeparator}${v.y}`).join(vertexSeparator);
+}
+
+export const polygonsFromString = (polygonsString: string) => {
+    return polygonsString.split("=====\n").map(verticesFromString);
 }
 
 export const verticesFromString = (verticesString: string) => {
