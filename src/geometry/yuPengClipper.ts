@@ -12,8 +12,8 @@ const clipperEpsilonSquared = 1.192092896e-07;
  * @param clip The clip polygon
  */
 const calculateIntersections = (polygon1: Vertices, polygon2: Vertices): { subject: Vertices, clip: Vertices } => {
-    const slicedPolygon1 = new Vertices(polygon1.vertices);
-    const slicedPolygon2 = new Vertices(polygon2.vertices);
+    const slicedPolygon1 = new Vertices(polygon1.vertices.slice());
+    const slicedPolygon2 = new Vertices(polygon2.vertices.slice());
 
     /**
      * Used for determining the ordering of multiple intersections on the same edge.
@@ -78,7 +78,7 @@ const calculateIntersections = (polygon1: Vertices, polygon2: Vertices): { subje
 
 export const difference = (subject: Vertices, clip: Vertices) => {
     // Calculate the intersection and touch points
-    const sliced = calculateIntersections(subject, clip);
+    const sliced = calculateIntersections(subject.round(4), clip.round(4));
 
     const lsBound = sliced.subject.bounds.min;
     const lcBound = sliced.subject.bounds.min;
@@ -241,7 +241,7 @@ const buildPolygonsFromChain = (simplices: Edge[]) => {
         }
 
         if (output.length < 3) {
-            console.error("Degenerated output polygon produced (vertices < 3).");
+            console.error("Degenerate output polygon produced (vertices < 3).");
         }
 
         result.push(new Vertices(output));

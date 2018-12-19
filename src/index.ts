@@ -10,6 +10,7 @@ import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { engine } from './game';
+import { polygonsToString } from "./geometry/serializer";
 import { Vertices } from "./geometry/vertices";
 import explode from "./systems/addExplosion";
 import addGravity from "./systems/addGravity";
@@ -24,7 +25,7 @@ import addSpawn from "./systems/spawnSystem";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
-window['polyString'] = (polys) => polys.map(p => p.vertices.map(v => `${v.x} ${v.y}`).join('\n')).join('\n=====\n');
+window['polyString'] = polygonsToString;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
 

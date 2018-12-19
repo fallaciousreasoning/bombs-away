@@ -17,7 +17,7 @@ const lineIntersect = (p1: Vector2, p2: Vector2, q1: Vector2, q2: Vector2) => {
     let c2 = a2 * q1.x + b2 * q1.y;
     let det = a1 * b2 - a2 * b1;
 
-    if (Math.abs(det) > 0.00005) {
+    if (Math.abs(det) > 0.0000005) {
         // lines are not parallel
         return new Vector2((b2 * c1 - b1 * c2) / det,
             (a1 * c2 - a2 * c1) / det);

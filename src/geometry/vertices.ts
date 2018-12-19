@@ -215,4 +215,8 @@ export class Vertices {
 
         return supports;
     }
+
+    round(dps: number) {
+        return new Vertices(this.vertices.map(v => v.round(dps)));
+    }
 }

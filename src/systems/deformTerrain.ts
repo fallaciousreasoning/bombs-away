@@ -25,9 +25,12 @@ export const deformTerrain = (engine: Engine) => {
             const removeShape = island.moved.collider.vertices.translate(island.moved.transform.position);
             const fromShape = island.hit.collider.vertices.translate(island.hit.transform.position);
 
-            const diffed = difference(fromShape, removeShape);
-            const decomposed = diffed.reduce((prev, next) => [...prev, ...convexPartition(next)], []);
+            const dps = 4;
+            const diffed = difference(fromShape.round(dps), removeShape.round(dps));
 
+            const valid = diffed.filter(f => f.length >= 3).map(f => f.round(dps));
+            const filtered = valid.filter(v => v.area > 0.0001);
+            const decomposed = filtered.reduce((prev, next) => [...prev, ...convexPartition(next)], []);
             
             for (const vertices of decomposed) {
                 let centroid = vertices.centroid;

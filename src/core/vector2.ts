@@ -89,10 +89,6 @@ export default class Vector2 {
         return Math.atan2(normalized.y, normalized.x) + Math.PI/2;
     }
 
-    round() {
-        return new Vector2(Math.round(this.x), Math.round(this.y));
-    }
-
     withX(x: number) {
         return new Vector2(x, this.y);
     }
@@ -117,6 +113,13 @@ export default class Vector2 {
         if (!vec) return false;
 
         return this.sub(vec).lengthSquared() < tolerance;
+    }
+
+    round(dps: number=0) {
+        const mul = Math.pow(10, dps);
+        const x = Math.round(this.x * mul) / mul;
+        const y = Math.round(this.y * mul) / mul;
+        return new Vector2(x, y);
     }
 
     static min(...args: Vector2[]) {
