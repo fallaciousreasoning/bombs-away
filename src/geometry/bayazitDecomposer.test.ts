@@ -52,7 +52,7 @@ test("polygon is correctly decomposed", () => {
     expect(result).toBe(output);
 });
 
-test("polygon does not regress", () => {
+test("1.polygon does not regress", () => {
     const input = `10 15.5
 9.5 5.13
 9.5 5.75
@@ -72,6 +72,33 @@ test("polygon does not regress", () => {
 0 15.5
 7.5 5.13
 7.5 5.75`;
+
+    const vertices = verticesFromString(input);
+
+    const decomposed = convexPartition(vertices);
+    const result = polygonsToString(decomposed);
+
+    expect(result).toBe(output);
+});
+
+test("2.polygon does not regress", () => {
+    const input = `10 4.5
+10 15.5
+9.313884 6.266832
+9.47 5.89
+9.425981 5.782228
+9.52 5.56`;
+
+    const output = `9.47 5.89
+9.43 5.78
+9.52 5.56
+10 4.5
+10 5.9
+=====
+10 15.5
+9.31 6.27
+9.47 5.89
+10 5.9`;
 
     const vertices = verticesFromString(input);
 
