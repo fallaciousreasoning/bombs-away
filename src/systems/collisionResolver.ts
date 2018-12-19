@@ -102,7 +102,7 @@ export default function solve(island: Island) {
     let impulse = normal
         .mul(magnitude);
 
-    for (const contact of island.manifold.contacts){
+    for (const contact of island.manifold.contacts) {
         aBody && aBody.applyForce(impulse.mul(-1), contact.sub(island.a.transform.position), aInvMass, aInvInertia);
         bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
     }
@@ -115,32 +115,21 @@ export default function solve(island: Island) {
 
     const friction = (island.a.collider.friction + island.b.collider.friction) / 2;
 
-    // TODO: Friction.
     const velocityAlongTangent = tangent.dot(relativeVelocity);
     const frictionMagnitude = velocityAlongTangent / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
     const frictionImpulse = tangent
         .mul(frictionMagnitude)
         .mul(friction);
 
+    // If the friction is toward the other object, don't apply it.
+    if (normal.dot(frictionImpulse) < 0)
+        return
+
     aBody && aBody.applyForce(frictionImpulse, contact.sub(island.a.transform.position), aInvMass, aInvInertia);
     bBody && bBody.applyForce(frictionImpulse.mul(-1), contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
 
-    // movedBody.velocity = movedBody.velocity.sub(frictionImpulse);
-
-    // Positional correction, so we don't sink into things.
-    // if (message.penetration > 0.005)
-    //     message.moved.transform.position = message
-    //         .moved
-    //         .transform
-    //         .position
-    //         .sub(message.normal
-    //             .mul(message.penetration).mul(0.5));
     const slop = 0.01;
-    // if (island.manifold.penetration < slop) {
-    //     return;
-    // }
     const percentCorrection = 1;
-
     const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
 
     const away = island.a.transform.position.sub(contact).normalized();
