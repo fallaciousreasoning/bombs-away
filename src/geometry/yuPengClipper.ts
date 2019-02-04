@@ -1,6 +1,6 @@
 import Vector2 from "../core/vector2";
 import { area, lineIntersection } from "./lineUtils";
-import { collinearSimplify } from "./simplifyTools";
+import { collinearSimplify, distSimplify } from "./simplifyTools";
 import { Vertices } from "./vertices";
 
 const clipperEpsilonSquared = 1.192092896e-07;
@@ -99,7 +99,7 @@ export const difference = (subject: Vertices, clip: Vertices) => {
 
     const invTranslate = translate.negate();
     const result = buildPolygonsFromChain(resultSimplices)
-        .map(poly => collinearSimplify(poly)) // Simplify
+        .map(poly => distSimplify(poly, 0.01)) // Simplify
         .map(poly => poly.translate(invTranslate)); // Translate back
     return result;
 }
