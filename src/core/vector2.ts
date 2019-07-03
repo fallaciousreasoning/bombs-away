@@ -109,7 +109,7 @@ export default class Vector2 {
         return new Vector2(-this.x, -this.y);
     }
 
-    equals(vec: Vector2, tolerance=1.192092896e-07) {
+    equals(vec: Vector2, tolerance=1.192092896e-06) {
         if (!vec) return false;
 
         return this.sub(vec).lengthSquared() < tolerance;

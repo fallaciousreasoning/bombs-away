@@ -50,7 +50,8 @@ export class TextureConverter {
      */
     isInShape(vertex: Vector2) {
         // TODO: Make sure polygon is checking its bounds have the point.
-        return this.vertices.some(polygon => polygon.contains(vertex) || polygon.hasVertex(vertex));
+        return this.vertices.some(polygon => polygon.contains(vertex)
+                || polygon.hasVertex(vertex));
     }
 
     /**
