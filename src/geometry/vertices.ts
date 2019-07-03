@@ -111,6 +111,10 @@ export class Vertices {
         return true;
     }
 
+    hasVertex = (point: Vector2) => {
+        return this.vertices.some(v => v.equals(point));
+    }
+
     translate(by: Vector2) {
         return new Vertices(this.vertices.map(v => v.add(by)));
     }

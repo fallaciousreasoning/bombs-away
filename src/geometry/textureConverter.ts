@@ -50,7 +50,7 @@ export class TextureConverter {
      */
     isInShape(vertex: Vector2) {
         // TODO: Make sure polygon is checking its bounds have the point.
-        return this.vertices.some(polygon => polygon.contains(vertex));
+        return this.vertices.some(polygon => polygon.contains(vertex) || polygon.hasVertex(vertex));
     }
 
     /**
@@ -58,7 +58,7 @@ export class TextureConverter {
      * @param vertex The vertex to determine solidity of.
      */
     isSolid(vertex: Vector2) {
-        return !!this.points[vertex.x][vertex.y];
+        return !!this.points[vertex.y][vertex.x];
     }
 
     /**
@@ -67,8 +67,6 @@ export class TextureConverter {
      * @param currentDirection The current direction (in directions).
      */
     findNextVertex(currentVertex: Vector2, currentDirection: number) {
-        const angleMultiplier = Math.PI * 0.25;
-
         // Loop through all directions but one.
         for (let i = 0; i < directions.length - 1; ++i) {
             // Starting direction is one clockwise rotation from our current, because we might have missed it.
@@ -78,6 +76,8 @@ export class TextureConverter {
             direction %= directions.length;
 
             const vertex = currentVertex.add(directions[direction]);
+            if (!this.inBounds(vertex)) continue;
+
             if (this.isSolid(vertex)) return { direction, vertex };
         }
 
