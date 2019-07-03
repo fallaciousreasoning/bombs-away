@@ -101,6 +101,10 @@ export class TextureConverter {
 
         const result = new Vertices(polygon);
         result.forceCounterClockwise();
+
+        // TODO: Snip on duplicates.
+        // If alreadySeen(vertex) <-- move everything before the previous occurence to its own polygon.
+        // Carry on building this one.
         return result;
     }
 
