@@ -51,7 +51,7 @@ export class TextureConverter {
     isInShape(vertex: Vector2) {
         // TODO: Make sure polygon is checking its bounds have the point.
         return this.vertices.some(polygon => polygon.contains(vertex)
-                || polygon.hasVertex(vertex));
+            || polygon.hasVertex(vertex));
     }
 
     /**
@@ -71,7 +71,7 @@ export class TextureConverter {
         // Loop through all directions but one.
         for (let i = 0; i < directions.length - 1; ++i) {
             // Starting direction is one clockwise rotation from our current, because we might have missed it.
-            let direction = currentDirection + 1 - i;
+            let direction = currentDirection + 2 - i;
 
             if (direction < 0) direction += directions.length;
             direction %= directions.length;
@@ -90,7 +90,12 @@ export class TextureConverter {
 
         // Keep finding the next vertex until we get back where we started.
         do {
-            var { vertex, direction } = this.findNextVertex(vertex || startVertex, direction === undefined ? 4 : direction);
+            var { vertex, direction } = this.findNextVertex(vertex
+                || startVertex,
+                direction === undefined
+                    ? 3
+                    : direction);
+
             polygon.push(vertex);
         } while (!vertex.equals(startVertex));
 

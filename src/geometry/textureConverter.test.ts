@@ -88,17 +88,18 @@ test('Lines are valid', () => {
     // TODO test length is correct...
     // TODO make length correct (remove consecutive duplicates).
 });
-// test('Diagonals can join', () => {
-//     const grid = [
-//         [1,0,0,1,1],
-//         [1,1,0,1,1],
-//         [1,1,1,0,0],
-//         [1,1,1,1,1],
-//         [1,1,1,1,1],
-//     ];
 
-//     const converter = new TextureConverter(grid);
-//     const result = converter.getVertices();
+test('Diagonals can join', () => {
+    const grid = [
+        [1,0,0,1,1],
+        [1,1,0,1,1],
+        [1,1,1,0,0],
+        [1,1,1,1,0],
+        [1,1,1,1,1],
+    ];
 
-//     expect(result.length).toBe(1);
-// });
+    const converter = new TextureConverter(grid);
+    const result = converter.getVertices();
+
+    expect(result.length).toBe(1);
+});
