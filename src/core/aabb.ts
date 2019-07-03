@@ -63,4 +63,8 @@ export class AABB {
     intersects(other: AABB) {
         return !(other.max.x <= this.min.x || other.max.y <= this.min.y || other.min.x >= this.max.x || other.min.y >= this.max.y);
     }
+
+    contains(point: Vector2) {
+        return point.x >= this.min.x && point.y >= this.min.y && point.x <= this.max.x && point.y <= this.max.y;
+    }
 }

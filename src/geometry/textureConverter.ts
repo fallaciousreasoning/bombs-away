@@ -70,7 +70,7 @@ export class TextureConverter {
         // Loop through all directions but one.
         for (let i = 0; i < directions.length - 1; ++i) {
             // Starting direction is one clockwise rotation from our current, because we might have missed it.
-            let direction = currentDirection - 1 + i;
+            let direction = currentDirection + 1 - i;
 
             if (direction < 0) direction += directions.length;
             direction %= directions.length;
@@ -89,11 +89,13 @@ export class TextureConverter {
 
         // Keep finding the next vertex until we get back where we started.
         do {
-            var { vertex, direction } = this.findNextVertex(vertex || startVertex, direction === undefined ? 3 : direction);
+            var { vertex, direction } = this.findNextVertex(vertex || startVertex, direction === undefined ? 4 : direction);
             polygon.push(vertex);
         } while (!vertex.equals(startVertex));
 
-        return new Vertices(polygon);
+        const result = new Vertices(polygon);
+        result.forceCounterClockwise();
+        return result;
     }
 
     getVertices(): Vertices[] {
@@ -108,6 +110,7 @@ export class TextureConverter {
                 if (!this.isSolid(vertex)) continue;
                 if (this.isInShape(vertex)) continue;
 
+                // Bug is that contains alg is bad.
                 const polygon = this.makeHull(vertex);
                 const simplified = collinearSimplify(polygon, 0);
 
