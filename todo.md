@@ -1,7 +1,9 @@
 # TODO
-- Create system for generating type unions
-- Refactor components to use generated type unions
-- Refactor systems to a class based model
-- Add message system for update/on collision
-- Add mousebutton support to input
-- Add pressed/released key support 
+- [x] Create system for generating type unions
+- [x] Refactor components to use generated type unions
+- [x] Refactor systems to a class based model
+- [x] Add message system for update/on collision
+- [ ] Add mousebutton support to input
+- [ ] Add pressed/released key support
+- [ ] Use new collision factory
+- [ ] Refactor components for terrain deformation.
