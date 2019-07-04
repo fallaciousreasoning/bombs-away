@@ -97,9 +97,6 @@ test('Diagonals can join', () => {
         [1,1,1,1,0],
         [1,1,1,1,1],
     ];
-    
-    // TODO: Fix this test. There is a bug with self intersecting polygons.
-    // Solution: 
 
     const converter = new TextureConverter(grid);
     const result = converter.getVertices();
