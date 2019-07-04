@@ -122,6 +122,10 @@ export default class Vector2 {
         return new Vector2(x, y);
     }
 
+    toString() {
+        return `Vector2 { x: ${this.x}, y: ${this.y} }`;
+    }
+
     static min(...args: Vector2[]) {
         let result: Vector2;
         for (let i = 0; i < args.length; ++i) {

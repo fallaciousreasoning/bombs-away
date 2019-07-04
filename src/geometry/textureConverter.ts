@@ -29,6 +29,7 @@ const directions = [
 ];
 
 export class TextureConverter {
+    epsilon = 1e-6;
     points: number[][];
     vertices: Vertices[];
 
@@ -84,9 +85,34 @@ export class TextureConverter {
 
         throw new Error("Looks like we had a line of vertices (this is not handled :/)");
     }
+    
+    addPolygon(vertices: Vertices) {
+        vertices.forceCounterClockwise();
 
-    makeHull(startVertex: Vector2): Vertices {
+        const simplified = collinearSimplify(vertices, 0);
+        this.vertices.push(simplified);
+    }
+
+    unwindPolygonTo(vertices: Vector2[], to: Vector2) {
+        const toHash = to.hashCode();
+
+        for (let i = vertices.length -1; i >= 0; --i) {
+            const vertex = vertices[i];
+            const hash = vertex.hashCode();
+
+            if (!vertex.equals(to)) continue;
+
+            const newVertices = vertices.splice(i + 1);
+            this.addPolygon(new Vertices(newVertices));
+            return;            
+        }
+
+        throw new Error("Failed to create unwound polygon!");
+    }
+
+    extractHullsFrom(startVertex: Vector2) {
         const polygon: Vector2[] = [];
+        const seenVertices = new Set();
 
         // Keep finding the next vertex until we get back where we started.
         do {
@@ -95,17 +121,19 @@ export class TextureConverter {
                 direction === undefined
                     ? 3
                     : direction);
+            const hash = `${vertex.x}_${vertex.y}`;
+
+            if (seenVertices.has(hash)) {
+                // Move this vertex and all vertices until the previous occurrence into a new polygon.
+                this.unwindPolygonTo(polygon, vertex);
+                continue;
+            } 
 
             polygon.push(vertex);
+            seenVertices.add(hash);
         } while (!vertex.equals(startVertex));
 
-        const result = new Vertices(polygon);
-        result.forceCounterClockwise();
-
-        // TODO: Snip on duplicates.
-        // If alreadySeen(vertex) <-- move everything before the previous occurence to its own polygon.
-        // Carry on building this one.
-        return result;
+        this.addPolygon(new Vertices(polygon));
     }
 
     getVertices(): Vertices[] {
@@ -120,11 +148,7 @@ export class TextureConverter {
                 if (!this.isSolid(vertex)) continue;
                 if (this.isInShape(vertex)) continue;
 
-                // Bug is that contains alg is bad.
-                const polygon = this.makeHull(vertex);
-                const simplified = collinearSimplify(polygon, 0);
-
-                this.vertices.push(simplified);
+                this.extractHullsFrom(vertex);
             }
 
         return this.vertices;
