@@ -94,16 +94,17 @@ export class TextureConverter {
     }
 
     unwindPolygonTo(vertices: Vector2[], to: Vector2) {
-        const toHash = to.hashCode();
-
         for (let i = vertices.length -1; i >= 0; --i) {
             const vertex = vertices[i];
-            const hash = vertex.hashCode();
-
             if (!vertex.equals(to)) continue;
 
             const newVertices = vertices.splice(i + 1);
-            this.addPolygon(new Vertices(newVertices));
+            // Make sure the first corner is included.
+            newVertices.push(to);
+
+            // We hit this on the other corner.
+            if (newVertices.length >= 3)
+                this.addPolygon(new Vertices(newVertices));
             return;            
         }
 
