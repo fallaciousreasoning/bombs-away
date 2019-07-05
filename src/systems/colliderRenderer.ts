@@ -1,5 +1,7 @@
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
+import { Fixture } from "../collision/fixture";
+import { Collider } from "../components/collider";
 
 export const PIXELS_A_METRE = 64;
 
@@ -28,17 +30,15 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
     engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
     const contacts: Vector2[] = [];
     const pointSize = 0.2;
-    engine
-        .makeSystem("collider", "transform")
-        .onEach('tick', ({ transform, collider }) => {
-            const vertices = collider.vertices;
-            const centroid = collider.vertices.centroid;
 
+    const drawFixture = (collider: Collider, fixture: Fixture) => {
+            const vertices = fixture.vertices;
+            const centroid = fixture.vertices.centroid;
             context.save();
 
             context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
-            context.translate(transform.position.x, transform.position.y);
-            context.rotate(transform.rotation);
+            context.translate(fixture.transform.position.x, fixture.transform.position.y);
+            context.rotate(fixture.transform.rotation);
 
             if (config.drawEdges) {
                 context.beginPath();
@@ -84,6 +84,13 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             }
 
             context.restore();
+    }
+
+    engine
+        .makeSystem("collider")
+        .onEach('tick', ({ collider }) => {
+            for (const fixture of collider.fixtures)
+                drawFixture(collider, fixture);
         });
 
     engine
