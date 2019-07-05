@@ -1,4 +1,4 @@
-import { boxCollider, circleCollider } from "./collision/colliderFactory";
+import { boxCollider, circleCollider, fromVertices } from "./collision/colliderFactory";
 import Body from "./components/body";
 import Explodes from "./components/explodes";
 import Health from "./components/health";
@@ -22,6 +22,7 @@ import { deformTerrain } from "./systems/deformTerrain";
 import addPlayerController from "./systems/playerController";
 import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
+import { Fixture } from "./collision/fixture";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -71,21 +72,15 @@ ground.add(new Transform(new Vector2(5, 10)));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
-block.add(new Transform(new Vector2(7, 3), Math.PI/2));
+block.add(new Transform(new Vector2(7, 3), Math.PI / 2));
 block.add(new Body(10));
 
 const ramp = new Entity();
-ramp.add({
-    type: 'collider',
-    elasticity: 0.5,
-    friction: 0,
-    isTrigger: false,
-    vertices: new Vertices([
-        new Vector2(-1, 0),
-        new Vector2(-1, -1),
-        new Vector2(1, 0)
-    ])
-});
+ramp.add(fromVertices(new Vertices([
+    new Vector2(-1, 0),
+    new Vector2(-1, -1),
+    new Vector2(1, 0)
+])));
 ramp.add(new Transform(new Vector2(2, 4.5)));
 
 engine.addEntity(ramp);

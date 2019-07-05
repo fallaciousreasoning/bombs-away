@@ -17,6 +17,10 @@ export class Fixture {
     private lastLocalRotation: number;
     private lastLocalVertices: Vertices;
 
+    constructor(vertices?: Vertices) {
+        this.vertices = vertices;
+    }
+
     get transformedVertices() {
         if (!this.lastPosition.equals(this.transform.position)
             || this.lastRotation !== this.transform.rotation) {

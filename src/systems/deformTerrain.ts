@@ -8,38 +8,38 @@ import { difference } from "../geometry/yuPengClipper";
 export const deformTerrain = (engine: Engine) => {
     engine.makeSystem()
         .onMessage('trigger-enter', island => {
-            const isCutty = hasTag(island.moved, 'deforms');
-            const isCuttable = hasTag(island.hit, 'terrain');
+            // const isCutty = hasTag(island.moved, 'deforms');
+            // const isCuttable = hasTag(island.hit, 'terrain');
 
-            if (!isCutty || !isCuttable) {
-                return;
-            }
+            // if (!isCutty || !isCuttable) {
+            //     return;
+            // }
 
-            // Remove the cutty entity.
-            const health = island.moved.get('health');
-            if (health) {
-                health.health = 0;
-            }
-            engine.removeEntity(island.hit)
+            // // Remove the cutty entity.
+            // const health = island.moved.get('health');
+            // if (health) {
+            //     health.health = 0;
+            // }
+            // engine.removeEntity(island.hit)
 
-            const removeShape = island.moved.collider.vertices.translate(island.moved.transform.position);
-            const fromShape = island.hit.collider.vertices.translate(island.hit.transform.position);
+            // const removeShape = island.moved.collider.vertices.translate(island.moved.transform.position);
+            // const fromShape = island.hit.collider.vertices.translate(island.hit.transform.position);
 
-            const dps = 4;
-            const diffed = difference(fromShape.round(dps), removeShape.round(dps));
+            // const dps = 4;
+            // const diffed = difference(fromShape.round(dps), removeShape.round(dps));
 
-            const valid = diffed.filter(f => f.length >= 3).map(f => f.round(dps));
-            const filtered = valid.filter(v => v.area > 0.0001);
-            const decomposed = filtered.reduce((prev, next) => [...prev, ...convexPartition(next)], []);
+            // const valid = diffed.filter(f => f.length >= 3).map(f => f.round(dps));
+            // const filtered = valid.filter(v => v.area > 0.0001);
+            // const decomposed = filtered.reduce((prev, next) => [...prev, ...convexPartition(next)], []);
             
-            for (const vertices of decomposed) {
-                let centroid = vertices.centroid;
+            // for (const vertices of decomposed) {
+            //     let centroid = vertices.centroid;
 
-                const entity = new Entity();
-                entity.add(new Tag('terrain'));
-                entity.add({ ...island.hit.collider, vertices: vertices.translate(centroid.negate()) });
-                entity.add(new Transform(centroid));
-                engine.addEntity(entity);
-            }
+            //     const entity = new Entity();
+            //     entity.add(new Tag('terrain'));
+            //     entity.add({ ...island.hit.collider, vertices: vertices.translate(centroid.negate()) });
+            //     entity.add(new Transform(centroid));
+            //     engine.addEntity(entity);
+            // }
         });
 }
