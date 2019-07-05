@@ -22,6 +22,12 @@ export const addFixtureManager = (engine: Engine) => {
 
     // When new colliders are added, make sure we correctly assign the bodyId.
     family.addEventListener('added', e => {
-        e.get('collider').fixtures.forEach(f => f.bodyId = e.id);
+        e.get('collider').fixtures.forEach(f => {
+            f.bodyId = e.id;
+
+            // Attempt to initialize transform.
+            if (!f.transform)
+                f.transform = e.get('transform');
+        });
     });
 }
