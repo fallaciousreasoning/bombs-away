@@ -10,7 +10,7 @@ import { ComponentType, System } from "./systems/system";
 const destroyMessage: Destroy = { type: 'destroy' } as any;
 
 export class Engine {
-    private entities: { [id: string]: Entity } = {};
+    private entities: { [id: number]: Entity } = {};
     private families = new HashSet<Family>();
     private nextId = 0;
 
@@ -56,7 +56,7 @@ export class Engine {
         return newFamily;
     }
 
-    getEntity(id: string) {
+    getEntity(id: number) {
         return this.entities[id];
     }
 
