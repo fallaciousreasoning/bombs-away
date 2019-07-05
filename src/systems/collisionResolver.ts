@@ -1,6 +1,7 @@
 import Vector2 from "../core/vector2";
 import { Entity } from "../entity";
 import { Island } from "./collisionDetector";
+import { Manifold } from "../collision/manifold";
 
 /**
  * Calculates the inertia for a shape.
@@ -29,7 +30,7 @@ const getInertia = (entity: Entity) => {
     }
 
     if (denominator === 0) return 0;
-    
+
     const inertia = (mass / 6) * (numerator / denominator);
     return inertia;
 }
@@ -67,14 +68,14 @@ const velocityAtPoint = (entity: Entity, at: Vector2) => {
     return body.velocity.add(pointVelocity);
 }
 
-export default function solve(island: Island) {
+function solveManifold(island: Island, manifold: Manifold) {
     const aBody = island.a.get('body');
     const bBody = island.b.get('body');
 
-    const normal = island.manifold.normal;
+    const normal = manifold.normal;
 
-    const contact = island.manifold.contacts
-        .reduce((prev, next) => prev.add(next), Vector2.zero).div(island.manifold.contacts.length);
+    const contact = manifold.contacts
+        .reduce((prev, next) => prev.add(next), Vector2.zero).div(manifold.contacts.length);
 
     const aVelocity = velocityAtPoint(island.a, contact);
     const bVelocity = velocityAtPoint(island.b, contact);
@@ -99,12 +100,12 @@ export default function solve(island: Island) {
     const elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
 
     let magnitude = -(1 + elasticity) * velocityAlongNormal / (totalInvMass + aInertiaDivisor + bInertiaDivisor);
-    magnitude /= island.manifold.contacts.length;
+    magnitude /= manifold.contacts.length;
 
     let impulse = normal
         .mul(magnitude);
 
-    for (const contact of island.manifold.contacts) {
+    for (const contact of manifold.contacts) {
         aBody && aBody.applyForce(impulse.mul(-1), contact.sub(island.a.transform.position), aInvMass, aInvInertia);
         bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
     }
@@ -132,7 +133,7 @@ export default function solve(island: Island) {
 
     const slop = 0.01;
     const percentCorrection = 1;
-    const correction = island.manifold.normal.mul(Math.max(island.manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
+    const correction = manifold.normal.mul(Math.max(manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
 
     const away = island.a.transform.position.sub(contact).normalized();
     const correctionAwayFromContact = away.dot(correction);
@@ -142,4 +143,10 @@ export default function solve(island: Island) {
     }
     island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
     island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(-1));
+}
+
+export default function solve(island: Island) {
+    for (const manifold of island.manifolds) {
+        solveManifold(island, manifold);
+    }
 }

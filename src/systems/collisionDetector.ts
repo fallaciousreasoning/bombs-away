@@ -5,35 +5,26 @@ import { Collision, Trigger } from "../messages/collision";
 import solve from './collisionResolver';
 import { Entityish } from "./system";
 import { dynamicFixtures, dynamicEntities, otherFixtures } from './fixtureManager';
-
+import { Fixture } from '../collision/fixture';
 
 export interface Island {
     a: Entityish<['collider', 'transform']>;
     b: Entityish<['collider', 'transform']>;
 
-    manifold: Manifold;
-    type: 'trigger' | 'collision';
+    isNew: boolean;
+
+    manifolds: Manifold[];
     hash: number;
 }
 
-const hash = (a: { id: number }, b: { id: number }) => {
-    const min = Math.min(a.id, b.id);
-    const max = Math.max(a.id, b.id);
+const hash = (a: { bodyId: number }, b: { bodyId: number }) => {
+    const min = Math.min(a.bodyId, b.bodyId);
+    const max = Math.max(a.bodyId, b.bodyId);
 
     return (23 * 37 + min) * 37 + max;
 }
 
 class CollisionManager {
-    private islandPool = new Pool<Island>(() => ({
-        a: undefined,
-        b: undefined,
-        manifold: undefined,
-        hash: undefined,
-        type: 'collision'
-    }), (i) => {
-        i.type = 'collision';
-    });
-
     private engine: Engine;
     private islands: Map<number, Island> = new Map();
     private message: Collision = {} as any;
@@ -42,90 +33,71 @@ class CollisionManager {
         this.engine = engine;
     }
 
-    private reflexiveMessageBroadcast(type: string, island: Island) {
-        this.message.type = type as any;
-        this.message.hit = island.a;
-        this.message.moved = island.b;
-        // TODO: Actually get contacts, this isn't accurate for edge/edge collisions :'(
-        this.message.contacts = island.manifold.contacts;
+    reflexiveMessageBroadcast(messageType: string, island: Island) {
+        // TODO: Oh god really not this.
+        const manifold = island.manifolds[0];
+
+        this.message.type = messageType as any;
+        this.message.contacts = manifold.contacts;
         this.message.elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
         // Friction is sqrt(a^2 + b^2)
         this.message.friction = Math.sqrt(island.a.collider.friction * island.a.collider.friction + island.b.collider.friction * island.b.collider.friction);
-        this.message.normal = island.manifold.normal.negate();
-        this.message.penetration = island.manifold.penetration;
+        this.message.penetration = manifold.penetration;
+
+        this.message.moved = island.b;
+        this.message.hit = island.a;
+        this.message.normal = manifold.normal.negate();
         this.engine.broadcastMessage(this.message);
 
         this.message.hit = island.b;
         this.message.moved = island.a;
-        this.message.normal = island.manifold.normal;
+        this.message.normal = manifold.normal;
+
         this.engine.broadcastMessage(this.message);
     }
 
-    onNoCollision(island: Island) {
-        // If there was no existing collision, return.
-        if (!island) {
-            return;
-        }
-
-        // Otherwise, we've separated.
-        const type = island.a.collider.isTrigger || island.b.collider.isTrigger
-            ? 'collision-exit'
-            : 'trigger-exit';
-        this.reflexiveMessageBroadcast(type, island);
-
-        // Clean up.
-        this.islands.delete(island.hash);
-        this.islandPool.release(island);
+    getIslands() {
+        return this.islands.values();
     }
 
-    run(a: Entityish<['collider', 'transform']>, b: Entityish<['collider', 'transform']>): Collision | Trigger {
-        const aVertices = a.collider.vertices
-            .rotate(a.transform.rotation)
-            .translate(a.transform.position);
-
-        const bVertices = b.collider.vertices
-            .rotate(b.transform.rotation)
-            .translate(b.transform.position);
+    run(a: Fixture, b: Fixture): Collision | Trigger {
+        const aVertices = a.transformedVertices;
+        const bVertices = b.transformedVertices;
 
         // See if we have an existing collision.
         const h = hash(a, b);
         let island = this.islands.get(h);
 
-        const manifold = new Manifold(aVertices, bVertices);
-
-        if (manifold.penetration === 0) {
-            this.onNoCollision(island);
-            return;
+        // This is the second time we've seen this island, so it isn't new anymore.
+        if (island) {
+            island.isNew = false;
         }
 
-        const isTrigger = a.collider.isTrigger || b.collider.isTrigger;
-        const entered = !island;
+        const manifold = new Manifold(aVertices, bVertices);
 
-        // If we don't have an existing collision.
+        // Is there is no penetration, there is no collision.
+        if (manifold.penetration === 0)
+            return;
+
+        // If there is no island, make a new one.
         if (!island) {
-            island = this.islandPool.get();
-            island.hash = h;
-            island.a = a;
-            island.b = b;
-
+            island = {
+                a: this.engine.getEntity(a.bodyId) as any,
+                b: this.engine.getEntity(b.bodyId) as any,
+                hash: h,
+                isNew: true,
+                manifolds: []
+            };
             this.islands.set(island.hash, island);
         }
 
-        island.manifold = manifold;
-
-        if (entered) {
-            this.reflexiveMessageBroadcast(isTrigger
-                ? 'trigger-enter'
-                : 'collision-enter', island);
-        }
-
-        this.reflexiveMessageBroadcast(isTrigger
-            ? 'trigger'
-            : 'collision', island);
+        // Record this collision.
+        island.manifolds.push(manifold);
 
         // Don't try and solve trigger collisions.
         if (island.a.collider.isTrigger || island.b.collider.isTrigger) return;
 
+        // Solve the collision.
         solve(island);
     }
 }
@@ -148,6 +120,18 @@ export default function addPhysics(engine: Engine) {
                 for (const dynamicFixture of dynamicFixtures())
                     for (const fixture of otherFixtures(dynamicFixture))
                         collisionManager.run(dynamicFixture, fixture);
+            }
+
+            for (const island of collisionManager.getIslands()) {
+                const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
+                const messageType = isTrigger ? 'trigger' : 'collision';
+
+                if (island.isNew)
+                    collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
+                else if (island.manifolds.length === 0)
+                    collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
+                else
+                    collisionManager.reflexiveMessageBroadcast(messageType, island);
             }
         });
 }
