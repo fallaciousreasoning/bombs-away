@@ -10,7 +10,7 @@ import { ComponentType, System } from "./systems/system";
 const destroyMessage: Destroy = { type: 'destroy' } as any;
 
 export class Engine {
-    private entities = new ObservableList<Entity>();
+    private entities: { [id: string]: Entity } = {};
     private families = new HashSet<Family>();
     private nextId = 0;
 
@@ -25,16 +25,16 @@ export class Engine {
         }
     }
 
-    makeSystem = <T0 extends ComponentType=never,
-        T1 extends ComponentType=never,
-        T2 extends ComponentType=never,
-        T3 extends ComponentType=never,
-        T4 extends ComponentType=never,
-        T5 extends ComponentType=never,
-        T6 extends ComponentType=never,
-        T7 extends ComponentType=never,
-        T8 extends ComponentType=never,
-        T9 extends ComponentType=never>
+    makeSystem = <T0 extends ComponentType = never,
+        T1 extends ComponentType = never,
+        T2 extends ComponentType = never,
+        T3 extends ComponentType = never,
+        T4 extends ComponentType = never,
+        T5 extends ComponentType = never,
+        T6 extends ComponentType = never,
+        T7 extends ComponentType = never,
+        T8 extends ComponentType = never,
+        T9 extends ComponentType = never>
         (...types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
         const system = new System(types);
         this.systems.push(system);
@@ -48,16 +48,16 @@ export class Engine {
             return existingFamily;
         }
 
-        this.entities.items.forEach(e => {
-            newFamily.onEntityAdded(e);
-        });
+        Object.keys(this.entities)
+            .map(k => this.entities[k])
+            .forEach(e => newFamily.onEntityAdded(e));
 
         this.families.add(newFamily);
         return newFamily;
     }
 
-    getEntities() {
-        return this.entities;
+    getEntity(id: string) {
+        return this.entities[id];
     }
 
     assignId(entity: Entity) {
@@ -70,7 +70,7 @@ export class Engine {
         entity.onComponentAdded = this.onComponentAdded;
         entity.onComponentRemoved = this.onComponentRemoved;
 
-        this.entities.push(entity);
+        this.entities[entity.id] = entity;
         this.families.forEach(f => f.onEntityAdded(entity));
     }
 
@@ -79,26 +79,16 @@ export class Engine {
             return;
         }
 
-        let entity: Entity;
-        let index: number;
-        for (let i = 0; i < this.entities.items.length; ++i) {
-            if (this.entities.items[i].id !== entityish.id) continue;
+        const entity = this.entities[entityish.id];
+        if (!entity) return;
 
-            entity = this.entities.items[i];
-            index = i;
-            break;
-        }
-
-        if (!entity) {
-            return;
-        }
-
+        const id = entity.id;
         entity.id = undefined;
-
+        
         destroyMessage.entity = entity;
         this.broadcastMessage(destroyMessage);
-
-        this.entities.removeAt(index);
+        
+        this.entities[id];
         this.families.forEach(f => f.onEntityRemoved(entity));
     }
 
