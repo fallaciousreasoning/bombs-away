@@ -45,7 +45,7 @@ const getMass = (entity: Entity) => {
     }
 
     const collider = entity.get('collider');
-    return body.density * collider.vertices.area;
+    return body.density * collider.area;
 }
 
 const getInvMass = (entity: Entity) => {

@@ -3,6 +3,9 @@ import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
 
 export class Fixture {
+    // The id of the body that owns this. Used so we don't look at collisions with other fixtures in the same body.
+    bodyId: number;
+    
     transform: Transform;
     vertices: Vertices;
 
