@@ -132,6 +132,8 @@ export default function addPhysics(engine: Engine) {
                     collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
                 else
                     collisionManager.reflexiveMessageBroadcast(messageType, island);
+
+                island.manifolds = [];
             }
         });
 }

@@ -22,7 +22,7 @@ export class Fixture {
     }
 
     get transformedVertices() {
-        if (!this.lastPosition.equals(this.transform.position)
+        if (this.lastPosition && !this.lastPosition.equals(this.transform.position)
             || this.lastRotation !== this.transform.rotation) {
             this.lastPosition = this.transform.position;
             this.lastRotation = this.transform.rotation;
@@ -35,7 +35,7 @@ export class Fixture {
     }
 
     get localTransformedVertices() {
-        if (!this.lastLocalPosition.equals(this.transform.localPosition)
+        if (this.lastLocalPosition && !this.lastLocalPosition.equals(this.transform.localPosition)
             || this.lastLocalRotation !== this.transform.localRotation) {
             this.lastLocalPosition = this.transform.localPosition;
             this.lastLocalRotation = this.transform.localRotation;
