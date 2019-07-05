@@ -98,12 +98,6 @@ class CollisionManager {
 
         // Record this collision.
         island.manifolds.push(manifold);
-
-        // Don't try and solve trigger collisions.
-        if (island.a.collider.isTrigger || island.b.collider.isTrigger) return;
-
-        // Solve the collision.
-        solve(island);
     }
 }
 
@@ -112,7 +106,7 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem()
         .onMessage('tick', message => {
-            const steps = 1;
+            const steps = 10;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
                 // Move the dynamic entities.
@@ -125,20 +119,24 @@ export default function addPhysics(engine: Engine) {
                 for (const dynamicFixture of dynamicFixtures())
                     for (const fixture of otherFixtures(dynamicFixture))
                         collisionManager.run(dynamicFixture, fixture);
-            }
 
-            for (const island of collisionManager.getIslands()) {
-                const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
-                const messageType = isTrigger ? 'trigger' : 'collision';
+                for (const island of collisionManager.getIslands()) {
+                    // Don't solve trigger collisions.
+                    const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
+                    if (!isTrigger)
+                        solve(island);
 
-                if (island.isNew)
-                    collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
-                else if (island.manifolds.length === 0)
-                    collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
-                else
-                    collisionManager.reflexiveMessageBroadcast(messageType, island);
+                    const messageType = isTrigger ? 'trigger' : 'collision';
 
-                island.manifolds = [];
+                    if (island.isNew)
+                        collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
+                    else if (island.manifolds.length === 0)
+                        collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
+                    else
+                        collisionManager.reflexiveMessageBroadcast(messageType, island);
+
+                    island.manifolds = [];
+                }
             }
         });
 }
