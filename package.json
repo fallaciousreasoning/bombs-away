@@ -17,10 +17,6 @@
     "typescript": "^3.0.3",
     "webpack": "^4.17.1"
   },
-  "dependencies": {
-    "earcut": "^2.1.3",
-    "polybooljs": "^1.2.0"
-  },
   "jest": {
     "roots": [
       "<rootDir>/src"
