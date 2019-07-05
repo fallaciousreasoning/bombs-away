@@ -23,12 +23,14 @@ import addPlayerController from "./systems/playerController";
 import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
 import { Fixture } from "./collision/fixture";
+import { addFixtureManager } from "./systems/fixtureManager";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
 window['polyString'] = polygonsToString;
 
 const canvas = document.getElementById('root') as HTMLCanvasElement;
+addFixtureManager(engine);
 
 const makeExplosion = (from: Entity) => {
     const explosion = new Entity();

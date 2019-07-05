@@ -25,7 +25,7 @@ export function* dynamicFixtures(): Iterable<Fixture> {
     if (!dynamicFamily)
         return;
     
-    for (const entity of colliderFamily.entities) {
+    for (const entity of dynamicFamily.entities) {
         const body = entity.get('body');
         if (body.isDynamic) return false;
 
