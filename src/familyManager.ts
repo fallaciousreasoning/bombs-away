@@ -6,6 +6,9 @@ export class Family {
     private types: ComponentType[];
     entities: Entity[] = [];
 
+    private addedCallbacks: ((e: Entity) => void)[] = [];
+    private removedCallbacks: ((e: Entity) => void)[] = [];
+
     constructor(types: ComponentType[]) {
         this.types = types;
     }
@@ -20,6 +23,7 @@ export class Family {
         }
 
         this.entities.push(entity);
+        this.addedCallbacks.forEach(c => c(entity));
     }
 
     onEntityRemoved(entity: Entity) {
@@ -29,6 +33,7 @@ export class Family {
 
         const index = this.entities.indexOf(entity);
         this.entities.splice(index, 1);
+        this.removedCallbacks.forEach(c => c(entity));
     }
 
     onComponentAdded(entity: Entity, component: Component) {
@@ -41,5 +46,9 @@ export class Family {
 
     getHashCode() {
         return this.types.join('|');
+    }
+
+    addEventListener(type: 'added' | 'removed', callback: (entity: Entity) => void) {
+        this[type + "Callbacks"].push(callback);
     }
 }
