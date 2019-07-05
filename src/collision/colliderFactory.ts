@@ -1,20 +1,27 @@
 import { Collider } from "../components/collider";
 import { makeBox, makeCircle } from "../geometry/createPolygon";
+import { Fixture } from "./fixture";
 
 export const boxCollider = (width: number, height: number): Collider => {
-    return {
-        type: 'collider',
-        elasticity: 0.05,
-        friction: 0.5,
-        vertices: makeBox(width, height)
-    }
+    let collider = new Collider();
+    collider.elasticity = 0.05;
+    collider.friction = 0.5;
+
+    let fixture = new Fixture();
+    fixture.vertices = makeBox(width, height)
+    collider.fixtures = [fixture];
+
+    return collider;
 }
 
 export const circleCollider = (radius: number, segments: number=8): Collider => {
-    return {
-        type: 'collider',
-        friction: 0.05,
-        elasticity: 0,
-        vertices: makeCircle(radius, segments)
-    };
+    let collider = new Collider();
+    collider.elasticity = 0.05;
+    collider.friction = 0;
+
+    let fixture = new Fixture();
+    fixture.vertices = makeCircle(radius, segments);
+    collider.fixtures = [fixture];
+    
+    return collider;
 }
