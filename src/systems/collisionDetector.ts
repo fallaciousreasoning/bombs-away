@@ -6,6 +6,7 @@ import solve from './collisionResolver';
 import { Entityish } from "./system";
 import { dynamicFixtures, dynamicEntities, otherFixtures } from './fixtureManager';
 import { Fixture } from '../collision/fixture';
+import Vector2 from '../core/vector2';
 
 export interface Island {
     a: Entityish<['collider', 'transform']>;
@@ -35,7 +36,11 @@ class CollisionManager {
 
     reflexiveMessageBroadcast(messageType: string, island: Island) {
         // TODO: Oh god really not this.
-        const manifold = island.manifolds[0];
+        const manifold = island.manifolds[0] || {
+            contacts: [],
+            normal: Vector2.zero,
+            penetration: 0
+        };
 
         this.message.type = messageType as any;
         this.message.contacts = manifold.contacts;
