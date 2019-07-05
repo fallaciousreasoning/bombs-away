@@ -4,6 +4,8 @@ import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import solve from './collisionResolver';
 import { Entityish } from "./system";
+import { dynamicFixtures, dynamicEntities, otherFixtures } from './fixtureManager';
+
 
 export interface Island {
     a: Entityish<['collider', 'transform']>;
@@ -130,39 +132,22 @@ class CollisionManager {
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
-    const collidable = engine.getFamily('collider', 'transform').entities;
-
     engine
-        .makeSystem('collider', 'transform')
-        .on('tick', (entities, message) => {
+        .makeSystem()
+        .onMessage('tick', message => {
             const steps = 1;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
-                // Outer loop over all dynamic bodies.
-                for (let i = 0; i < entities.length; ++i) {
-                    const a = entities[i];
-
-
-                    const body = a.get('body');
-
-                    // Can't update entity with no body.
-                    if (body) {
-                        // Move the entity.
-                        const movedAmount = body.velocity.mul(step);
-                        a.transform.position = a.transform.position.add(movedAmount);
-                        a.transform.rotation += body.angularVelocity * step;
-
-                        if (!body.isDynamic) continue;
-                    }
-
-                    // Inner loop over all other bodies.
-                    for (let j = 0; j < collidable.length; ++j) {
-                        const b = collidable[j] as Entityish<['transform', 'collider']>;
-                        if (a.id == b.id) continue;
-
-                        collisionManager.run(a, b);
-                    }
+                // Move the dynamic entities.
+                for (const { body, transform } of dynamicEntities()) {
+                    const movedAmount = body.velocity.mul(step);
+                    transform.position = transform.position.add(movedAmount);
+                    transform.rotation += body.angularVelocity * step;
                 }
+
+                for (const dynamicFixture of dynamicFixtures())
+                    for (const fixture of otherFixtures(dynamicFixture))
+                        collisionManager.run(dynamicFixture, fixture);
             }
         });
 }

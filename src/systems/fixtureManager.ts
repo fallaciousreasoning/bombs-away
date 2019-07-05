@@ -1,17 +1,18 @@
 import { Engine } from '../engine';
 import { Fixture } from '../collision/fixture';
 import { Family } from '../familyManager';
+import { Entityish } from './system';
 
 let colliderFamily: Family;
 let dynamicFamily: Family;
 
-// Return all the fixtures in the world, except potentially ones for a certain body.
-export function* fixtures(notForBody: number = undefined): Iterable<Fixture> {
+// Return all the fixtures in the world, except for ones from the same body as fixture.
+export function* otherFixtures(fixture: Fixture): Iterable<Fixture> {
     if (!colliderFamily)
         return;
 
     for (const entity of colliderFamily.entities) {
-        if (entity.id == notForBody) continue;
+        if (entity.id == fixture.bodyId) continue;
 
         const collider = entity.get('collider');
         if (!collider) continue;
@@ -33,9 +34,13 @@ export function* dynamicFixtures(): Iterable<Fixture> {
     }
 }
 
+export function* dynamicEntities(): Iterable<Entityish<['body', 'transform', 'collider']>> {
+    yield* dynamicFamily.entities as any;
+}
+
 export const addFixtureManager = (engine: Engine) => {
     colliderFamily = engine.getFamily('collider');
-    dynamicFamily = engine.getFamily('collider', 'body');
+    dynamicFamily = engine.getFamily('collider', 'body', 'transform');
 
     // When new colliders are added, make sure we correctly assign the bodyId.
     colliderFamily.addEventListener('added', e => {
