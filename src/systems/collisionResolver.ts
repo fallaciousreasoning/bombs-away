@@ -12,22 +12,24 @@ const getInertia = (entity: Entity) => {
     const mass = getMass(entity);
     const collider = entity.get('collider');
 
-    if (collider.vertices.length === 1) return 0;
-
     let denominator = 0;
     let numerator = 0;
 
-    for (let i = 0; i < collider.vertices.length; ++i) {
-        const v1 = collider.vertices.getVertex(i);
-        const v2 = collider.vertices.getVertex(i + 1);
+    for (const fixture of collider.fixtures) {
+        for (let i = 0; i < fixture.vertices.length; ++i) {
+            const v1 = fixture.vertices.getVertex(i);
+            const v2 = fixture.vertices.getVertex(i + 1);
 
-        let a = Math.abs(v2.cross(v1));
-        let b = v1.lengthSquared() + v1.dot(v2) + v2.lengthSquared();
+            let a = Math.abs(v2.cross(v1));
+            let b = v1.lengthSquared() + v1.dot(v2) + v2.lengthSquared();
 
-        denominator += a * b;
-        numerator += a;
+            denominator += a * b;
+            numerator += a;
+        }
     }
 
+    if (denominator === 0) return 0;
+    
     const inertia = (mass / 6) * (numerator / denominator);
     return inertia;
 }
