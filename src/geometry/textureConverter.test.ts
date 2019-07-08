@@ -103,3 +103,19 @@ test('Diagonals can join', () => {
 
     expect(result.length).toBe(2);
 });
+
+test('Literal corner cases', () => {
+    const grid = [
+        [1,1,1,1,0],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+        [1,1,1,1,1],
+    ];
+
+    const converter = new TextureConverter(grid);
+    const result = converter.getVertices();
+
+    expect(result.length).toBe(1);
+    expect(result[0].length).toBe(15);
+});
