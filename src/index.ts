@@ -25,6 +25,10 @@ import addSpawn from "./systems/spawnSystem";
 import { Fixture } from "./collision/fixture";
 import { addFixtureManager } from "./systems/fixtureManager";
 import { addCollisionTextureManager } from './systems/collisionTextureManager'
+import { StayOnMouse } from "./components/stayOnMouse";
+import addStayOnMouse from "./systems/addStayOnMouse";
+import { Circle } from "./components/circle";
+import Box from "./components/box";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -86,6 +90,13 @@ ramp.add(fromVertices(new Vertices([
 ])));
 ramp.add(new Transform(new Vector2(2, 4.5)));
 
+const dangerousCursor = new Entity();
+dangerousCursor.add(new Transform());
+dangerousCursor.add(new StayOnMouse());
+dangerousCursor.add(new Tag('destroy-when-e'));
+dangerousCursor.add(new Circle(0.25));
+
+engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);
 engine.addEntity(block);
 // engine.addEntity(makeBomb(bomber));
@@ -97,6 +108,7 @@ addRenderer(canvas, engine);
 const input = new Input(document);
 window['input'] = input;
 
+addStayOnMouse(engine, input);
 addSpawn(engine, input);
 drawCollider(canvas, engine);
 addGravity(engine);

@@ -27,7 +27,6 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
     const context = canvas.getContext('2d');
     const renderPoint = (position: { x: number, y: number }, size = 0.2) => context.fillRect(position.x - size / 2, position.y - size / 2, size, size);
 
-    engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
     const contacts: Vector2[] = [];
     const pointSize = 0.2;
 

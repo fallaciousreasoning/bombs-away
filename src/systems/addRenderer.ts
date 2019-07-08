@@ -27,6 +27,22 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
             context.restore();
         });
 
+    engine.makeSystem("circle", "transform")
+        .onEach('tick', ({ transform, circle }) => {
+            const radius = circle.radius * PIXELS_A_METRE;
+            const position = transform.position.mul(PIXELS_A_METRE).round();
+
+            context.save();
+
+            context.translate(position.x, position.y);
+            context.fillStyle = 'red';
+            context.beginPath();
+            context.arc(position.x, position.y, radius, 0, Math.PI*2);
+            context.fill();
+
+            context.restore();
+        })
+
     engine
         .makeSystem("line", "transform")
         .onEach('tick', ({ transform, line }: { transform: Transform, line: Line }) => {
