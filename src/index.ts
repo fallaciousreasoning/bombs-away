@@ -29,6 +29,7 @@ import { StayOnMouse } from "./components/stayOnMouse";
 import addStayOnMouse from "./systems/addStayOnMouse";
 import { Circle } from "./components/circle";
 import Box from "./components/box";
+import { CollisionTexture } from "./components/collisionTexture";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -76,6 +77,7 @@ const ground = new Entity();
 ground.add(new Tag('terrain'));
 ground.add(boxCollider(10, 11));
 ground.add(new Transform(new Vector2(5, 10)));
+ground.add(new CollisionTexture(10, 11));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -118,6 +120,6 @@ convexHullTester(input, engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
-addCollisionTextureManager(engine);
+addCollisionTextureManager(engine, input);
 
 

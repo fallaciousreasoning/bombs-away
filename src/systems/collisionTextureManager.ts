@@ -3,6 +3,7 @@ import { Entityish } from './system';
 import Vector2 from '../core/vector2';
 import { TextureConverter } from '../geometry/textureConverter';
 import { convexPartition } from '../geometry/bayazitDecomposer';
+import Input from '../core/input';
 
 const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const radiusSquared = radius*radius;
@@ -10,7 +11,9 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
     for (let i = 0; i < removeFrom.collisionTexture.grid.length; ++i)
       for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
         const point = new Vector2(j, i);
-        const position = point.add(removeFrom.transform.position);
+        const position = point
+            .mul(removeFrom.collisionTexture.gridSize)
+            .add(removeFrom.transform.position);
 
         // Mark the point on the texture as empty.
         if (position.distanceSquared(centre) < radiusSquared) {
@@ -29,8 +32,12 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
     console.log(decomposedVertices);
 }
 
-export const addCollisionTextureManager = (engine: Engine) => {
+export const addCollisionTextureManager = (engine: Engine, input: Input) => {
     engine.makeSystem('transform', 'collisionTexture', 'collider')
-        .onEach('tick', ({ transform, collisionTexture, collider }) => {
+        .onEach('tick', (entity) => {
+            if (input.getAxis('shoot') === 0) return;
+
+            destroyCircle(entity, input.mousePosition, 0.25);
+            console.log('Destroy!');
         });
 }

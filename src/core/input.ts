@@ -38,7 +38,7 @@ export default class Input {
             negativeKeys: [],
         },
         shoot: {
-            positiveKeys: [1]
+            positiveKeys: [69]
         }
     };
 
