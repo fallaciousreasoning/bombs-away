@@ -3,6 +3,7 @@ import Body from "./body";
 import { Bounce } from "./bounce";
 import Box from "./box";
 import { Collider } from "./collider";
+import { CollisionTexture } from "./collisionTexture";
 import Damage from "./damage";
 import Explodes from "./explodes";
 import FlipWithMouse from "./flipWithMouse";
@@ -16,4 +17,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = Collider | AliveForTime | Body | Bounce | Box | Damage | Explodes | FlipWithMouse | Health | Hull | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | Health | Hull | Line | LookAtMouse | Player | Spawn | Tag | Transform | Weapon;

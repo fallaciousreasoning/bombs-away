@@ -24,6 +24,7 @@ import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
 import { Fixture } from "./collision/fixture";
 import { addFixtureManager } from "./systems/fixtureManager";
+import { addCollisionTextureManager } from './systems/collisionTextureManager'
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -105,5 +106,6 @@ convexHullTester(input, engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
+addCollisionTextureManager(engine);
 
 
