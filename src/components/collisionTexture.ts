@@ -2,9 +2,15 @@ export class CollisionTexture {
     type: 'collisionTexture' = 'collisionTexture';
 
     grid: number[][] = [];
-    gridSize: number = 0.25;
+    gridSize: number = 1;
 
-    constructor(width, height) {
+    width: number;
+    height: number;
+
+    constructor(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+
         for (let i = 0; i < height; ++i) {
             const row = [];
             for (let j = 0; j < width; ++j) {

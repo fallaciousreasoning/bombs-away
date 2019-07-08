@@ -62,4 +62,23 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
             context.lineTo(lineEnd.x, lineEnd.y);
             context.stroke();
         });
+
+    engine.makeSystem("collisionTexture", "transform")
+    .onEach("tick", ({ transform, collisionTexture }) => {
+        const textureSize = new Vector2(collisionTexture.width, collisionTexture.height);
+        const origin = transform.position
+            .sub(textureSize.mul(0.5))
+            .mul(PIXELS_A_METRE);
+
+        for (let i = 0; i < collisionTexture.height; ++i)
+          for (let j = 0; j < collisionTexture.width; ++j) {
+              const point = new Vector2(j, i);
+              if (collisionTexture.grid[i][j] == 0) continue;
+              
+              const position = origin.add(point.mul(collisionTexture.gridSize).mul(PIXELS_A_METRE));
+
+              context.fillStyle = 'blue';
+              context.fillRect(position.x, position.y, collisionTexture.gridSize*PIXELS_A_METRE, collisionTexture.gridSize*PIXELS_A_METRE);
+          }
+    });
 }

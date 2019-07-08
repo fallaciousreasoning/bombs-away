@@ -12,8 +12,9 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
       for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
         const point = new Vector2(j, i);
         const position = point
-            .mul(removeFrom.collisionTexture.gridSize)
-            .add(removeFrom.transform.position);
+        .sub(new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height))
+        .mul(removeFrom.collisionTexture.gridSize)
+        .add(removeFrom.transform.position)
 
         // Mark the point on the texture as empty.
         if (position.distanceSquared(centre) < radiusSquared) {
@@ -26,10 +27,10 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
         return;
     }
 
-    const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
-    const vertices = textureConverter.getVertices();
-    const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []);
-    console.log(decomposedVertices);
+    // const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
+    // const vertices = textureConverter.getVertices();
+    // const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []);
+    // console.log(decomposedVertices);
 }
 
 export const addCollisionTextureManager = (engine: Engine, input: Input) => {
@@ -37,7 +38,7 @@ export const addCollisionTextureManager = (engine: Engine, input: Input) => {
         .onEach('tick', (entity) => {
             if (input.getAxis('shoot') === 0) return;
 
-            destroyCircle(entity, input.mousePosition, 0.25);
+            destroyCircle(entity, input.mousePosition, 1);
             console.log('Destroy!');
         });
 }

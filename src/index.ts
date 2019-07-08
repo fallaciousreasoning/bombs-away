@@ -96,7 +96,7 @@ const dangerousCursor = new Entity();
 dangerousCursor.add(new Transform());
 dangerousCursor.add(new StayOnMouse());
 dangerousCursor.add(new Tag('destroy-when-e'));
-dangerousCursor.add(new Circle(0.25));
+dangerousCursor.add(new Circle(1));
 
 engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);
