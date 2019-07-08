@@ -1,12 +1,25 @@
 import Vector2 from "./vector2";
+import { METRES_A_PIXEL } from "../systems/addRenderer";
 
 interface AxisInfo {
     positiveKeys: number[];
     negativeKeys?: number[];
 }
 
+const transformScreenToCanvas = (screenPosition: Vector2, canvas: HTMLCanvasElement) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    return screenPosition
+        .sub(new Vector2(rect.left, rect.top))
+        .mul(new Vector2(scaleX, scaleY).div(2));
+}
+
 export default class Input {
     name = 'Input';
+
+    on: HTMLCanvasElement;
 
     mousePosition = new Vector2();
     private downKeys = {};
@@ -29,7 +42,9 @@ export default class Input {
         }
     };
 
-    constructor(on: HTMLDocument | HTMLElement) {
+    constructor(on: HTMLCanvasElement) {
+        this.on = on;
+
         document.addEventListener("keydown", event => this.setKey(event.which, true));
         document.addEventListener("keyup", event => this.setKey(event.which, false));
         document.addEventListener("mousemove", event => this.setMousePos(event));
@@ -55,6 +70,6 @@ export default class Input {
     }
 
     setMousePos({ x, y }: { x: number, y: number }) {
-        this.mousePosition = new Vector2(x, y).div(64);
+        this.mousePosition = transformScreenToCanvas(new Vector2(x, y), this.on).mul(METRES_A_PIXEL);
     }
 }

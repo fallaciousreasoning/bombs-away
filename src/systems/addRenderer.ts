@@ -4,6 +4,7 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 
 export const PIXELS_A_METRE = 64;
+export const METRES_A_PIXEL = 1/PIXELS_A_METRE;
 
 export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
     const context = canvas.getContext('2d');

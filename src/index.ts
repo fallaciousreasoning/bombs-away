@@ -105,7 +105,7 @@ engine.addEntity(ground);
 engine.addEntity(bomber);
 
 addRenderer(canvas, engine);
-const input = new Input(document);
+const input = new Input(canvas);
 window['input'] = input;
 
 addStayOnMouse(engine, input);
