@@ -3,6 +3,8 @@ import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
 
 export class Fixture {
+    private static nextId: number = 1;
+
     // The id of the body that owns this. Used so we don't look at collisions with other fixtures in the same body.
     bodyId: number;
 
@@ -17,8 +19,11 @@ export class Fixture {
     private lastLocalRotation: number;
     private lastLocalVertices: Vertices;
 
+    private _id: number;
+
     constructor(vertices?: Vertices) {
         this.vertices = vertices;
+        this._id = Fixture.nextId++;
     }
 
     get transformedVertices() {
@@ -45,5 +50,9 @@ export class Fixture {
         }
 
         return this.lastLocalVertices;
+    }
+
+    get id() {
+        return this._id;
     }
 }

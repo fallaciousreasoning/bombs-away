@@ -2,6 +2,8 @@ import Vector2 from '../core/vector2';
 import { Entity } from '../entity';
 import { Vertices } from '../geometry/vertices';
 import { Transform } from '../components/transform';
+import { Fixture } from './fixture';
+import { stableHashPair } from '../core/hashHelper';
 
 const getMinMax = (dir: Vector2, of: Vertices) => {
     let min = Number.MAX_SAFE_INTEGER;
@@ -21,9 +23,19 @@ export class Manifold {
     normal: Vector2;
     contacts: Vector2[] = [];
 
-    constructor(a: Vertices, b: Vertices) {
-        const ab = this.compute(a, b, 1);
-        const ba = this.compute(b, a, -1);
+    private a: Fixture;
+    private b: Fixture;
+
+    constructor(a: Fixture, b: Fixture) {
+        this.a = a;
+        this.b = b;
+
+        const aVertices = a.transformedVertices;
+        const bVertices = b.transformedVertices;
+
+        const ab = this.compute(aVertices, bVertices, 1);
+        const ba = this.compute(bVertices, aVertices, -1);
+
         if (!(ab && ba)) {
             this.penetration = 0;
             this.normal = Vector2.zero;
@@ -72,5 +84,9 @@ export class Manifold {
 
         // If we reached here, we must have a collision.
         return true;
+    }
+
+    static hashCodeOf(a: Fixture, b: Fixture) {
+        return stableHashPair(a.id, b.id);
     }
 }

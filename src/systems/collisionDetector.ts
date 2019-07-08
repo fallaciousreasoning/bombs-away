@@ -7,6 +7,7 @@ import { Entityish } from "./system";
 import { dynamicFixtures, dynamicEntities, otherFixtures } from './fixtureManager';
 import { Fixture } from '../collision/fixture';
 import Vector2 from '../core/vector2';
+import { stableHashPair } from '../core/hashHelper'
 
 export interface Island {
     a: Entityish<['collider', 'transform']>;
@@ -15,14 +16,13 @@ export interface Island {
     isNew: boolean;
 
     manifolds: Manifold[];
+    seenManifolds: Set<number>;
+
     hash: number;
 }
 
 const hash = (a: { bodyId: number }, b: { bodyId: number }) => {
-    const min = Math.min(a.bodyId, b.bodyId);
-    const max = Math.max(a.bodyId, b.bodyId);
-
-    return (23 * 37 + min) * 37 + max;
+    return stableHashPair(a.bodyId, b.bodyId);
 }
 
 class CollisionManager {
@@ -65,20 +65,25 @@ class CollisionManager {
         return this.islands.values();
     }
 
-    run(a: Fixture, b: Fixture): Collision | Trigger {
-        const aVertices = a.transformedVertices;
-        const bVertices = b.transformedVertices;
+    resetIslands() {
+        for (const island of this.getIslands()) {
+            island.manifolds.length = 0;
+            island.seenManifolds.clear();
+        }
+    }
 
+    run(a: Fixture, b: Fixture): Collision | Trigger {
         // See if we have an existing collision.
         const h = hash(a, b);
         let island = this.islands.get(h);
+        const manifoldHash = Manifold.hashCodeOf(a, b);
 
-        // This is the second time we've seen this island, so it isn't new anymore.
-        if (island) {
-            island.isNew = false;
-        }
+        // If we've got a manifold for B/A don't add one for A/B
+        if (island && island.seenManifolds.has(manifoldHash))
+            return;
 
-        const manifold = new Manifold(aVertices, bVertices);
+        // Don't compute the manifold unless we have to.
+        const manifold = new Manifold(a, b);
 
         // Is there is no penetration, there is no collision.
         if (manifold.penetration === 0)
@@ -91,13 +96,15 @@ class CollisionManager {
                 b: this.engine.getEntity(b.bodyId) as any,
                 hash: h,
                 isNew: true,
-                manifolds: []
+                manifolds: [],
+                seenManifolds: new Set()
             };
             this.islands.set(island.hash, island);
         }
 
         // Record this collision.
         island.manifolds.push(manifold);
+        island.seenManifolds.add(manifoldHash);
     }
 }
 
@@ -109,6 +116,8 @@ export default function addPhysics(engine: Engine) {
             const steps = 10;
             const step = message.step / steps;
             for (let _ = 0; _ < steps; ++_) {
+                collisionManager.resetIslands();
+
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {
                     const movedAmount = body.velocity.mul(step);
@@ -120,23 +129,30 @@ export default function addPhysics(engine: Engine) {
                     for (const fixture of otherFixtures(dynamicFixture))
                         collisionManager.run(dynamicFixture, fixture);
 
+                // Solve non-triggers.
                 for (const island of collisionManager.getIslands()) {
                     // Don't solve trigger collisions.
                     const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
                     if (!isTrigger)
                         solve(island);
-
-                    const messageType = isTrigger ? 'trigger' : 'collision';
-
-                    if (island.isNew)
-                        collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
-                    else if (island.manifolds.length === 0)
-                        collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
-                    else
-                        collisionManager.reflexiveMessageBroadcast(messageType, island);
-
-                    island.manifolds = [];
                 }
+            }
+
+            for (const island of collisionManager.getIslands()) {
+                // Don't solve trigger collisions.
+                const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
+                
+                const messageType = isTrigger ? 'trigger' : 'collision';
+
+                if (island.isNew)
+                    collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
+                
+                collisionManager.reflexiveMessageBroadcast(messageType, island);                  
+                
+                if (island.manifolds.length === 0)
+                    collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
+
+                island.isNew = false;
             }
         });
 }
