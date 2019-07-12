@@ -17,9 +17,9 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
       for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
         const point = new Vector2(j, i);
         const position = point
-        .sub(halfSize)
         .mul(removeFrom.collisionTexture.gridSize)
         .add(removeFrom.transform.position)
+        .sub(halfSize)
 
         // Mark the point on the texture as empty.
         if (position.distanceSquared(centre) < radiusSquared) {

@@ -3,7 +3,6 @@ import { Engine } from "../engine";
 import { Fixture } from "../collision/fixture";
 import { Collider } from "../components/collider";
 import { Vertices } from "../geometry/vertices";
-import { drawBox } from "./addRenderer";
 
 export const PIXELS_A_METRE = 64;
 
@@ -166,8 +165,8 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             const textureSize = new Vector2(collisionTexture.width, collisionTexture.height);
             const origin = transform.position.sub(textureSize.div(2));
 
-            for (let i = 0; i < collisionTexture.height; ++i)
-                for (let j = 0; j < collisionTexture.width; ++j) {
+            for (let i = 0; i < collisionTexture.gridHeight; ++i)
+                for (let j = 0; j < collisionTexture.gridWidth; ++j) {
                     const point = new Vector2(j, i);
                     if (collisionTexture.grid[i][j] == 0) continue;
 
