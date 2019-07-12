@@ -13,7 +13,7 @@ const transformScreenToCanvas = (screenPosition: Vector2, canvas: HTMLCanvasElem
 
     return screenPosition
         .sub(new Vector2(rect.left, rect.top))
-        .mul(new Vector2(scaleX, scaleY).div(2));
+        .mul(new Vector2(scaleX, scaleY));
 }
 
 export default class Input {

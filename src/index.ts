@@ -76,7 +76,7 @@ player.add(new Body(10));
 const ground = new Entity();
 ground.add(new Tag('terrain'));
 ground.add(boxCollider(10, 11));
-ground.add(new Transform(new Vector2(5, 10)));
+ground.add(new Transform(new Vector2(6, 10)));
 ground.add(new CollisionTexture(10, 11));
 
 const block = new Entity();
@@ -110,6 +110,7 @@ addRenderer(canvas, engine);
 const input = new Input(canvas);
 window['input'] = input;
 
+addCollisionTextureManager(engine, input, dangerousCursor as any);
 addStayOnMouse(engine, input);
 addSpawn(engine, input);
 drawCollider(canvas, engine);
@@ -120,6 +121,5 @@ convexHullTester(input, engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
-addCollisionTextureManager(engine, input);
 
 
