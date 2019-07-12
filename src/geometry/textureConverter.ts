@@ -30,11 +30,13 @@ const directions = [
 
 export class TextureConverter {
     epsilon = 1e-6;
-    points: number[][];
+    points: number[][] = [];
     vertices: Vertices[];
 
-    constructor(points: number[][]) {
-        this.points = points;
+    constructor(points: (0 | 1)[][]) {
+        // Make a copy.
+        for (const row of points)
+            this.points.push([...row]);
     }
 
     /**
@@ -51,8 +53,7 @@ export class TextureConverter {
      */
     isInShape(vertex: Vector2) {
         // TODO: Make sure polygon is checking its bounds have the point.
-        return this.vertices.some(polygon => polygon.contains(vertex)
-            || polygon.hasVertex(vertex));
+        return this.points[vertex.y][vertex.x] > 1;
     }
 
     /**
@@ -85,7 +86,7 @@ export class TextureConverter {
 
         throw new Error("Looks like we had a line of vertices (this is not handled :/)");
     }
-    
+
     addPolygon(vertices: Vertices) {
         vertices.forceCounterClockwise();
 
@@ -94,7 +95,7 @@ export class TextureConverter {
     }
 
     unwindPolygonTo(vertices: Vector2[], to: Vector2) {
-        for (let i = vertices.length -1; i >= 0; --i) {
+        for (let i = vertices.length - 1; i >= 0; --i) {
             const vertex = vertices[i];
             if (!vertex.equals(to)) continue;
 
@@ -105,10 +106,29 @@ export class TextureConverter {
             // We hit this on the other corner.
             if (newVertices.length >= 3)
                 this.addPolygon(new Vertices(newVertices));
-            return;            
+            return;
         }
 
         throw new Error("Failed to create unwound polygon!");
+    }
+
+    labelRegion(startVertex: Vector2) {
+        const seen: Set<number> = new Set();
+        const stack: Vector2[] = [];
+
+        stack.push(startVertex);
+        seen.add(startVertex.hashCode());
+
+        while (stack.length) {
+            const current = stack.pop();
+            if (!this.inBounds(current)) continue;
+
+            this.points[current.y][current.x] = this.vertices.length + 2; // 1 for solidity, one to mark as consumed.
+
+            const newVertices = directions.map(v => current.add(v)).filter(v => this.inBounds(v) && this.isSolid(v) && !seen.has(v.hashCode()));
+            newVertices.forEach(v => seen.add(v.hashCode()));
+            stack.push(...newVertices);
+        }
     }
 
     extractHullsFrom(startVertex: Vector2) {
@@ -128,7 +148,7 @@ export class TextureConverter {
                 // Move this vertex and all vertices until the previous occurrence into a new polygon.
                 this.unwindPolygonTo(polygon, vertex);
                 continue;
-            } 
+            }
 
             polygon.push(vertex);
             seenVertices.add(hash);
@@ -150,6 +170,8 @@ export class TextureConverter {
                 if (this.isInShape(vertex)) continue;
 
                 this.extractHullsFrom(vertex);
+                // Mark this region as solved.
+                this.labelRegion(vertex);
             }
 
         return this.vertices;

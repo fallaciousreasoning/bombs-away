@@ -1,12 +1,14 @@
 import { TextureConverter } from './textureConverter';
 
+type Grid = (0 | 1)[][];
+
 test('A square is parsed correctly', () => {
-    const grid = [
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -22,12 +24,12 @@ test('A square is parsed correctly', () => {
 });
 
 test('Multiple shapes can be parsed correctly 1', () => {
-    const grid = [
-        [0,0,0,1,1],
-        [0,0,0,0,0],
-        [1,1,0,0,0],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -39,12 +41,12 @@ test('Multiple shapes can be parsed correctly 1', () => {
 });
 
 test('Multiple shapes can be parsed correctly 2', () => {
-    const grid = [
-        [0,0,0,1,1],
-        [0,0,0,1,1],
-        [1,1,0,0,0],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [0, 0, 0, 1, 1],
+        [0, 0, 0, 1, 1],
+        [1, 1, 0, 0, 0],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -56,12 +58,12 @@ test('Multiple shapes can be parsed correctly 2', () => {
 });
 
 test('Multiple shapes with no separating line', () => {
-    const grid = [
-        [1,0,0,1,1],
-        [1,1,0,1,1],
-        [1,1,0,0,0],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [1, 0, 0, 1, 1],
+        [1, 1, 0, 1, 1],
+        [1, 1, 0, 0, 0],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -73,12 +75,12 @@ test('Multiple shapes with no separating line', () => {
 });
 
 test('Lines are valid', () => {
-    const grid = [
-        [0,0,0,0,0],
-        [0,1,0,0,0],
-        [0,1,0,0,0],
-        [0,1,0,0,0],
-        [0,0,0,0,0],
+    const grid: Grid = [
+        [0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0],
     ];
 
     const converter = new TextureConverter(grid);
@@ -90,12 +92,12 @@ test('Lines are valid', () => {
 });
 
 test('Diagonals can join', () => {
-    const grid = [
-        [1,0,0,1,1],
-        [1,1,0,1,1],
-        [1,1,1,0,0],
-        [1,1,1,1,0],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [1, 0, 0, 1, 1],
+        [1, 1, 0, 1, 1],
+        [1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -105,12 +107,12 @@ test('Diagonals can join', () => {
 });
 
 test('Literal corner cases', () => {
-    const grid = [
-        [1,1,1,1,0],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
-        [1,1,1,1,1],
+    const grid: Grid = [
+        [1, 1, 1, 1, 0],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
     ];
 
     const converter = new TextureConverter(grid);
@@ -118,4 +120,20 @@ test('Literal corner cases', () => {
 
     expect(result.length).toBe(1);
     expect(result[0].length).toBe(15);
+});
+
+test('Deep inset', () => {
+    const grid: Grid = [
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 0, 0],
+        [1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1],
+    ];
+
+    const converter = new TextureConverter(grid);
+    const result = converter.getVertices();
+
+    expect(result.length).toBe(1);
+    expect(result[0].length).toBe(18);
 });

@@ -1,7 +1,7 @@
 export class CollisionTexture {
     type: 'collisionTexture' = 'collisionTexture';
 
-    grid: number[][] = [];
+    grid: (0|1)[][] = [];
     gridSize: number = 1;
 
     width: number;

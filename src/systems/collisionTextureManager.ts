@@ -32,8 +32,8 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
         return;
     }
 
-    // const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
-    // const vertices = textureConverter.getVertices();
+    const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
+    const vertices = textureConverter.getVertices();
     // const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []);
     // console.log(decomposedVertices);
 }
