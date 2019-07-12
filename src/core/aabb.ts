@@ -67,4 +67,8 @@ export class AABB {
     contains(point: Vector2) {
         return point.x >= this.min.x && point.y >= this.min.y && point.x <= this.max.x && point.y <= this.max.y;
     }
+
+    offset(by: Vector2): AABB {
+        return new AABB(this.centre.sub(by), this.size);
+    }
 }
