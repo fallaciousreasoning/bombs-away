@@ -84,7 +84,8 @@ export class TextureConverter {
             if (this.isSolid(vertex)) return { direction, vertex };
         }
 
-        throw new Error("Looks like we had a line of vertices (this is not handled :/)");
+        // There is no next vertex, this is a line.
+        return {};
     }
 
     addPolygon(vertices: Vertices) {
@@ -142,6 +143,12 @@ export class TextureConverter {
                 direction === undefined
                     ? 3
                     : direction);
+
+            // Can't find next vertex in the case of lines.
+            if (!vertex) {
+                break;
+            }
+
             const hash = `${vertex.x}_${vertex.y}`;
 
             if (seenVertices.has(hash)) {
