@@ -160,21 +160,6 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             contacts.length = 0;
         });
 
-    engine.makeSystem("collisionTexture", "transform")
-        .onEach("tick", ({ transform, collisionTexture }) => {
-            const textureSize = new Vector2(collisionTexture.width, collisionTexture.height);
-            const origin = transform.position.sub(textureSize.div(2));
-
-            for (let i = 0; i < collisionTexture.gridHeight; ++i)
-                for (let j = 0; j < collisionTexture.gridWidth; ++j) {
-                    const point = new Vector2(j, i);
-                    if (collisionTexture.grid[i][j] == 0) continue;
-
-                    const position = origin.add(point.mul(collisionTexture.gridSize));
-                    drawBox(position, pointSize);
-                }
-        });
-
     engine.makeSystem()
         .on('tick', () => {
             for (const v of config.debugVertices)
