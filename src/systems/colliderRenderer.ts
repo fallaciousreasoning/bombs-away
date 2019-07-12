@@ -2,6 +2,8 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { Fixture } from "../collision/fixture";
 import { Collider } from "../components/collider";
+import { Vertices } from "../geometry/vertices";
+import { drawBox } from "./addRenderer";
 
 export const PIXELS_A_METRE = 64;
 
@@ -11,14 +13,18 @@ interface DebugRenderConfig {
     drawContacts: boolean;
     drawCentroids: boolean;
     drawNormals: boolean;
+    debugVertices: Vertices[],
+    debugPoints: Vector2[]
 }
 
-const config: DebugRenderConfig = {
+export const config: DebugRenderConfig = {
     drawEdges: true,
     drawVertices: false,
     drawContacts: true,
     drawCentroids: false,
     drawNormals: false,
+    debugVertices: [],
+    debugPoints: [],
 };
 
 window['renderConfig'] = config;
@@ -29,6 +35,36 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
 
     const contacts: Vector2[] = [];
     const pointSize = 0.2;
+
+    const drawVertices = (vertices: Vertices, color: string) => {
+        context.save();
+    
+        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+    
+        if (config.drawEdges) {
+            context.beginPath();
+            context.strokeStyle = color;
+            for (let i = 0; i < vertices.length; ++i) {
+                const curr = vertices.getVertex(i);
+                const next = vertices.getVertex(i + 1);
+
+                context.lineWidth = 1 / PIXELS_A_METRE;
+                context.moveTo(curr.x, curr.y);
+                context.lineTo(next.x, next.y);
+            }
+            context.stroke();
+        }
+    
+        context.restore();
+    };
+
+    const drawBox = (position: Vector2, size: number, color: string = 'blue') => {
+        const scaledSize = new Vector2(size).mul(PIXELS_A_METRE);
+        const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
+    
+        context.fillStyle = color;
+        context.fillRect(origin.x, origin.y, scaledSize.x, scaledSize.y);
+    }
 
     const drawFixture = (collider: Collider, fixture: Fixture) => {
             const vertices = fixture.vertices;
@@ -124,4 +160,13 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             // Clear the array of contact points.
             contacts.length = 0;
         });
+
+    engine.makeSystem()
+        .on('tick', () => {
+            for (const v of config.debugVertices)
+                drawVertices(v, 'red');
+
+            for (const point of config.debugPoints)
+                drawBox(v, 'blue');
+        })
 }

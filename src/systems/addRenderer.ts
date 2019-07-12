@@ -6,17 +6,6 @@ import { Engine } from "../engine";
 export const PIXELS_A_METRE = 64;
 export const METRES_A_PIXEL = 1/PIXELS_A_METRE;
 
-const debugPoints = [];
-window['debugPoints'] = debugPoints;
-
-export const drawBox = (context: CanvasRenderingContext2D, position: Vector2, size: Vector2, color: string = 'blue') => {
-    const scaledSize = size.mul(PIXELS_A_METRE);
-    const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
-
-    context.fillStyle = color;
-    context.fillRect(origin.x, origin.y, scaledSize.x, scaledSize.y);
-}
-
 export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
     const context = canvas.getContext('2d');
 
