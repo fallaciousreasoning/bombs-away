@@ -5,8 +5,7 @@ import { TextureConverter } from '../geometry/textureConverter';
 import { convexPartition } from '../geometry/bayazitDecomposer';
 import Input from '../core/input';
 import { config } from './colliderRenderer';
-
-let debugPoints: Vector2[] = window['debugPoints'];
+import { Fixture } from '../collision/fixture';
 
 const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
@@ -34,9 +33,8 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
 
     const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
     const vertices = textureConverter.getVertices();
-    const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []);
-    console.log(`Decomposed: ${decomposedVertices.length}, Normal: ${vertices.length}`);
-    config.debugVertices = decomposedVertices.map(d => d.translate(removeFrom.transform.position.sub(halfSize)));
+    const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []).map(v => v.scale(removeFrom.collisionTexture.gridSize));
+    removeFrom.collider.fixtures = decomposedVertices.map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));
 }
 
 export const addCollisionTextureManager = (engine: Engine, input: Input, cursor: Entityish<['transform']>) => {
