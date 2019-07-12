@@ -62,23 +62,4 @@ export default function addRenderer(canvas: HTMLCanvasElement, engine: Engine) {
             context.lineTo(lineEnd.x, lineEnd.y);
             context.stroke();
         });
-
-    engine.makeSystem("collisionTexture", "transform")
-    .onEach("tick", ({ transform, collisionTexture }) => {
-        const textureSize = new Vector2(collisionTexture.width, collisionTexture.height);
-        const origin = transform.position.sub(textureSize.div(2));
-
-        for (let i = 0; i < collisionTexture.height; ++i)
-          for (let j = 0; j < collisionTexture.width; ++j) {
-              const point = new Vector2(j, i);
-              if (collisionTexture.grid[i][j] == 0) continue;
-              
-              const position = origin.add(point.mul(collisionTexture.gridSize));
-              drawBox(context, position, new Vector2(0.1));
-          }
-
-        for (const point of debugPoints) {
-            drawBox(context, point, new Vector2(1), 'green');
-        }
-    });
 }

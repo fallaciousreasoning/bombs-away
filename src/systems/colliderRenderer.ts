@@ -38,9 +38,9 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
 
     const drawVertices = (vertices: Vertices, color: string) => {
         context.save();
-    
+
         context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
-    
+
         if (config.drawEdges) {
             context.beginPath();
             context.strokeStyle = color;
@@ -54,71 +54,71 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             }
             context.stroke();
         }
-    
+
         context.restore();
     };
 
     const drawBox = (position: Vector2, size: number, color: string = 'blue') => {
         const scaledSize = new Vector2(size).mul(PIXELS_A_METRE);
         const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
-    
+
         context.fillStyle = color;
         context.fillRect(origin.x, origin.y, scaledSize.x, scaledSize.y);
     }
 
     const drawFixture = (collider: Collider, fixture: Fixture) => {
-            const vertices = fixture.vertices;
-            const centroid = fixture.vertices.centroid;
-            context.save();
+        const vertices = fixture.vertices;
+        const centroid = fixture.vertices.centroid;
+        context.save();
 
-            context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
-            context.translate(fixture.transform.position.x, fixture.transform.position.y);
-            context.rotate(fixture.transform.rotation);
+        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+        context.translate(fixture.transform.position.x, fixture.transform.position.y);
+        context.rotate(fixture.transform.rotation);
 
-            if (config.drawEdges) {
-                context.beginPath();
-                context.strokeStyle = collider.color || 'black';
-                for (let i = 0; i < vertices.length; ++i) {
-                    const curr = vertices.getVertex(i);
-                    const next = vertices.getVertex(i + 1);
+        if (config.drawEdges) {
+            context.beginPath();
+            context.strokeStyle = collider.color || 'black';
+            for (let i = 0; i < vertices.length; ++i) {
+                const curr = vertices.getVertex(i);
+                const next = vertices.getVertex(i + 1);
 
-                    context.lineWidth = 1 / PIXELS_A_METRE;
-                    context.moveTo(curr.x, curr.y);
-                    context.lineTo(next.x, next.y);
-                }
-                context.stroke();
+                context.lineWidth = 1 / PIXELS_A_METRE;
+                context.moveTo(curr.x, curr.y);
+                context.lineTo(next.x, next.y);
             }
+            context.stroke();
+        }
 
-            if (config.drawNormals) {
-                context.beginPath();
-                context.strokeStyle = 'green';
-                for (let i = 0; i < vertices.length; ++i) {
-                    const curr = vertices.getVertex(i);
-                    const next = vertices.getVertex(i + 1);
+        if (config.drawNormals) {
+            context.beginPath();
+            context.strokeStyle = 'green';
+            for (let i = 0; i < vertices.length; ++i) {
+                const curr = vertices.getVertex(i);
+                const next = vertices.getVertex(i + 1);
 
-                    const start = curr.add(next).mul(0.5);
-                    const end = start.add(vertices.normals[i]);
+                const start = curr.add(next).mul(0.5);
+                const end = start.add(vertices.normals[i]);
 
-                    context.moveTo(start.x, start.y);
-                    context.lineTo(end.x, end.y);
-                }
-                context.stroke();
+                context.moveTo(start.x, start.y);
+                context.lineTo(end.x, end.y);
             }
+            context.stroke();
+        }
 
-            if (config.drawVertices) {
-                for (let i = 0; i < vertices.length; ++i) {
-                    context.fillStyle = 'green';
-                    const vertex = vertices.getVertex(i);
-                    context.fillRect(vertex.x - pointSize / 2, vertex.y - pointSize / 2, pointSize, pointSize);
-                }
+        if (config.drawVertices) {
+            for (let i = 0; i < vertices.length; ++i) {
+                context.fillStyle = 'green';
+                const vertex = vertices.getVertex(i);
+                context.fillRect(vertex.x - pointSize / 2, vertex.y - pointSize / 2, pointSize, pointSize);
             }
+        }
 
-            if (config.drawCentroids) {
-                context.fillStyle = 'blue';
-                context.fillRect(centroid.x - pointSize / 2, centroid.y - pointSize / 2, pointSize, pointSize);
-            }
+        if (config.drawCentroids) {
+            context.fillStyle = 'blue';
+            context.fillRect(centroid.x - pointSize / 2, centroid.y - pointSize / 2, pointSize, pointSize);
+        }
 
-            context.restore();
+        context.restore();
     }
 
     engine
@@ -161,12 +161,27 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
             contacts.length = 0;
         });
 
+    engine.makeSystem("collisionTexture", "transform")
+        .onEach("tick", ({ transform, collisionTexture }) => {
+            const textureSize = new Vector2(collisionTexture.width, collisionTexture.height);
+            const origin = transform.position.sub(textureSize.div(2));
+
+            for (let i = 0; i < collisionTexture.height; ++i)
+                for (let j = 0; j < collisionTexture.width; ++j) {
+                    const point = new Vector2(j, i);
+                    if (collisionTexture.grid[i][j] == 0) continue;
+
+                    const position = origin.add(point.mul(collisionTexture.gridSize));
+                    drawBox(position, pointSize);
+                }
+        });
+
     engine.makeSystem()
         .on('tick', () => {
             for (const v of config.debugVertices)
                 drawVertices(v, 'red');
 
             for (const point of config.debugPoints)
-                drawBox(v, 'blue');
+                drawBox(point, pointSize, 'blue');
         })
 }
