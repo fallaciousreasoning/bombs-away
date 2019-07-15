@@ -26,7 +26,6 @@ import { Fixture } from "./collision/fixture";
 import { addFixtureManager } from "./systems/fixtureManager";
 import { addCollisionTextureManager } from './systems/collisionTextureManager'
 import { StayOnMouse } from "./components/stayOnMouse";
-import addStayOnMouse from "./systems/addFollows";
 import { Circle } from "./components/circle";
 import Box from "./components/box";
 import { CollisionTexture } from "./components/collisionTexture";
@@ -34,6 +33,8 @@ import GroundTiler from "./components/groundTiler";
 import addGroundTiler from "./systems/addGroundTiler";
 import { Entityish } from "./systems/system";
 import { FollowTransform } from "./components/followTransform";
+import { Camera } from "./components/camera";
+import addFollows from "./systems/addFollows";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -87,6 +88,7 @@ player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(3));
+player.add(new Camera)
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -113,7 +115,8 @@ groundTiler.add(new GroundTiler(player));
 
 const camera = new Entity();
 camera.add(new Transform());
-camera.add(new FollowTransform(player.get('transform')))
+camera.add(new FollowTransform(player.get('transform')));
+// camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);
@@ -129,7 +132,7 @@ const input = new Input(canvas);
 window['input'] = input;
 
 addCollisionTextureManager(engine, input, dangerousCursor as any);
-addStayOnMouse(engine, input);
+addFollows(engine, input);
 addSpawn(engine, input);
 drawCollider(canvas, engine);
 addGravity(engine);

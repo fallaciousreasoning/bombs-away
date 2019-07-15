@@ -2,6 +2,7 @@ import AliveForTime from "./aliveForTime";
 import Body from "./body";
 import { Bounce } from "./bounce";
 import Box from "./box";
+import { Camera } from "./camera";
 import { Circle } from "./circle";
 import { Collider } from "./collider";
 import { CollisionTexture } from "./collisionTexture";
@@ -21,4 +22,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Circle | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;

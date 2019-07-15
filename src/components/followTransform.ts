@@ -1,7 +1,7 @@
 import { Transform } from "./transform";
 
 export class FollowTransform {
-    type: 'followTransform';
+    type: 'followTransform' = 'followTransform';
     follow: Transform;
     spring: number = 0.3;
 
