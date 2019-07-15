@@ -63,6 +63,17 @@ const makeBomb = (spawn: Entity) => {
     return bomb;
 }
 
+const makeGroundBlock = (position: Vector2) => {
+    const gridSize = 0.3
+    const ground = new Entity();
+    ground.add(new Tag('terrain'));
+    ground.add(boxCollider(10, 11));
+    ground.add(new Transform(position));
+
+    ground.add(new CollisionTexture(10, 11, gridSize));
+    return ground;
+}
+
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
 bomber.add(new Transform(new Vector2(8.5, 0)));
@@ -72,14 +83,6 @@ player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(3));
-
-const ground = new Entity();
-ground.add(new Tag('terrain'));
-ground.add(boxCollider(10, 11));
-ground.add(new Transform(new Vector2(6, 10)));
-
-const gridSize = 0.5
-ground.add(new CollisionTexture(10, 11, gridSize));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -98,14 +101,14 @@ const dangerousCursor = new Entity();
 dangerousCursor.add(new Transform());
 dangerousCursor.add(new StayOnMouse());
 dangerousCursor.add(new Tag('destroy-when-e'));
-dangerousCursor.add(new Circle(1));
+dangerousCursor.add(new Circle(0.5));
 
 engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);
 engine.addEntity(block);
 // engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
-engine.addEntity(ground);
+engine.addEntity(makeGroundBlock(new Vector2(6, 10)));
 engine.addEntity(bomber);
 
 addRenderer(canvas, engine);

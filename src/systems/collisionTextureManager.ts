@@ -42,6 +42,6 @@ export const addCollisionTextureManager = (engine: Engine, input: Input, cursor:
         .onEach('tick', (entity) => {
             if (input.getAxis('shoot') === 0) return;
 
-            destroyCircle(entity, cursor.transform.position, 1);
+            destroyCircle(entity, cursor.transform.position, 0.5);
         });
 }
