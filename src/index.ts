@@ -30,6 +30,9 @@ import addStayOnMouse from "./systems/addStayOnMouse";
 import { Circle } from "./components/circle";
 import Box from "./components/box";
 import { CollisionTexture } from "./components/collisionTexture";
+import GroundTiler from "./components/groundTiler";
+import addGroundTiler from "./systems/addGroundTiler";
+import { Entityish } from "./systems/system";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -63,14 +66,14 @@ const makeBomb = (spawn: Entity) => {
     return bomb;
 }
 
-const makeGroundBlock = (position: Vector2) => {
-    const gridSize = 0.3
+const makeGroundTile = () => {
+    const gridSize = 0.333333
     const ground = new Entity();
     ground.add(new Tag('terrain'));
-    ground.add(boxCollider(10, 11));
-    ground.add(new Transform(position));
+    ground.add(boxCollider(5, 5));
+    ground.add(new Transform());
 
-    ground.add(new CollisionTexture(10, 11, gridSize));
+    ground.add(new CollisionTexture(5, 5, gridSize));
     return ground;
 }
 
@@ -103,13 +106,17 @@ dangerousCursor.add(new StayOnMouse());
 dangerousCursor.add(new Tag('destroy-when-e'));
 dangerousCursor.add(new Circle(0.5));
 
+const groundTiler = new Entity();
+groundTiler.add(new Transform(new Vector2(6, 10)));
+groundTiler.add(new GroundTiler(player));
+
 engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);
 engine.addEntity(block);
 // engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
-engine.addEntity(makeGroundBlock(new Vector2(6, 10)));
 engine.addEntity(bomber);
+engine.addEntity(groundTiler);
 
 addRenderer(canvas, engine);
 const input = new Input(canvas);
@@ -126,5 +133,5 @@ convexHullTester(input, engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
-
+addGroundTiler(engine, canvas, makeGroundTile as any);
 

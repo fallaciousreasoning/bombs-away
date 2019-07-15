@@ -15,4 +15,8 @@ export class Collider {
     get area() {
         return this.fixtures.reduce((prev, next) => prev + next.vertices.area, 0);
     }
+
+    get bounds() {
+        return this.fixtures.map(f => f.transformedVertices.bounds).reduce((prev, next) => next.combine(prev));
+    }
 }

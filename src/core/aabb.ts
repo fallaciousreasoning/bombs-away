@@ -24,7 +24,7 @@ export class AABB {
 
     set width(value: number) {
         const centre = this.centre;
-        const halfWdith = value/2;
+        const halfWdith = value / 2;
 
         this.min = this.min.withX(centre.x - halfWdith);
         this.max = this.max.withX(centre.x + halfWdith);
@@ -36,7 +36,7 @@ export class AABB {
 
     set height(value: number) {
         const centre = this.centre;
-        const halfHeight = value/2;
+        const halfHeight = value / 2;
 
         this.min = this.min.withY(centre.y - halfHeight);
         this.max = this.max.withY(centre.y + halfHeight);
@@ -70,5 +70,18 @@ export class AABB {
 
     offset(by: Vector2): AABB {
         return new AABB(this.centre.sub(by), this.size);
+    }
+
+    combine(withAABB: AABB): AABB {
+        if (!withAABB)
+            return this;
+
+        const min = Vector2.min(withAABB.min, this.min);
+        const max = Vector2.max(withAABB.max, this.max);
+        return AABB.fromMinMax(min, max);
+    }
+
+    static fromMinMax(min: Vector2, max: Vector2) {
+        return new AABB(min.add(max).mul(0.5), max.sub(min));
     }
 }
