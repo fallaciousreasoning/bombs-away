@@ -8,6 +8,7 @@ import { CollisionTexture } from "./collisionTexture";
 import Damage from "./damage";
 import Explodes from "./explodes";
 import FlipWithMouse from "./flipWithMouse";
+import { FollowTransform } from "./followTransform";
 import GroundTiler from "./groundTiler";
 import Health from "./health";
 import Hull from "./hull";
@@ -20,4 +21,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Circle | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Circle | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;
