@@ -153,4 +153,10 @@ export default class Vector2 {
 
         return result;
     }
+
+    static lerp(from: Vector2, to: Vector2, amount: number) {
+        const x = (to.x - from.x) * amount;
+        const y = (to.y - from.y) * amount;
+        return new Vector2(x, y);
+    }
 }
