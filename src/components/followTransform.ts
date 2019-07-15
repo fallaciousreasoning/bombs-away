@@ -1,11 +1,12 @@
 import { Transform } from "./transform";
+import { Entity } from "../entity";
 
 export class FollowTransform {
     type: 'followTransform' = 'followTransform';
-    follow: Transform;
-    spring: number = 0.3;
+    follow: Entity;
+    spring: number = 10;
 
-    constructor(follow?: Transform) {
+    constructor(follow?: Entity) {
         this.follow = follow;
     }
 }

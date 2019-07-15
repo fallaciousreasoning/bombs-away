@@ -88,7 +88,6 @@ player.add(new Player());
 player.add(circleCollider(1, 9));
 player.add(new Transform(new Vector2(5, 3)));
 player.add(new Body(3));
-player.add(new Camera())
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -115,8 +114,8 @@ groundTiler.add(new GroundTiler(player));
 
 const camera = new Entity();
 camera.add(new Transform());
-camera.add(new FollowTransform(player.get('transform')));
-// camera.add(new Camera());
+camera.add(new FollowTransform(player));
+camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);
 engine.addEntity(ramp);

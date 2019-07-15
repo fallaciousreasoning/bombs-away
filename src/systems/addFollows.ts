@@ -10,8 +10,8 @@ export default (engine: Engine, input: Input) => {
 
     engine.makeSystem('followTransform', 'transform')
         .onEach('tick', ({ transform, followTransform }, message) => {
-            transform.position = Vector2.lerp(transform.position,
-                followTransform.follow.position,
-                followTransform.spring * message.step);
+            transform.position = transform.position.add(Vector2.lerp(transform.position,
+                followTransform.follow.get('transform').position,
+                followTransform.spring * message.step));
         })
 }
