@@ -107,7 +107,7 @@ dangerousCursor.add(new Tag('destroy-when-e'));
 dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
-groundTiler.add(new Transform(new Vector2(6, 10)));
+groundTiler.add(new Transform(new Vector2(2.5, 10)));
 groundTiler.add(new GroundTiler(player));
 
 engine.addEntity(dangerousCursor);
