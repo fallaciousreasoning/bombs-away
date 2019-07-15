@@ -14,7 +14,7 @@ import { polygonsToString } from "./geometry/serializer";
 import { Vertices } from "./geometry/vertices";
 import explode from "./systems/addExplosion";
 import addGravity from "./systems/addGravity";
-import addRenderer from './systems/addRenderer';
+import addRenderer, { METRES_A_PIXEL } from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
 import convexHullTester from "./systems/convexHullTester";
@@ -113,8 +113,8 @@ groundTiler.add(new Transform(new Vector2(2.5, 10)));
 groundTiler.add(new GroundTiler(player));
 
 const camera = new Entity();
-camera.add(new Transform());
-camera.add(new FollowTransform(player));
+camera.add(new Transform(new Vector2(canvas.width*METRES_A_PIXEL/2, 0)));
+camera.add(new FollowTransform(player, true));
 camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);

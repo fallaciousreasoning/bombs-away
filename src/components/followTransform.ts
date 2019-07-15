@@ -6,7 +6,12 @@ export class FollowTransform {
     follow: Entity;
     spring: number = 10;
 
-    constructor(follow?: Entity) {
+    lockX: boolean;
+    lockY: boolean;
+
+    constructor(follow?: Entity, lockX?: boolean, lockY?: boolean) {
         this.follow = follow;
+        this.lockX = lockX;
+        this.lockY = lockY;
     }
 }
