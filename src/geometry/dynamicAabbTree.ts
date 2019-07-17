@@ -2,7 +2,7 @@ import { AABB } from "../core/aabb";
 
 export interface AABBTreeChild<T extends AABBTreeChild<T>> {
     bounds: AABB;
-    owningNode: AABBTreeNode<T>;
+    owningNode?: AABBTreeNode<T>;
 }
 
 export class AABBTreeNode<T extends AABBTreeChild<T>> {
