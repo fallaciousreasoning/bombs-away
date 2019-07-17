@@ -114,18 +114,18 @@ export default function addPhysics(engine: Engine) {
     engine
         .makeSystem()
         .onMessage('tick', message => {
-            const steps = 10;
+            const steps = 1;
             const step = message.step / steps;
 
             // Make a tree of all fixtures.
             const tree = new AABBTree<Fixture>();
-            for (const fixture of fixtures()) {
+            const fs = Array.from(fixtures());
+            for (const fixture of fs) {
                 tree.add(fixture);
             }
 
             for (let _ = 0; _ < steps; ++_) {
                 collisionManager.resetIslands();
-                tree.update();
 
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {

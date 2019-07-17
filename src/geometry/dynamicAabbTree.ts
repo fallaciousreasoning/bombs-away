@@ -51,6 +51,10 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
             ? this.parent.nodes[1]
             : this.parent.nodes[0];
     }
+
+    get depth() {
+        return this.parent ? this.parent.depth + 1 : 0;
+    }
 }
 
 export class AABBTree<T extends AABBTreeChild<T>> {
@@ -71,8 +75,10 @@ export class AABBTree<T extends AABBTreeChild<T>> {
         if (into.isLeaf()) {
             // Subdivide
             const newNode = new AABBTreeNode<T>();
-            newNode.setBranch(node, into);
             this.replace(into, newNode);
+            
+            newNode.setBranch(node, into);
+            newNode.updateBounds(this.margin);
         } else {
             const b0 = into.nodes[0].bounds;
             const b1 = into.nodes[1].bounds;
@@ -174,8 +180,10 @@ export class AABBTree<T extends AABBTreeChild<T>> {
         if (nodeToReplace == parent.nodes[0])
             parent.nodes[0] = withNode;
         else if (nodeToReplace == parent.nodes[1])
-            parent.nodes[1] = nodeToReplace;
+            parent.nodes[1] = withNode;
         else throw new Error("We probably shouldn't be trying to replace this...");
+
+        nodeToReplace.parent = undefined;
     }
 
     private getInvalidNodes(node: AABBTreeNode<T>, invalidNodes?: AABBTreeNode<T>[]) {
