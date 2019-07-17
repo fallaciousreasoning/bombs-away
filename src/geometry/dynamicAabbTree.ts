@@ -131,6 +131,35 @@ export class AABBTree {
         }
     }
 
+    query(bounds: AABB): Child[] {
+        if (!this.root)
+          return [];
+
+        const result: Child[] = [];
+        const nodes: Node[] = [];
+
+        nodes.push(this.root);
+
+        while (nodes.length) {
+            const currentNode = nodes.pop();
+
+            // If this node is a leaf, maybe add the child.
+            if (currentNode.isLeaf()) {
+                if (currentNode.child.bounds.intersects(bounds))
+                    result.push(currentNode.child);
+                continue;
+            }
+
+            // See if children are valid.
+            for (const childNode of currentNode.nodes) {
+                if (!childNode.bounds.intersects(bounds)) continue;
+                nodes.push(childNode);
+            }
+        }
+
+        return result;
+    }
+
     private replace(nodeToReplace: Node, withNode: Node) {
         // Root is a special case.
         if (nodeToReplace == this.root) {
