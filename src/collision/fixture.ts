@@ -21,7 +21,7 @@ export class Fixture {
 
     private _id: number;
 
-constructor(vertices?: Vertices, transform?: Transform, bodyId?: number) {
+    constructor(vertices?: Vertices, transform?: Transform, bodyId?: number) {
         this.vertices = vertices;
         this._id = Fixture.nextId++;
         this.transform = transform;
