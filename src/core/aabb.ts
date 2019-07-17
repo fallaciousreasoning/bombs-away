@@ -60,12 +60,20 @@ export class AABB {
         return new Vector2(this.max.x, this.min.y);
     }
 
+    get area() {
+        return this.width * this.height;
+    }
+
     intersects(other: AABB) {
         return !(other.max.x <= this.min.x || other.max.y <= this.min.y || other.min.x >= this.max.x || other.min.y >= this.max.y);
     }
 
-    contains(point: Vector2) {
-        return point.x >= this.min.x && point.y >= this.min.y && point.x <= this.max.x && point.y <= this.max.y;
+    contains(thing: Vector2 | AABB) {
+        if (thing instanceof AABB) {
+            return this.contains(thing.max)
+                && this.contains(thing.min);
+        }
+        return thing.x >= this.min.x && thing.y >= this.min.y && thing.x <= this.max.x && thing.y <= this.max.y;
     }
 
     offset(by: Vector2): AABB {
