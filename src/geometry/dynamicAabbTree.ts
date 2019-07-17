@@ -67,7 +67,7 @@ export class AABBTree {
         else this.root = node;
     }
 
-    insertNode(node: Node, into: Node) {
+    private insertNode(node: Node, into: Node) {
         if (into.isLeaf()) {
             // Subdivide
             const newNode = new Node();
@@ -87,6 +87,25 @@ export class AABBTree {
         }
 
         into.updateBounds(this.margin);
+    }
+
+    remove(child: Child) {
+        if (!child.owningNode)
+          throw new Error("Can't delete a node that doesn't belong to the tree!");
+
+        this.removeNode(child.owningNode);
+        delete child.owningNode;
+    }
+
+    private removeNode(node: Node) {
+        if (node === this.root) {
+            this.root = undefined;
+            return;
+        }
+
+        const sibling = node.getSibling();
+        const parent = node.parent;
+        this.replace(parent, sibling);
     }
 
     update() {
@@ -112,21 +131,21 @@ export class AABBTree {
         }
     }
 
-    private replace(childNode: Node, withNode: Node) {
+    private replace(nodeToReplace: Node, withNode: Node) {
         // Root is a special case.
-        if (childNode == this.root) {
+        if (nodeToReplace == this.root) {
             this.root = withNode;
             delete withNode.parent;
             return;
         }
 
-        const parent = childNode.parent;
+        const parent = nodeToReplace.parent;
         withNode.parent = parent;
 
-        if (childNode == parent.nodes[0])
+        if (nodeToReplace == parent.nodes[0])
             parent.nodes[0] = withNode;
-        else if (childNode == parent.nodes[1])
-            parent.nodes[1] = childNode;
+        else if (nodeToReplace == parent.nodes[1])
+            parent.nodes[1] = nodeToReplace;
         else throw new Error("We probably shouldn't be trying to replace this...");
     }
 
