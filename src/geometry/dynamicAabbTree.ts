@@ -12,7 +12,7 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
     nodesCrossed: boolean;
 
     bounds: AABB;
-    child: AABBTreeChild<T>;
+    child: T;
 
     constructor() {
         this.nodes = [undefined, undefined];
@@ -29,7 +29,7 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
         this.nodes = [node1, node2];
     }
 
-    setLeaf(child: AABBTreeChild<T>) {
+    setLeaf(child: T) {
         this.child = child;
         child.owningNode = this;
 
@@ -57,7 +57,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
     root: AABBTreeNode<T>;
     margin: number = 0.5;
 
-    add(child: AABBTreeChild<T>) {
+    add(child: T) {
         const node = new AABBTreeNode<T>();
         node.setLeaf(child);
         node.updateBounds(this.margin);
@@ -70,7 +70,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
     private insertNode(node: AABBTreeNode<T>, into: AABBTreeNode<T>) {
         if (into.isLeaf()) {
             // Subdivide
-            const newNode = new AABBTreeNode();
+            const newNode = new AABBTreeNode<T>();
             newNode.setBranch(node, into);
             this.replace(into, newNode);
         } else {
@@ -89,7 +89,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
         into.updateBounds(this.margin);
     }
 
-    remove(child: AABBTreeChild<T>) {
+    remove(child: T) {
         if (!child.owningNode)
           throw new Error("Can't delete a node that doesn't belong to the tree!");
 
@@ -131,11 +131,11 @@ export class AABBTree<T extends AABBTreeChild<T>> {
         }
     }
 
-    query(bounds: AABB): AABBTreeChild<T>[] {
+    query(bounds: AABB): T[] {
         if (!this.root)
           return [];
 
-        const result: AABBTreeChild<T>[] = [];
+        const result: T[] = [];
         const nodes: AABBTreeNode<T>[] = [];
 
         nodes.push(this.root);

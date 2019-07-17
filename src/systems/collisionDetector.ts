@@ -4,10 +4,11 @@ import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import solve from './collisionResolver';
 import { Entityish } from "./system";
-import { dynamicFixtures, dynamicEntities, otherFixtures } from './fixtureManager';
+import { dynamicFixtures, dynamicEntities, otherFixtures, fixtures } from './fixtureManager';
 import { Fixture } from '../collision/fixture';
 import Vector2 from '../core/vector2';
 import { stableHashPair } from '../core/hashHelper'
+import { AABBTree } from '../geometry/dynamicAabbTree';
 
 export interface Island {
     a: Entityish<['collider', 'transform']>;
@@ -115,8 +116,16 @@ export default function addPhysics(engine: Engine) {
         .onMessage('tick', message => {
             const steps = 10;
             const step = message.step / steps;
+
+            // Make a tree of all fixtures.
+            const tree = new AABBTree<Fixture>();
+            for (const fixture of fixtures()) {
+                tree.add(fixture);
+            }
+
             for (let _ = 0; _ < steps; ++_) {
                 collisionManager.resetIslands();
+                tree.update();
 
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {
@@ -125,9 +134,15 @@ export default function addPhysics(engine: Engine) {
                     transform.rotation += body.angularVelocity * step;
                 }
 
-                for (const dynamicFixture of dynamicFixtures())
-                    for (const fixture of otherFixtures(dynamicFixture))
+                for (const dynamicFixture of dynamicFixtures()) {
+                    const nearby = tree.query(dynamicFixture.bounds);
+                    for (const fixture of nearby) {
+                        if (fixture.bodyId === dynamicFixture.id)
+                          continue;
+
                         collisionManager.run(dynamicFixture, fixture);
+                    }
+                }
 
                 // Solve non-triggers.
                 for (const island of collisionManager.getIslands()) {
