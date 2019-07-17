@@ -2,12 +2,12 @@ import { AABB } from "../core/aabb";
 
 export interface AABBTreeChild {
     bounds: AABB;
-    owningNode: Node;
+    owningNode: AABBTreeNode;
 }
 
-class Node {
-    parent: Node;
-    nodes: [Node, Node];
+export class AABBTreeNode {
+    parent: AABBTreeNode;
+    nodes: [AABBTreeNode, AABBTreeNode];
 
     nodesCrossed: boolean;
 
@@ -22,7 +22,7 @@ class Node {
         return !!this.nodes[0]
     }
 
-    setBranch(node1: Node, node2: Node) {
+    setBranch(node1: AABBTreeNode, node2: AABBTreeNode) {
         node1.parent = this;
         node2.parent = this;
 
@@ -54,11 +54,11 @@ class Node {
 }
 
 export class AABBTree {
-    root: Node;
+    root: AABBTreeNode;
     margin: number = 0.5;
 
     add(child: AABBTreeChild) {
-        const node = new Node();
+        const node = new AABBTreeNode();
         node.setLeaf(child);
         node.updateBounds(this.margin);
 
@@ -67,10 +67,10 @@ export class AABBTree {
         else this.root = node;
     }
 
-    private insertNode(node: Node, into: Node) {
+    private insertNode(node: AABBTreeNode, into: AABBTreeNode) {
         if (into.isLeaf()) {
             // Subdivide
-            const newNode = new Node();
+            const newNode = new AABBTreeNode();
             newNode.setBranch(node, into);
             this.replace(into, newNode);
         } else {
@@ -97,7 +97,7 @@ export class AABBTree {
         delete child.owningNode;
     }
 
-    private removeNode(node: Node) {
+    private removeNode(node: AABBTreeNode) {
         if (node === this.root) {
             this.root = undefined;
             return;
@@ -136,7 +136,7 @@ export class AABBTree {
           return [];
 
         const result: AABBTreeChild[] = [];
-        const nodes: Node[] = [];
+        const nodes: AABBTreeNode[] = [];
 
         nodes.push(this.root);
 
@@ -160,7 +160,7 @@ export class AABBTree {
         return result;
     }
 
-    private replace(nodeToReplace: Node, withNode: Node) {
+    private replace(nodeToReplace: AABBTreeNode, withNode: AABBTreeNode) {
         // Root is a special case.
         if (nodeToReplace == this.root) {
             this.root = withNode;
@@ -178,7 +178,7 @@ export class AABBTree {
         else throw new Error("We probably shouldn't be trying to replace this...");
     }
 
-    private getInvalidNodes(node: Node, invalidNodes?: Node[]) {
+    private getInvalidNodes(node: AABBTreeNode, invalidNodes?: AABBTreeNode[]) {
         invalidNodes = invalidNodes || [];
 
         if (node.isLeaf()) {
