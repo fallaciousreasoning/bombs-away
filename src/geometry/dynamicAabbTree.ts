@@ -14,8 +14,11 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
     bounds: AABB;
     child: T;
 
+    color: string;
+
     constructor() {
         this.nodes = [undefined, undefined];
+        this.color = ['red', 'green', 'blue', 'yellow', 'orange'][Math.floor(Math.random() * 4)]
     }
 
     isLeaf() {
@@ -76,7 +79,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
             // Subdivide
             const newNode = new AABBTreeNode<T>();
             this.replace(into, newNode);
-            
+
             newNode.setBranch(node, into);
             newNode.updateBounds(this.margin);
         } else {
@@ -88,7 +91,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
             const dB1 = b1.combine(node.bounds).area - b1.area;
 
             if (dB0 < dB1)
-              this.insertNode(node, into.nodes[0]);
+                this.insertNode(node, into.nodes[0]);
             else this.insertNode(node, into.nodes[1]);
         }
 
@@ -97,7 +100,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
 
     remove(child: T) {
         if (!child.owningNode)
-          throw new Error("Can't delete a node that doesn't belong to the tree!");
+            throw new Error("Can't delete a node that doesn't belong to the tree!");
 
         this.removeNode(child.owningNode);
         delete child.owningNode;
@@ -139,7 +142,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
 
     query(bounds: AABB): T[] {
         if (!this.root)
-          return [];
+            return [];
 
         const result: T[] = [];
         const nodes: AABBTreeNode<T>[] = [];
@@ -198,5 +201,24 @@ export class AABBTree<T extends AABBTreeChild<T>> {
         }
 
         return invalidNodes;
+    }
+
+    *[Symbol.iterator](): Iterator<AABBTreeNode<T>> {
+        if (!this.root)
+            return;
+
+        const nodes = [];
+
+        nodes.push(this.root);
+        while (nodes.length) {
+            const node = nodes.pop();
+            yield node;
+
+            if (node.isLeaf())
+                continue;
+
+            nodes.push(node.nodes[0]);
+            nodes.push(node.nodes[1]);
+        }
     }
 }

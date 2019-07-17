@@ -3,6 +3,8 @@ import { Engine } from "../engine";
 import { Fixture } from "../collision/fixture";
 import { Collider } from "../components/collider";
 import { Vertices } from "../geometry/vertices";
+import { AABBTree } from "../geometry/dynamicAabbTree";
+import { fixtures } from "./fixtureManager";
 
 export const PIXELS_A_METRE = 64;
 
@@ -57,8 +59,8 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
         context.restore();
     };
 
-    const drawBox = (position: Vector2, size: number, color: string = 'blue') => {
-        const scaledSize = new Vector2(size).mul(PIXELS_A_METRE);
+    const drawBox = (position: Vector2, width: number, height: number = width, color: string = 'blue') => {
+        const scaledSize = new Vector2(width, height).mul(PIXELS_A_METRE);
         const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
 
         context.fillStyle = color;
@@ -166,6 +168,18 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
                 drawVertices(v, 'red');
 
             for (const point of config.debugPoints)
-                drawBox(point, pointSize, 'blue');
-        })
+                drawBox(point, pointSize, pointSize, 'blue');
+        });
+
+    // Render AABBTree
+    engine.makeSystem()
+        .on('tick', () => {
+            const tree = new AABBTree<Fixture>();
+            for (const f of fixtures())
+                tree.add(f);
+
+            for (const node of tree) {
+                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, node.color);
+            }
+        });
 }
