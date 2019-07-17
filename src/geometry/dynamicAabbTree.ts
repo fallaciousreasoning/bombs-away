@@ -1,6 +1,6 @@
 import { AABB } from "../core/aabb";
 
-interface Child {
+export interface AABBTreeChild {
     bounds: AABB;
     owningNode: Node;
 }
@@ -12,7 +12,7 @@ class Node {
     nodesCrossed: boolean;
 
     bounds: AABB;
-    child: Child;
+    child: AABBTreeChild;
 
     constructor() {
         this.nodes = [undefined, undefined];
@@ -29,7 +29,7 @@ class Node {
         this.nodes = [node1, node2];
     }
 
-    setLeaf(child: Child) {
+    setLeaf(child: AABBTreeChild) {
         this.child = child;
         child.owningNode = this;
 
@@ -57,7 +57,7 @@ export class AABBTree {
     root: Node;
     margin: number = 0.5;
 
-    add(child: Child) {
+    add(child: AABBTreeChild) {
         const node = new Node();
         node.setLeaf(child);
         node.updateBounds(this.margin);
@@ -89,7 +89,7 @@ export class AABBTree {
         into.updateBounds(this.margin);
     }
 
-    remove(child: Child) {
+    remove(child: AABBTreeChild) {
         if (!child.owningNode)
           throw new Error("Can't delete a node that doesn't belong to the tree!");
 
@@ -131,11 +131,11 @@ export class AABBTree {
         }
     }
 
-    query(bounds: AABB): Child[] {
+    query(bounds: AABB): AABBTreeChild[] {
         if (!this.root)
           return [];
 
-        const result: Child[] = [];
+        const result: AABBTreeChild[] = [];
         const nodes: Node[] = [];
 
         nodes.push(this.root);
