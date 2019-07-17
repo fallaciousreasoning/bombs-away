@@ -19,7 +19,7 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
     }
 
     isLeaf() {
-        return !!this.nodes[0]
+        return !this.nodes[0]
     }
 
     setBranch(node1: AABBTreeNode<T>, node2: AABBTreeNode<T>) {
