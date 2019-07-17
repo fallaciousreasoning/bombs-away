@@ -1,18 +1,18 @@
 import { AABB } from "../core/aabb";
 
-export interface AABBTreeChild {
+export interface AABBTreeChild<T extends AABBTreeChild<T>> {
     bounds: AABB;
-    owningNode: AABBTreeNode;
+    owningNode: AABBTreeNode<T>;
 }
 
-export class AABBTreeNode {
-    parent: AABBTreeNode;
-    nodes: [AABBTreeNode, AABBTreeNode];
+export class AABBTreeNode<T extends AABBTreeChild<T>> {
+    parent: AABBTreeNode<T>;
+    nodes: [AABBTreeNode<T>, AABBTreeNode<T>];
 
     nodesCrossed: boolean;
 
     bounds: AABB;
-    child: AABBTreeChild;
+    child: AABBTreeChild<T>;
 
     constructor() {
         this.nodes = [undefined, undefined];
@@ -22,14 +22,14 @@ export class AABBTreeNode {
         return !!this.nodes[0]
     }
 
-    setBranch(node1: AABBTreeNode, node2: AABBTreeNode) {
+    setBranch(node1: AABBTreeNode<T>, node2: AABBTreeNode<T>) {
         node1.parent = this;
         node2.parent = this;
 
         this.nodes = [node1, node2];
     }
 
-    setLeaf(child: AABBTreeChild) {
+    setLeaf(child: AABBTreeChild<T>) {
         this.child = child;
         child.owningNode = this;
 
@@ -53,12 +53,12 @@ export class AABBTreeNode {
     }
 }
 
-export class AABBTree {
-    root: AABBTreeNode;
+export class AABBTree<T extends AABBTreeChild<T>> {
+    root: AABBTreeNode<T>;
     margin: number = 0.5;
 
-    add(child: AABBTreeChild) {
-        const node = new AABBTreeNode();
+    add(child: AABBTreeChild<T>) {
+        const node = new AABBTreeNode<T>();
         node.setLeaf(child);
         node.updateBounds(this.margin);
 
@@ -67,7 +67,7 @@ export class AABBTree {
         else this.root = node;
     }
 
-    private insertNode(node: AABBTreeNode, into: AABBTreeNode) {
+    private insertNode(node: AABBTreeNode<T>, into: AABBTreeNode<T>) {
         if (into.isLeaf()) {
             // Subdivide
             const newNode = new AABBTreeNode();
@@ -89,7 +89,7 @@ export class AABBTree {
         into.updateBounds(this.margin);
     }
 
-    remove(child: AABBTreeChild) {
+    remove(child: AABBTreeChild<T>) {
         if (!child.owningNode)
           throw new Error("Can't delete a node that doesn't belong to the tree!");
 
@@ -97,7 +97,7 @@ export class AABBTree {
         delete child.owningNode;
     }
 
-    private removeNode(node: AABBTreeNode) {
+    private removeNode(node: AABBTreeNode<T>) {
         if (node === this.root) {
             this.root = undefined;
             return;
@@ -131,12 +131,12 @@ export class AABBTree {
         }
     }
 
-    query(bounds: AABB): AABBTreeChild[] {
+    query(bounds: AABB): AABBTreeChild<T>[] {
         if (!this.root)
           return [];
 
-        const result: AABBTreeChild[] = [];
-        const nodes: AABBTreeNode[] = [];
+        const result: AABBTreeChild<T>[] = [];
+        const nodes: AABBTreeNode<T>[] = [];
 
         nodes.push(this.root);
 
@@ -160,7 +160,7 @@ export class AABBTree {
         return result;
     }
 
-    private replace(nodeToReplace: AABBTreeNode, withNode: AABBTreeNode) {
+    private replace(nodeToReplace: AABBTreeNode<T>, withNode: AABBTreeNode<T>) {
         // Root is a special case.
         if (nodeToReplace == this.root) {
             this.root = withNode;
@@ -178,7 +178,7 @@ export class AABBTree {
         else throw new Error("We probably shouldn't be trying to replace this...");
     }
 
-    private getInvalidNodes(node: AABBTreeNode, invalidNodes?: AABBTreeNode[]) {
+    private getInvalidNodes(node: AABBTreeNode<T>, invalidNodes?: AABBTreeNode<T>[]) {
         invalidNodes = invalidNodes || [];
 
         if (node.isLeaf()) {

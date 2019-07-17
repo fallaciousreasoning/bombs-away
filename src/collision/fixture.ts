@@ -3,14 +3,14 @@ import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
 import { AABBTreeChild, AABBTreeNode } from '../geometry/dynamicAabbTree';
 
-export class Fixture implements AABBTreeChild {
+export class Fixture implements AABBTreeChild<Fixture> {
     private static nextId: number = 1;
 
     // The id of the body that owns this. Used so we don't look at collisions with other fixtures in the same body.
     bodyId: number;
 
     // The node that owns this.
-    owningNode: AABBTreeNode;
+    owningNode: AABBTreeNode<Fixture>;
 
     transform: Transform;
     vertices: Vertices;
