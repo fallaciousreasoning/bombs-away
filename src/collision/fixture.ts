@@ -54,6 +54,10 @@ export class Fixture {
         return this.lastLocalVertices;
     }
 
+    get bounds() {
+        return this.transformedVertices.bounds;
+    }
+
     get id() {
         return this._id;
     }
