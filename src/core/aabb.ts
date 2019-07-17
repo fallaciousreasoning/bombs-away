@@ -81,6 +81,19 @@ export class AABB {
         return AABB.fromMinMax(min, max);
     }
 
+    grow(top: number, left?: number, bottom?: number, right?: number): AABB {
+        if (left === undefined)
+            left = top;
+        if (bottom === undefined)
+            bottom = top;
+        if (right === undefined)
+            right = left;
+
+        const min = this.min.sub(new Vector2(left, top));
+        const max = this.max.add(new Vector2(right, bottom));
+        return AABB.fromMinMax(min, max);
+    }
+
     static fromMinMax(min: Vector2, max: Vector2) {
         return new AABB(min.add(max).mul(0.5), max.sub(min));
     }
