@@ -14,11 +14,8 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
     bounds: AABB;
     child: T;
 
-    color: string;
-
     constructor() {
         this.nodes = [undefined, undefined];
-        this.color = ['red', 'green', 'blue', 'yellow', 'orange'][Math.floor(Math.random() * 4)]
     }
 
     isLeaf() {

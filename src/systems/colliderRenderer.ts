@@ -173,17 +173,15 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
         });
 
     // Render AABBTree
-
-    const tree = new AABBTree<Fixture>();
-    setTimeout(() => {
-        for (const f of fixtures())
-            tree.add(f);
-    });
+    const treeNodeColors = ['red', 'green', 'blue', 'yellow', 'orange'];
     engine.makeSystem()
         .on('tick', () => {
+            const tree = new AABBTree<Fixture>();
+            for (const f of fixtures()) tree.add(f);
 
             for (const node of tree) {
-                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, node.color, true);
+                const color = node.child ? treeNodeColors[node.child.id%treeNodeColors.length] : 'black';
+                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, color, true);
             }
         });
 }
