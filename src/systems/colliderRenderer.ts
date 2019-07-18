@@ -64,7 +64,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
         const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
         const type = stroke ? 'stroke' : 'fill';
 
-        context[`$${type}Style`] = color;
+        context.strokeStyle = 'red';
         context[`${type}Rect`](origin.x, origin.y, scaledSize.x, scaledSize.y);
     }
 
@@ -181,7 +181,7 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
 
             for (const node of tree) {
                 const color = node.child ? treeNodeColors[node.child.id%treeNodeColors.length] : 'black';
-                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, color, true);
+                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, 'red', true);
             }
         });
 }

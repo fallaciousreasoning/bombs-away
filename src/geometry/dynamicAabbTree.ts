@@ -64,7 +64,6 @@ export class AABBTree<T extends AABBTreeChild<T>> {
     add(child: T) {
         const node = new AABBTreeNode<T>();
         node.setLeaf(child);
-        node.updateBounds(this.margin);
 
         if (this.root)
             this.insertNode(node, this.root);
@@ -78,6 +77,7 @@ export class AABBTree<T extends AABBTreeChild<T>> {
             this.replace(into, newNode);
 
             newNode.setBranch(node, into);
+            node.updateBounds(this.margin);
             newNode.updateBounds(this.margin);
         } else {
             const b0 = into.nodes[0].bounds;
