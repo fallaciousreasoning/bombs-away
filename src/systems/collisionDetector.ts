@@ -15,6 +15,8 @@ import { renderConfig, drawBox } from './colliderRenderer';
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
     const tree = new AABBTree<Fixture>();
+
+    // TODO: Maintain the tree properly :'(
     setTimeout(() => {
         for (const f of fixtures())
           tree.add(f);
