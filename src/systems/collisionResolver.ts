@@ -1,7 +1,7 @@
 import Vector2 from "../core/vector2";
 import { Entity } from "../entity";
-import { Island } from "./collisionDetector";
 import { Manifold } from "../collision/manifold";
+import { Island } from "../collision/collisionManager";
 
 /**
  * Calculates the inertia for a shape.
