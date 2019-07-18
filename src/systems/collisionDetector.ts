@@ -10,7 +10,7 @@ import Vector2 from '../core/vector2';
 import { stableHashPair } from '../core/hashHelper'
 import { AABBTree } from '../geometry/dynamicAabbTree';
 import { CollisionManager } from '../collision/collisionManager';
-import { renderConfig } from './colliderRenderer';
+import { renderConfig, drawBox } from './colliderRenderer';
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
@@ -74,9 +74,13 @@ export default function addPhysics(engine: Engine) {
             }
         });
 
-    // Maybe render aabb tree.
+    // Render AABBTree
+    const treeNodeColors = ['red', 'green', 'blue', 'yellow', 'orange'];
     engine.makeSystem()
-        .onMessage('tick', message => {
-            if (renderConfig) return;
+        .onMessage('tick', () => {
+            if (!renderConfig.drawAABBTree) return;
+
+            for (const node of tree)
+                drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, 'red', true);
         });
 }

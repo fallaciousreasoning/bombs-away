@@ -10,13 +10,14 @@ import { context, canvas } from "../game";
 export const PIXELS_A_METRE = 64;
 
 interface DebugRenderConfig {
-    drawEdges: boolean;
-    drawVertices: boolean;
-    drawContacts: boolean;
-    drawCentroids: boolean;
-    drawNormals: boolean;
+    drawEdges: boolean,
+    drawVertices: boolean,
+    drawContacts: boolean,
+    drawCentroids: boolean,
+    drawNormals: boolean,
+    drawAABBTree: boolean,
     debugVertices: Vertices[],
-    debugPoints: Vector2[]
+    debugPoints: Vector2[],
 }
 
 export const renderConfig: DebugRenderConfig = {
@@ -25,6 +26,7 @@ export const renderConfig: DebugRenderConfig = {
     drawContacts: true,
     drawCentroids: false,
     drawNormals: false,
+    drawAABBTree: true,
     debugVertices: [],
     debugPoints: [],
 };
@@ -171,18 +173,5 @@ export default function drawCollider(engine: Engine) {
 
             for (const point of renderConfig.debugPoints)
                 drawBox(point, pointSize, pointSize, 'blue');
-        });
-
-    // Render AABBTree
-    const treeNodeColors = ['red', 'green', 'blue', 'yellow', 'orange'];
-    engine.makeSystem()
-        .on('tick', () => {
-            const tree = new AABBTree<Fixture>();
-            for (const f of fixtures()) tree.add(f);
-
-            for (const node of tree) {
-                const color = node.child ? treeNodeColors[node.child.id%treeNodeColors.length] : 'black';
-                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, 'red', true);
-            }
         });
 }
