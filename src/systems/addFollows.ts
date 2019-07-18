@@ -1,8 +1,9 @@
 import { Engine } from "../engine";
 import Input from "../core/input";
 import Vector2 from "../core/vector2";
+import { input } from "../game";
 
-export default (engine: Engine, input: Input) => {
+export default (engine: Engine) => {
     engine.makeSystem('stayOnMouse', 'transform')
         .onEach('tick', ({ transform }) => {
             transform.position = input.mousePosition;

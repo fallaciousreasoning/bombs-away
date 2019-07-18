@@ -3,8 +3,9 @@ import Player from "../components/player";
 import Input from "../core/input";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
+import { input } from "../game";
 
-export default function addPlayerController(input: Input, engine: Engine) {
+export default function addPlayerController(engine: Engine) {
     engine
     .makeSystem('player', 'body', 'transform')
     .onEach('tick', ({ player, body, transform }, message) => {

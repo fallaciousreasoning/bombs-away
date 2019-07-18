@@ -10,23 +10,24 @@ import Vector2 from '../core/vector2';
 import { stableHashPair } from '../core/hashHelper'
 import { AABBTree } from '../geometry/dynamicAabbTree';
 import { CollisionManager } from '../collision/collisionManager';
+import { renderConfig } from './colliderRenderer';
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
+    const tree = new AABBTree<Fixture>();
+    setTimeout(() => {
+        for (const f of fixtures())
+          tree.add(f);
+    })
+
     engine
         .makeSystem()
         .onMessage('tick', message => {
             const steps = 1;
             const step = message.step / steps;
 
-            // Make a tree of all fixtures.
-            const tree = new AABBTree<Fixture>();
-            const fs = Array.from(fixtures());
-            for (const fixture of fs) {
-                tree.add(fixture);
-            }
-
             for (let _ = 0; _ < steps; ++_) {
+                tree.update();
                 collisionManager.resetIslands();
 
                 // Move the dynamic entities.
@@ -71,5 +72,11 @@ export default function addPhysics(engine: Engine) {
 
                 island.isNew = false;
             }
+        });
+
+    // Maybe render aabb tree.
+    engine.makeSystem()
+        .onMessage('tick', message => {
+            if (renderConfig) return;
         });
 }

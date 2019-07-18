@@ -1,7 +1,8 @@
 import Input from "../core/input";
 import { Engine } from "../engine";
+import { input } from "../game";
 
-export default function addSpawn(engine: Engine, input: Input) {
+export default function addSpawn(engine: Engine) {
     engine
         .makeSystem('transform', 'spawn')
         .onEach('tick', (entity, message) => {

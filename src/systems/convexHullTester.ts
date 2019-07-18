@@ -3,8 +3,9 @@ import Input from "../core/input";
 import Vector2 from "../core/vector2";
 import { AABB } from "../core/aabb";
 import { Vertices } from "../geometry/vertices";
+import { input } from "../game";
 
-export default function convexHullTester(input: Input, engine: Engine) {
+export default function convexHullTester(engine: Engine) {
     engine
     .makeSystem('transform', 'box')
     .onEach('tick', ({ transform, box }) => {
