@@ -81,7 +81,7 @@ const makeGroundTile = () => {
 
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
-bomber.add(new Transform(new Vector2(8.5, 0)));
+bomber.add(new Transform(new Vector2(10, 0)));
 
 const player = new Entity();
 player.add(new Player());
