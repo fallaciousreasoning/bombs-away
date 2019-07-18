@@ -75,12 +75,14 @@ export default function addPhysics(engine: Engine) {
         });
 
     // Render AABBTree
-    const treeNodeColors = ['red', 'green', 'blue', 'yellow', 'orange'];
+    const treeNodeColors = ['red', 'green', 'blue', 'cornflourblue', 'orange'];
     engine.makeSystem()
         .onMessage('tick', () => {
             if (!renderConfig.drawAABBTree) return;
 
-            for (const node of tree)
-                drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, 'red', true);
+            for (const node of tree) {
+                const color = treeNodeColors[node.id % treeNodeColors.length];
+                drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, color, true);
+            }
         });
 }

@@ -6,6 +6,9 @@ export interface AABBTreeChild<T extends AABBTreeChild<T>> {
 }
 
 export class AABBTreeNode<T extends AABBTreeChild<T>> {
+    private static nextId = 1;
+    private _id = AABBTreeNode.nextId++;
+
     parent: AABBTreeNode<T>;
     nodes: [AABBTreeNode<T>, AABBTreeNode<T>];
 
@@ -54,6 +57,10 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
 
     get depth() {
         return this.parent ? this.parent.depth + 1 : 0;
+    }
+
+    get id() {
+        return this._id;
     }
 }
 

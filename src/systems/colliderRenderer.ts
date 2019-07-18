@@ -38,7 +38,7 @@ export const drawBox = (position: Vector2, width: number, height: number = width
     const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
     const type = stroke ? 'stroke' : 'fill';
 
-    context.strokeStyle = 'red';
+    context.strokeStyle = color;
     context[`${type}Rect`](origin.x, origin.y, scaledSize.x, scaledSize.y);
 }
 
