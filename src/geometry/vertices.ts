@@ -24,15 +24,13 @@ export class Vertices {
             minX = minX !== undefined ? Math.min(minX, vertex.x) : vertex.x;
             maxX = maxX !== undefined ? Math.max(maxX, vertex.x) : vertex.x;
             minY = minY !== undefined ? Math.min(minY, vertex.y) : vertex.y;
-            maxY = maxY !== undefined ? Math.max(maxX, vertex.y) : vertex.y;
+            maxY = maxY !== undefined ? Math.max(maxY, vertex.y) : vertex.y;
         }
 
         const min = new Vector2(minX, minY);
         const max = new Vector2(maxX, maxY);
 
-        const size = max.sub(min);
-        const centre = min.add(max).div(2);
-        this.internalBounds = new AABB(centre, size);
+        this.internalBounds = AABB.fromMinMax(min, max);
         return this.internalBounds;
     }
 
