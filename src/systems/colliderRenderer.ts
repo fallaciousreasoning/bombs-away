@@ -59,12 +59,13 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
         context.restore();
     };
 
-    const drawBox = (position: Vector2, width: number, height: number = width, color: string = 'blue') => {
+    const drawBox = (position: Vector2, width: number, height: number = width, color: string = 'blue', stroke=false) => {
         const scaledSize = new Vector2(width, height).mul(PIXELS_A_METRE);
         const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
+        const type = stroke ? 'stroke' : 'fill';
 
-        context.fillStyle = color;
-        context.fillRect(origin.x, origin.y, scaledSize.x, scaledSize.y);
+        context[`$${type}Style`] = color;
+        context[`${type}Rect`](origin.x, origin.y, scaledSize.x, scaledSize.y);
     }
 
     const drawFixture = (collider: Collider, fixture: Fixture) => {
@@ -172,14 +173,17 @@ export default function drawCollider(canvas: HTMLCanvasElement, engine: Engine) 
         });
 
     // Render AABBTree
+
+    const tree = new AABBTree<Fixture>();
+    setTimeout(() => {
+        for (const f of fixtures())
+            tree.add(f);
+    });
     engine.makeSystem()
         .on('tick', () => {
-            const tree = new AABBTree<Fixture>();
-            for (const f of fixtures())
-                tree.add(f);
 
             for (const node of tree) {
-                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, node.color);
+                drawBox(node.bounds.centre, node.bounds.size.x, node.bounds.size.y, node.color, true);
             }
         });
 }
