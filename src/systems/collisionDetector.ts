@@ -29,15 +29,17 @@ export default function addPhysics(engine: Engine) {
             const step = message.step / steps;
 
             for (let _ = 0; _ < steps; ++_) {
-                tree.update();
                 collisionManager.resetIslands();
-
+                
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {
                     const movedAmount = body.velocity.mul(step);
                     transform.position = transform.position.add(movedAmount);
                     transform.rotation += body.angularVelocity * step;
                 }
+
+                // Update collider positions in tree.
+                tree.update();
 
                 for (const dynamicFixture of dynamicFixtures()) {
                     const nearby = tree.query(dynamicFixture.bounds);
