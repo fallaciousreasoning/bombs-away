@@ -6,8 +6,10 @@ import { Family } from "./familyManager";
 import { Destroy } from "./messages/destroy";
 import { Message } from "./messages/message";
 import { ComponentType, System } from "./systems/system";
+import { Instantiate } from "./messages/instantiate";
 
 const destroyMessage: Destroy = { type: 'destroy' } as any;
+const addMessage: Instantiate = { type: 'instantiate' } as any;
 
 export class Engine {
     private entities: { [id: number]: Entity } = {};
@@ -72,6 +74,9 @@ export class Engine {
 
         this.entities[entity.id] = entity;
         this.families.forEach(f => f.onEntityAdded(entity));
+
+        addMessage.entity = entity;
+        this.broadcastMessage(addMessage);
     }
 
     removeEntity(entityish: { id: number }) {

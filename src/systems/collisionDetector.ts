@@ -16,21 +16,26 @@ export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
     const tree = new AABBTree<Fixture>();
 
-    // TODO: Maintain the tree properly :'(
-    setTimeout(() => {
-        for (const f of fixtures())
-          tree.add(f);
-    })
+    // Add entities we missed instantiate messages for...
+    for (const f of fixtures())
+        tree.add(f);
 
     engine
         .makeSystem()
+        .onMessage('instantiate', ({ entity }) => {
+            const collider = entity.get('collider');
+            if (!collider) return;
+
+            collider.tree = tree;
+            collider.fixtures.forEach(f => tree.add(f));
+        })
         .onMessage('tick', message => {
             const steps = 1;
             const step = message.step / steps;
 
             for (let _ = 0; _ < steps; ++_) {
                 collisionManager.resetIslands();
-                
+
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {
                     const movedAmount = body.velocity.mul(step);
@@ -42,10 +47,10 @@ export default function addPhysics(engine: Engine) {
                 tree.update();
 
                 for (const dynamicFixture of dynamicFixtures()) {
-                    const nearby = tree.query(dynamicFixture.bounds);
+                    const nearby = otherFixtures(dynamicFixture);//tree.query(dynamicFixture.bounds);
                     for (const fixture of nearby) {
                         if (fixture.bodyId === dynamicFixture.bodyId)
-                          continue;
+                            continue;
 
                         collisionManager.run(dynamicFixture, fixture);
                     }
@@ -63,14 +68,14 @@ export default function addPhysics(engine: Engine) {
             for (const island of collisionManager.getIslands()) {
                 // Don't solve trigger collisions.
                 const isTrigger = island.a.collider.isTrigger || island.b.collider.isTrigger;
-                
+
                 const messageType = isTrigger ? 'trigger' : 'collision';
 
                 if (island.isNew)
                     collisionManager.reflexiveMessageBroadcast(messageType + '-enter', island);
-                
-                collisionManager.reflexiveMessageBroadcast(messageType, island);                  
-                
+
+                collisionManager.reflexiveMessageBroadcast(messageType, island);
+
                 if (island.manifolds.length === 0)
                     collisionManager.reflexiveMessageBroadcast(messageType + '-exit', island);
 
