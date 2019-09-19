@@ -1,7 +1,8 @@
 import Input from "../core/input";
 import { Engine } from "../engine";
+import { input } from "../game";
 
-export default function addSpawn(engine: Engine, input: Input) {
+export default function addSpawn(engine: Engine) {
     engine
         .makeSystem('transform', 'spawn')
         .onEach('tick', (entity, message) => {
@@ -13,7 +14,8 @@ export default function addSpawn(engine: Engine, input: Input) {
             spawn.tillNextSpawn -= message.step;
 
             if (spawn.tillNextSpawn < 0 && input.getAxis('jump')) {
-                engine.addEntity(spawn.buildSpawn(entity));
+                const spawned = spawn.buildSpawn(entity);
+                engine.addEntity(spawned);
                 spawn.tillNextSpawn = spawn.spawnRate;
             }
         });

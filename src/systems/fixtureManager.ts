@@ -6,6 +6,18 @@ import { Entityish } from './system';
 let colliderFamily: Family;
 let dynamicFamily: Family;
 
+export function* fixtures(): Iterable<Fixture> {
+    if (!colliderFamily)
+      return;
+
+    for (const entity of colliderFamily.entities) {
+        const collider = entity.get('collider');
+        if (!collider) continue;
+
+        yield* collider.fixtures;
+    }
+}
+
 // Return all the fixtures in the world, except for ones from the same body as fixture.
 export function* otherFixtures(fixture: Fixture): Iterable<Fixture> {
     if (!colliderFamily)

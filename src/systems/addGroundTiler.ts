@@ -1,8 +1,9 @@
 import { Engine } from "../engine";
 import { Entityish } from "./system";
 import { METRES_A_PIXEL } from "./addRenderer";
+import { canvas } from "../game";
 
-export default (engine: Engine, canvas: HTMLCanvasElement, makeGroundTile: () => Entityish<['transform', 'collisionTexture']>) => {
+export default (engine: Engine, makeGroundTile: () => Entityish<['transform', 'collisionTexture']>) => {
     let width: number = canvas.width * METRES_A_PIXEL;
     let tileWidth: number = 5;
     let tileHeight: number;

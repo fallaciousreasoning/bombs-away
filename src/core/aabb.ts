@@ -60,12 +60,20 @@ export class AABB {
         return new Vector2(this.max.x, this.min.y);
     }
 
+    get area() {
+        return this.width * this.height;
+    }
+
     intersects(other: AABB) {
         return !(other.max.x <= this.min.x || other.max.y <= this.min.y || other.min.x >= this.max.x || other.min.y >= this.max.y);
     }
 
-    contains(point: Vector2) {
-        return point.x >= this.min.x && point.y >= this.min.y && point.x <= this.max.x && point.y <= this.max.y;
+    contains(thing: Vector2 | AABB) {
+        if (thing instanceof AABB) {
+            return this.contains(thing.max)
+                && this.contains(thing.min);
+        }
+        return thing.x >= this.min.x && thing.y >= this.min.y && thing.x <= this.max.x && thing.y <= this.max.y;
     }
 
     offset(by: Vector2): AABB {
@@ -78,6 +86,19 @@ export class AABB {
 
         const min = Vector2.min(withAABB.min, this.min);
         const max = Vector2.max(withAABB.max, this.max);
+        return AABB.fromMinMax(min, max);
+    }
+
+    grow(top: number, left?: number, bottom?: number, right?: number): AABB {
+        if (left === undefined)
+            left = top;
+        if (bottom === undefined)
+            bottom = top;
+        if (right === undefined)
+            right = left;
+
+        const min = this.min.sub(new Vector2(left, top));
+        const max = this.max.add(new Vector2(right, bottom));
         return AABB.fromMinMax(min, max);
     }
 

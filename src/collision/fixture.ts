@@ -1,12 +1,16 @@
 import { Transform } from "../components/transform";
 import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
+import { AABBTreeChild, AABBTreeNode } from '../geometry/dynamicAabbTree';
 
-export class Fixture {
+export class Fixture implements AABBTreeChild<Fixture> {
     private static nextId: number = 1;
 
     // The id of the body that owns this. Used so we don't look at collisions with other fixtures in the same body.
     bodyId: number;
+
+    // The node that owns this.
+    owningNode: AABBTreeNode<Fixture>;
 
     transform: Transform;
     vertices: Vertices;
@@ -21,7 +25,7 @@ export class Fixture {
 
     private _id: number;
 
-constructor(vertices?: Vertices, transform?: Transform, bodyId?: number) {
+    constructor(vertices?: Vertices, transform?: Transform, bodyId?: number) {
         this.vertices = vertices;
         this._id = Fixture.nextId++;
         this.transform = transform;
@@ -52,6 +56,10 @@ constructor(vertices?: Vertices, transform?: Transform, bodyId?: number) {
         }
 
         return this.lastLocalVertices;
+    }
+
+    get bounds() {
+        return this.transformedVertices.bounds;
     }
 
     get id() {

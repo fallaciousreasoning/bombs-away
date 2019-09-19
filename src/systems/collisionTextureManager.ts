@@ -4,8 +4,9 @@ import Vector2 from '../core/vector2';
 import { TextureConverter } from '../geometry/textureConverter';
 import { convexPartition } from '../geometry/bayazitDecomposer';
 import Input from '../core/input';
-import { config } from './colliderRenderer';
+import { renderConfig } from './colliderRenderer';
 import { Fixture } from '../collision/fixture';
+import { input } from '../game';
 
 const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
@@ -37,7 +38,7 @@ const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', '
     removeFrom.collider.fixtures = decomposedVertices.map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));
 }
 
-export const addCollisionTextureManager = (engine: Engine, input: Input, cursor: Entityish<['transform']>) => {
+export const addCollisionTextureManager = (engine: Engine, cursor: Entityish<['transform']>) => {
     engine.makeSystem('transform', 'collisionTexture', 'collider')
         .onEach('tick', (entity) => {
             if (input.getAxis('shoot') === 0) return;

@@ -9,7 +9,7 @@ import { Transform } from "./components/transform";
 import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
-import { engine } from './game';
+import { engine, canvas } from './game';
 import { polygonsToString } from "./geometry/serializer";
 import { Vertices } from "./geometry/vertices";
 import explode from "./systems/addExplosion";
@@ -40,7 +40,6 @@ window['engine'] = engine;
 window['debugPoints'] = [];
 window['polyString'] = polygonsToString;
 
-const canvas = document.getElementById('root') as HTMLCanvasElement;
 addFixtureManager(engine);
 
 const makeExplosion = (from: Entity) => {
@@ -81,7 +80,7 @@ const makeGroundTile = () => {
 
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
-bomber.add(new Transform(new Vector2(8.5, 0)));
+bomber.add(new Transform(new Vector2(10, 0)));
 
 const player = new Entity();
 player.add(new Player());
@@ -126,20 +125,18 @@ engine.addEntity(bomber);
 engine.addEntity(groundTiler);
 engine.addEntity(camera);
 
-addRenderer(canvas, engine);
-const input = new Input(canvas);
-window['input'] = input;
+addRenderer(engine);
 
-addCollisionTextureManager(engine, input, dangerousCursor as any);
-addFollows(engine, input);
-addSpawn(engine, input);
-drawCollider(canvas, engine);
+addCollisionTextureManager(engine, dangerousCursor as any);
+addFollows(engine);
+addSpawn(engine);
+drawCollider(engine);
 addGravity(engine);
-addPlayerController(input, engine);
+addPlayerController(engine);
 addPhysics(engine);
-convexHullTester(input, engine);
+convexHullTester(engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
-addGroundTiler(engine, canvas, makeGroundTile as any);
+addGroundTiler(engine, makeGroundTile as any);
 
