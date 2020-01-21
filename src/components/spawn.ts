@@ -1,13 +1,14 @@
 import { Entity } from "../entity";
+import { Entityish } from "../systems/system";
 
 export default class Spawn {
     type: 'spawn' = 'spawn';
     spawnRate = 0.2;
     tillNextSpawn: number = 0;
 
-    buildSpawn: (parent: Entity) => Entity;
+    buildSpawn: () => Entityish<['transform']>;
 
-    constructor(buildSpawn: (parent: Entity) => Entity) {
+    constructor(buildSpawn: () => Entityish<['transform']>) {
         this.buildSpawn = buildSpawn;
     }
 }

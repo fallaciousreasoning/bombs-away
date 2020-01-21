@@ -54,17 +54,17 @@ const makeExplosion = (from: Entity) => {
     return explosion;
 }
 
-const makeBomb = (spawn: Entity) => {
+const makeBomb = () => {
     const bomb = new Entity();
 
     bomb.add(new Explodes(makeExplosion));
-    bomb.add(new Transform(spawn.get('transform').position));
+    bomb.add(new Transform());
     bomb.add(boxCollider(1, 1));
 
     const body = new Body();
     bomb.add(body);
 
-    return bomb;
+    return bomb as Entityish<['transform']>;
 }
 
 const makeGroundTile = () => {
@@ -90,7 +90,8 @@ const makeWallTile = () => {
 
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
-bomber.add(new Transform(new Vector2(10, 0)));
+bomber.add(boxCollider(getWidth(), 1, 'red', true))
+bomber.add(new Transform(new Vector2(getWidth()/2, 0)));
 
 const player = new Entity();
 player.add(new Player());
