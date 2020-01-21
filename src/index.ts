@@ -83,7 +83,7 @@ const makeWallTile = () => {
     const width = 1;
     const wall = new Entity();
     wall.add(new Tag('wall'));
-    wall.add(boxCollider(width, height));
+    wall.add(boxCollider(width, height, 'blue'));
     wall.add(new Transform());
     return wall as Entityish<['transform', 'collider']>;
 }

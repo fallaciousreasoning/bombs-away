@@ -3,8 +3,9 @@ import { makeBox, makeCircle } from "../geometry/createPolygon";
 import { Fixture } from "./fixture";
 import { Vertices } from "../geometry/vertices";
 
-export const boxCollider = (width: number, height: number): Collider => {
+export const boxCollider = (width: number, height: number, color?: string): Collider => {
     let collider = new Collider();
+    collider.color = color;
     collider.elasticity = 0.05;
     collider.friction = 0.5;
     collider.fixtures = [
