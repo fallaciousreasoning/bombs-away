@@ -72,6 +72,6 @@ export default class Input {
     setMousePos({ x, y }: { x: number, y: number }) {
         this.mousePosition = transformScreenToCanvas(new Vector2(x, y), this.on)
             .mul(METRES_A_PIXEL)
-            .add(getCamera().transform.position);
+            // .add(getCamera().transform.position);
     }
 }

@@ -8,6 +8,9 @@ export default class GroundTiler {
     type: "groundTiler" = "groundTiler";
     tileFor: Entity;
 
+    tileHeight: number = 0;
+    tileWidth: number = 0;
+
     lastTiledHeight: number = 6;
     heightPadding: number = 8;
 
