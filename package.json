@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
