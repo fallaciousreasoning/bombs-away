@@ -12,9 +12,10 @@ import { AABBTree } from '../geometry/dynamicAabbTree';
 import { CollisionManager } from '../collision/collisionManager';
 import { renderConfig, drawBox } from './colliderRenderer';
 
+export const tree = new AABBTree<Fixture>();
+
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
-    const tree = new AABBTree<Fixture>();
 
     // Add entities we missed instantiate messages for...
     for (const f of fixtures())

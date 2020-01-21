@@ -7,6 +7,8 @@ import Input from '../core/input';
 import { renderConfig } from './colliderRenderer';
 import { Fixture } from '../collision/fixture';
 import { input } from '../game';
+import { tree } from './collisionDetector';
+import { AABB } from '../core/aabb';
 
 const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
@@ -44,5 +46,23 @@ export const addCollisionTextureManager = (engine: Engine, cursor: Entityish<['t
             if (input.getAxis('shoot') === 0) return;
 
             destroyCircle(entity, cursor.transform.position, 0.5);
+        });
+
+    engine.makeSystem()
+        .onMessage('collision-enter', message => {
+            const explosion = message.moved.get('explodes');
+
+            if (!explosion) {
+                return;
+            }
+
+            const nearBounds = new AABB(message.hit.transform.position, new Vector2(explosion.radius*2));
+            const near = Array.from(new Set(tree.query(nearBounds).map(f => engine.getEntity(f.bodyId))))
+                .filter(e => e.has('collisionTexture'));
+            for (const entity of near) {
+                destroyCircle(entity as any, message.moved.transform.position, explosion.radius);
+            }
+
+            engine.removeEntity(message.moved);
         });
 }
