@@ -103,14 +103,6 @@ block.add(boxCollider(1, 1));
 block.add(new Transform(new Vector2(7, 3), Math.PI / 2));
 block.add(new Body(10));
 
-const ramp = new Entity();
-ramp.add(fromVertices(new Vertices([
-    new Vector2(-1, 0),
-    new Vector2(-1, -1),
-    new Vector2(1, 0)
-])));
-ramp.add(new Transform(new Vector2(2, 4.5)));
-
 const dangerousCursor = new Entity();
 dangerousCursor.add(new Transform());
 dangerousCursor.add(new StayOnMouse());
@@ -122,8 +114,12 @@ groundTiler.add(new Transform(new Vector2(2.5, 10)));
 groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth()/tileWidth));
 
 const leftWallTiler = new Entity();
-leftWallTiler.add(new Transform(new Vector2(0, 0)));
+leftWallTiler.add(new Transform(new Vector2(-0.5, 0)));
 leftWallTiler.add(new GroundTiler(player, makeWallTile, 1));
+
+const rightWallTiler = new Entity();
+rightWallTiler.add(new Transform(new Vector2(getWidth() + 0.5, 0)));
+rightWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const camera = new Entity();
 camera.add(new Transform(new Vector2(canvas.width*METRES_A_PIXEL/2, 0)));
@@ -131,13 +127,15 @@ camera.add(new FollowTransform(player, true));
 camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);
-engine.addEntity(ramp);
 engine.addEntity(block);
 // engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(bomber);
+
 engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);
+engine.addEntity(rightWallTiler);
+
 engine.addEntity(camera);
 
 addRenderer(engine);

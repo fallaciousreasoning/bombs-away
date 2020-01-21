@@ -19,19 +19,21 @@ export default (engine: Engine) => {
                 ? groundTiler.widthInTiles
                 : groundTiler.widthInTiles(groundTiler.tileWidth);
 
-                
-                // Start with width in tiles as 1. It must be at least one, and we don't know the tile size yet.   
-                let widthInTiles = 1;
-                for (let i = 0; i < widthInTiles; ++i) {
-                    const tile = groundTiler.makeTile();
-                    tile.transform.parent = transform;
-                    groundTiler.tileWidth = tile.collider.bounds.width;
-                    groundTiler.tileHeight = tile.collider.bounds.height;
-                    
+
+            // Start with width in tiles as 1. It must be at least one, and we don't know the tile size yet.   
+            let widthInTiles = 1;
+            for (let i = 0; i < widthInTiles; ++i) {
+                const tile = groundTiler.makeTile();
+                tile.transform.parent = transform;
+                groundTiler.tileWidth = tile.collider.bounds.width;
+                groundTiler.tileHeight = tile.collider.bounds.height;
+
                 // Update the width in tiles with our new tileWidth.
                 widthInTiles = getWidthInTiles();
-                
-                tile.transform.position = tile.transform.position.withY(nextHeight).withX(transform.position.x + i * groundTiler.tileWidth);
+
+                tile.transform.position = tile.transform.position
+                    .withY(nextHeight)
+                    .withX(transform.position.x + i * groundTiler.tileWidth);
                 engine.addEntity(tile);
             }
 
