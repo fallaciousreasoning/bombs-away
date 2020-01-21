@@ -3,7 +3,7 @@ import { Entityish } from "./system";
 import { METRES_A_PIXEL } from "./addRenderer";
 import { canvas } from "../game";
 
-export default (engine: Engine, makeGroundTile: () => Entityish<['transform', 'collisionTexture']>) => {
+export default (engine: Engine) => {
     let width: number = canvas.width * METRES_A_PIXEL;
     let tileWidth: number = 5;
     let tileHeight: number;
@@ -22,12 +22,11 @@ export default (engine: Engine, makeGroundTile: () => Entityish<['transform', 'c
             const widthInTiles = width / tileWidth;
 
             for (let i = 0; i < widthInTiles; ++i) {
-                const tile = makeGroundTile();
+                const tile = groundTiler.makeTile();
                 tile.transform.parent = transform;
                 tile.transform.position = tile.transform.position.withY(nextHeight).withX(transform.position.x + i * tileWidth);
-                tileWidth = tile.collisionTexture.width;
-
-                tileHeight = tile.collisionTexture.height;
+                tileWidth = tile.collider.bounds.width;
+                tileHeight = tile.collider.bounds.height;
                 engine.addEntity(tile);
             }
 

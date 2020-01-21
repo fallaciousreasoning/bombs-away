@@ -75,7 +75,16 @@ const makeGroundTile = () => {
     ground.add(new Transform());
 
     ground.add(new CollisionTexture(5, 5, gridSize));
-    return ground;
+    return ground as Entityish<['transform', 'collider']>;
+}
+
+const makeWallTile = () => {
+    const height = 10;
+    const width = 1;
+    const wall = new Entity();
+    wall.add(new Tag('wall'));
+    wall.add(boxCollider(width, height));
+    return wall as Entityish<['transform', 'collider']>;
 }
 
 const bomber = new Entity();
@@ -109,7 +118,7 @@ dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 10)));
-groundTiler.add(new GroundTiler(player));
+groundTiler.add(new GroundTiler(player, makeGroundTile));
 
 const camera = new Entity();
 camera.add(new Transform(new Vector2(canvas.width*METRES_A_PIXEL/2, 0)));
@@ -138,5 +147,5 @@ convexHullTester(engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 explode(engine);
-addGroundTiler(engine, makeGroundTile as any);
+addGroundTiler(engine);
 

@@ -33,6 +33,9 @@ export class Fixture implements AABBTreeChild<Fixture> {
     }
 
     get transformedVertices() {
+        if (!this.transform)
+          return this.vertices;
+
         if (this.lastPosition && !this.lastPosition.equals(this.transform.position)
             || this.lastRotation !== this.transform.rotation) {
             this.lastPosition = this.transform.position;
