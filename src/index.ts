@@ -119,7 +119,7 @@ dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 10)));
-groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth()/5));
+groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth()/tileWidth));
 
 const leftWallTiler = new Entity();
 leftWallTiler.add(new Transform(new Vector2(0, 0)));
