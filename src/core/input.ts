@@ -1,5 +1,5 @@
 import Vector2 from "./vector2";
-import { METRES_A_PIXEL } from "../systems/addRenderer";
+import { METRES_A_PIXEL, getCamera } from "../systems/addRenderer";
 
 interface AxisInfo {
     positiveKeys: number[];
@@ -70,6 +70,8 @@ export default class Input {
     }
 
     setMousePos({ x, y }: { x: number, y: number }) {
-        this.mousePosition = transformScreenToCanvas(new Vector2(x, y), this.on).mul(METRES_A_PIXEL);
+        this.mousePosition = transformScreenToCanvas(new Vector2(x, y), this.on)
+            .mul(METRES_A_PIXEL)
+            .add(getCamera().transform.position);
     }
 }
