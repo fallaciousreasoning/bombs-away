@@ -7,6 +7,9 @@ import { canvas } from "../game";
 export const PIXELS_A_METRE = 64;
 export const METRES_A_PIXEL = 1/PIXELS_A_METRE;
 
+export const getWidth = () => canvas.width * METRES_A_PIXEL;
+export const getHeight = () => canvas.height * METRES_A_PIXEL;
+
 export default function addRenderer(engine: Engine) {
     const context = canvas.getContext('2d');
 

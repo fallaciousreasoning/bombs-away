@@ -4,8 +4,7 @@ import { METRES_A_PIXEL } from "./addRenderer";
 import { canvas } from "../game";
 
 export default (engine: Engine) => {
-    let width: number = canvas.width * METRES_A_PIXEL;
-    let tileWidth: number = 5;
+    let tileWidth: number;
     let tileHeight: number;
 
     engine.makeSystem('groundTiler', 'transform')
@@ -19,14 +18,23 @@ export default (engine: Engine) => {
             if (tileForHeight + groundTiler.heightPadding <= nextHeight)
                 return;
 
-            const widthInTiles = width / tileWidth;
+            const getWidthInTiles = () => typeof groundTiler.widthInTiles === 'number'
+                ? groundTiler.widthInTiles
+                : groundTiler.widthInTiles(tileWidth);
+
+            // Start with width in tiles as 1. It must be at least one, and we don't know the tile size yet.   
+            let widthInTiles = 1;
 
             for (let i = 0; i < widthInTiles; ++i) {
                 const tile = groundTiler.makeTile();
                 tile.transform.parent = transform;
-                tile.transform.position = tile.transform.position.withY(nextHeight).withX(transform.position.x + i * tileWidth);
                 tileWidth = tile.collider.bounds.width;
                 tileHeight = tile.collider.bounds.height;
+                
+                // Update the width in tiles with our new tileWidth.
+                widthInTiles = getWidthInTiles();
+                
+                tile.transform.position = tile.transform.position.withY(nextHeight).withX(transform.position.x + i * tileWidth);
                 engine.addEntity(tile);
             }
 

@@ -14,7 +14,7 @@ import { polygonsToString } from "./geometry/serializer";
 import { Vertices } from "./geometry/vertices";
 import explode from "./systems/addExplosion";
 import addGravity from "./systems/addGravity";
-import addRenderer, { METRES_A_PIXEL } from './systems/addRenderer';
+import addRenderer, { METRES_A_PIXEL, getWidth } from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
 import convexHullTester from "./systems/convexHullTester";
@@ -84,6 +84,7 @@ const makeWallTile = () => {
     const wall = new Entity();
     wall.add(new Tag('wall'));
     wall.add(boxCollider(width, height));
+    wall.add(new Transform());
     return wall as Entityish<['transform', 'collider']>;
 }
 
@@ -118,7 +119,11 @@ dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 10)));
-groundTiler.add(new GroundTiler(player, makeGroundTile));
+groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth()/5));
+
+const leftWallTiler = new Entity();
+leftWallTiler.add(new Transform(new Vector2(0, 0)));
+leftWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const camera = new Entity();
 camera.add(new Transform(new Vector2(canvas.width*METRES_A_PIXEL/2, 0)));
@@ -132,6 +137,7 @@ engine.addEntity(block);
 engine.addEntity(player);
 engine.addEntity(bomber);
 engine.addEntity(groundTiler);
+engine.addEntity(leftWallTiler);
 engine.addEntity(camera);
 
 addRenderer(engine);
