@@ -43,5 +43,7 @@ module.exports = {
     devServer: {
         hot: false,
         contentBase:  './dist',
+        host: '0.0.0.0',
+        disableHostCheck: true
     }
 };
