@@ -115,7 +115,6 @@ camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);
 engine.addEntity(block);
-// engine.addEntity(makeBomb(bomber));
 engine.addEntity(player);
 engine.addEntity(bomber);
 
