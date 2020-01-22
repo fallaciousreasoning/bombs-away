@@ -1,5 +1,5 @@
 import Vector2 from "./vector2";
-import { METRES_A_PIXEL, getCamera } from "../systems/addRenderer";
+import { METRES_A_PIXEL, getCamera, getWidth, getHeight } from "../systems/addRenderer";
 
 interface AxisInfo {
     positiveKeys: number[];
@@ -88,7 +88,8 @@ export default class Input {
     setMousePos(event: { x: number, y: number }) {
         this.mousePosition = transformScreenToCanvas(new Vector2(event.x, event.y), this.on)
             .mul(METRES_A_PIXEL)
-        // .add(getCamera().transform.position);
+        .add(getCamera().transform.position)
+        .sub(new Vector2(getWidth(), getHeight()).div(2));
     }
 
     setTouches(touchEvent: TouchEvent) {
