@@ -19,4 +19,12 @@ const tick = (timestamp) => {
     requestAnimationFrame(tick);
 };
 
+const updateCanvasSize = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+updateCanvasSize();
+window.addEventListener('resize', updateCanvasSize);
+
+
 requestAnimationFrame(tick);
