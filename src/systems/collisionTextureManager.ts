@@ -56,7 +56,7 @@ export const addCollisionTextureManager = (engine: Engine, cursor: Entityish<['t
                 return;
             }
 
-            const nearBounds = new AABB(message.hit.transform.position, new Vector2(explosion.radius*2));
+            const nearBounds = new AABB(message.moved.transform.position, new Vector2(explosion.radius*2));
             const near = Array.from(new Set(tree.query(nearBounds).map(f => engine.getEntity(f.bodyId))))
                 .filter(e => e.has('collisionTexture'));
             for (const entity of near) {
