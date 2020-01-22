@@ -59,7 +59,7 @@ export default class Input {
         document.addEventListener('touchend', onTouchEvent);
         document.addEventListener('touchcancel', onTouchEvent);
         document.addEventListener("touchmove", onTouchEvent);
-        
+
         document.addEventListener("pointerdown", event => this.setKey(event.which, true));
         document.addEventListener("pointerup", event => this.setKey(event.which, false));
     }
