@@ -7,7 +7,6 @@ import { CollisionTexture } from "./components/collisionTexture";
 import Explodes from "./components/explodes";
 import { FollowTransform } from "./components/followTransform";
 import GroundTiler from "./components/groundTiler";
-import Health from "./components/health";
 import Player from "./components/player";
 import Spawn from "./components/spawn";
 import { StayOnMouse } from "./components/stayOnMouse";
