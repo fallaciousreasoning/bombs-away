@@ -22,6 +22,8 @@ export default class Input {
     on: HTMLCanvasElement;
 
     mousePosition = new Vector2();
+
+    private touchCount = 0;
     private downKeys = {};
 
     private axes: { [name: string]: AxisInfo } = {
@@ -48,9 +50,12 @@ export default class Input {
         document.addEventListener("keydown", event => this.setKey(event.which, true));
         document.addEventListener("keyup", event => this.setKey(event.which, false));
         document.addEventListener("mousemove", event => this.setMousePos(event));
-        document.addEventListener("touchmove", event => this.setMousePos({ x: event.touches[0].screenX, y: event.touches[0].screenY }));
-        document.addEventListener("mousedown", event => this.setKey(event.which, true));
-        document.addEventListener("mouseup", event => this.setKey(event.which, false));
+        document.addEventListener("touchmove", event => {
+            this.setMousePos({ x: event.touches[0].screenX, y: event.touches[0].screenY });
+            this.setTouches(event);
+        });
+        document.addEventListener("pointerdown", event => this.setKey(event.which, true));
+        document.addEventListener("pointerup", event => this.setKey(event.which, false));
     }
 
     getAxis(name: string): number {
@@ -66,6 +71,10 @@ export default class Input {
         return result;
     }
 
+    getTouchCount() {
+        return this.touchCount;
+    }
+
     setKey(code: number, down: boolean) {
         this.downKeys[code] = down;
     }
@@ -74,5 +83,9 @@ export default class Input {
         this.mousePosition = transformScreenToCanvas(new Vector2(event.x, event.y), this.on)
             .mul(METRES_A_PIXEL)
         // .add(getCamera().transform.position);
+    }
+
+    setTouches(touchEvent: TouchEvent) {
+        this.touchCount = touchEvent.touches.length;
     }
 }
