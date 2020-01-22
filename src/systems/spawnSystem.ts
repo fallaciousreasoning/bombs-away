@@ -21,8 +21,9 @@ export default function addSpawn(engine: Engine) {
                 spawned.transform.parent = entity.transform;
 
                 if (collider) {
-                    const position = new Vector2(collider.bounds.width * Math.random(), 0);
-                    spawned.transform.localPosition = position;
+                    spawned.transform.position = new Vector2(
+                        collider.bounds.width * Math.random(),
+                        entity.transform.position.y);
                 }
                 engine.addEntity(spawned);
                 spawn.tillNextSpawn = spawn.spawnRate;

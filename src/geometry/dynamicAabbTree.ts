@@ -66,7 +66,7 @@ export class AABBTreeNode<T extends AABBTreeChild<T>> {
 
 export class AABBTree<T extends AABBTreeChild<T>> {
     root: AABBTreeNode<T>;
-    margin: number = 0.5;
+    margin: number = 1;
 
     add(child: T) {
         const node = new AABBTreeNode<T>();
