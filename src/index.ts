@@ -35,6 +35,8 @@ import { Entityish } from "./systems/system";
 import { FollowTransform } from "./components/followTransform";
 import { Camera } from "./components/camera";
 import addFollows from "./systems/addFollows";
+import AliveForTime from "./components/aliveForTime";
+import addRemoveAfterTime from "./systems/addRemoveAfterTime";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -61,6 +63,7 @@ const makeBomb = () => {
     bomb.add(new Transform());
     // bomb.add(boxCollider(1, 1));
     bomb.add(circleCollider(0.5, 10));
+    bomb.add(new AliveForTime(5));
 
     const body = new Body();
     bomb.add(body);
@@ -152,6 +155,7 @@ addPhysics(engine);
 convexHullTester(engine);
 deformTerrain(engine);
 removeDeadThings(engine);
+addRemoveAfterTime(engine);
 explode(engine);
 addGroundTiler(engine);
 
