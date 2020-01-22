@@ -26,12 +26,12 @@ export default class Input {
 
     private axes: { [name: string]: AxisInfo } = {
         horizontal: {
-            positiveKeys: [ 68, 39 ],
-            negativeKeys: [ 65, 37 ]
+            positiveKeys: [68, 39],
+            negativeKeys: [65, 37]
         },
         vertical: {
-            positiveKeys: [ 83, 38 ],
-            negativeKeys: [ 87, 40 ]
+            positiveKeys: [83, 38],
+            negativeKeys: [87, 40]
         },
         jump: {
             positiveKeys: [32, 87],
@@ -69,9 +69,12 @@ export default class Input {
         this.downKeys[code] = down;
     }
 
-    setMousePos({ x, y }: { x: number, y: number }) {
-        this.mousePosition = transformScreenToCanvas(new Vector2(x, y), this.on)
+    setMousePos(event: PointerEvent) {
+        if (!event.isPrimary)
+            return;
+
+        this.mousePosition = transformScreenToCanvas(new Vector2(event.x, event.y), this.on)
             .mul(METRES_A_PIXEL)
-            // .add(getCamera().transform.position);
+        // .add(getCamera().transform.position);
     }
 }
