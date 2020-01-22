@@ -38,7 +38,7 @@ export default class Input {
             negativeKeys: [],
         },
         shoot: {
-            positiveKeys: [69]
+            positiveKeys: [69, 1]
         }
     };
 
@@ -47,9 +47,10 @@ export default class Input {
 
         document.addEventListener("keydown", event => this.setKey(event.which, true));
         document.addEventListener("keyup", event => this.setKey(event.which, false));
-        document.addEventListener("pointermove", event => this.setMousePos(event));
-        document.addEventListener("pointerdown", event => this.setKey(event.which, true));
-        document.addEventListener("pointerup", event => this.setKey(event.which, false));
+        document.addEventListener("mousemove", event => this.setMousePos(event));
+        document.addEventListener("touchmove", event => this.setMousePos({ x: event.touches[0].screenX, y: event.touches[0].screenY }));
+        document.addEventListener("mousedown", event => this.setKey(event.which, true));
+        document.addEventListener("mouseup", event => this.setKey(event.which, false));
     }
 
     getAxis(name: string): number {
@@ -69,10 +70,7 @@ export default class Input {
         this.downKeys[code] = down;
     }
 
-    setMousePos(event: PointerEvent) {
-        if (!event.isPrimary)
-            return;
-
+    setMousePos(event: { x: number, y: number }) {
         this.mousePosition = transformScreenToCanvas(new Vector2(event.x, event.y), this.on)
             .mul(METRES_A_PIXEL)
         // .add(getCamera().transform.position);
