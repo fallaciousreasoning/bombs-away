@@ -50,10 +50,16 @@ export default class Input {
         document.addEventListener("keydown", event => this.setKey(event.which, true));
         document.addEventListener("keyup", event => this.setKey(event.which, false));
         document.addEventListener("mousemove", event => this.setMousePos(event));
-        document.addEventListener("touchmove", event => {
+
+        const onTouchEvent = event => {
             this.setMousePos({ x: event.touches[0].screenX, y: event.touches[0].screenY });
             this.setTouches(event);
-        });
+        }
+        document.addEventListener('touchstart', onTouchEvent);
+        document.addEventListener('touchend', onTouchEvent);
+        document.addEventListener('touchcancel', onTouchEvent);
+        document.addEventListener("touchmove", onTouchEvent);
+        
         document.addEventListener("pointerdown", event => this.setKey(event.which, true));
         document.addEventListener("pointerup", event => this.setKey(event.which, false));
     }
