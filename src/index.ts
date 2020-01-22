@@ -1,42 +1,37 @@
-import { boxCollider, circleCollider, fromVertices } from "./collision/colliderFactory";
+import { boxCollider, circleCollider } from "./collision/colliderFactory";
+import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
+import { Camera } from "./components/camera";
+import { Circle } from "./components/circle";
+import { CollisionTexture } from "./components/collisionTexture";
 import Explodes from "./components/explodes";
+import { FollowTransform } from "./components/followTransform";
+import GroundTiler from "./components/groundTiler";
 import Health from "./components/health";
 import Player from "./components/player";
 import Spawn from "./components/spawn";
+import { StayOnMouse } from "./components/stayOnMouse";
 import { Tag } from "./components/tag";
 import { Transform } from "./components/transform";
-import Input from "./core/input";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
-import { engine, canvas } from './game';
+import { canvas, engine } from './game';
 import { polygonsToString } from "./geometry/serializer";
-import { Vertices } from "./geometry/vertices";
-import explode from "./systems/addExplosion";
+import addFollows from "./systems/addFollows";
 import addGravity from "./systems/addGravity";
-import addRenderer, { METRES_A_PIXEL, getWidth } from './systems/addRenderer';
+import addGroundTiler from "./systems/addGroundTiler";
+import addRemoveAfterTime from "./systems/addRemoveAfterTime";
+import addRenderer, { getWidth, METRES_A_PIXEL } from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
+import { addCollisionTextureManager } from './systems/collisionTextureManager';
 import convexHullTester from "./systems/convexHullTester";
 import { deformTerrain } from "./systems/deformTerrain";
+import { addFixtureManager } from "./systems/fixtureManager";
 import addPlayerController from "./systems/playerController";
 import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
-import { Fixture } from "./collision/fixture";
-import { addFixtureManager } from "./systems/fixtureManager";
-import { addCollisionTextureManager } from './systems/collisionTextureManager'
-import { StayOnMouse } from "./components/stayOnMouse";
-import { Circle } from "./components/circle";
-import Box from "./components/box";
-import { CollisionTexture } from "./components/collisionTexture";
-import GroundTiler from "./components/groundTiler";
-import addGroundTiler from "./systems/addGroundTiler";
 import { Entityish } from "./systems/system";
-import { FollowTransform } from "./components/followTransform";
-import { Camera } from "./components/camera";
-import addFollows from "./systems/addFollows";
-import AliveForTime from "./components/aliveForTime";
-import addRemoveAfterTime from "./systems/addRemoveAfterTime";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -44,24 +39,11 @@ window['polyString'] = polygonsToString;
 
 addFixtureManager(engine);
 
-const makeExplosion = (from: Entity) => {
-    const explosion = new Entity();
-
-    explosion.add(new Tag('deforms'));
-    explosion.add(new Transform(from.get('transform').position));
-    explosion.add(circleCollider(1));
-    explosion.get('collider').isTrigger = true;
-    explosion.add(new Health(1));
-
-    return explosion;
-}
-
 const makeBomb = () => {
     const bomb = new Entity();
 
-    bomb.add(new Explodes(makeExplosion));
+    bomb.add(new Explodes());
     bomb.add(new Transform());
-    // bomb.add(boxCollider(1, 1));
     bomb.add(circleCollider(0.5, 10));
     bomb.add(new AliveForTime(5));
 
@@ -156,6 +138,5 @@ convexHullTester(engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 addRemoveAfterTime(engine);
-explode(engine);
 addGroundTiler(engine);
 
