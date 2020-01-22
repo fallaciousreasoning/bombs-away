@@ -59,7 +59,8 @@ const makeBomb = () => {
 
     bomb.add(new Explodes(makeExplosion));
     bomb.add(new Transform());
-    bomb.add(boxCollider(1, 1));
+    // bomb.add(boxCollider(1, 1));
+    bomb.add(circleCollider(0.5, 10));
 
     const body = new Body();
     bomb.add(body);
