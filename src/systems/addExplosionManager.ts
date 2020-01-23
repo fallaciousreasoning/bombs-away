@@ -5,6 +5,12 @@ import Vector2 from "../core/vector2";
 import { destroyCircle } from "./collisionTextureManager";
 
 export default (engine: Engine) => {
+    // Handle coloring.
+    engine.makeSystem('aliveForTime', 'explodes', 'collider')
+        .onEach('tick', entity => {
+    });
+
+    // Handle destruction.
     engine.makeSystem().onMessage('destroy', ({ entity }) => {
         const explodes = entity.get('explodes');
         const transform = entity.get('transform');
