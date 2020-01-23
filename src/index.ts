@@ -31,6 +31,7 @@ import addPlayerController from "./systems/playerController";
 import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
 import { Entityish } from "./systems/system";
+import addExplosionManager from "./systems/addExplosionManager";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -127,6 +128,7 @@ addRenderer(engine);
 
 addCollisionTextureManager(engine, dangerousCursor as any);
 addFollows(engine);
+addExplosionManager(engine);
 addSpawn(engine);
 drawCollider(engine);
 addGravity(engine);
