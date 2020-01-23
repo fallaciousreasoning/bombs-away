@@ -4,9 +4,9 @@ export default function addRemoveAfterTime(engine: Engine) {
     engine
     .makeSystem('aliveForTime')
     .onEach('tick', (entity, message) => {
-        entity.aliveForTime.time -= message['step'];
+        entity.aliveForTime.remainingTime -= message['step'];
 
-        if (entity.aliveForTime.time < 0) {
+        if (entity.aliveForTime.remainingTime < 0) {
             engine.removeEntity(entity);
         }
     });
