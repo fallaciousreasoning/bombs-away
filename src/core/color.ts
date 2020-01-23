@@ -1,6 +1,12 @@
 const clamp = (value: number, min: number, max: number) =>
     Math.max(min, Math.min(max, value));
 
+const toPaddedHexString = (value: number, padTo=2) => {
+    let s = value.toString(16);
+    const remainingChars = padTo - s.length;
+    return "0".repeat(remainingChars) + s;
+}
+
 export class Color {
     r: number;
     g: number;
@@ -21,6 +27,6 @@ export class Color {
     }
 
     toHexString() {
-        return `#${this.r.toString(16)}${this.g.toString(16)}${this.b.toString(16)}`
+        return `#${toPaddedHexString(this.r)}${toPaddedHexString(this.g)}${toPaddedHexString(this.b)}`
     }
 }

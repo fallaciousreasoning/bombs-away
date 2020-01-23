@@ -11,6 +11,7 @@ export const PIXELS_A_METRE = 64;
 
 interface DebugRenderConfig {
     drawEdges: boolean,
+    fillShapes: boolean,
     drawVertices: boolean,
     drawContacts: boolean,
     drawCentroids: boolean,
@@ -22,6 +23,7 @@ interface DebugRenderConfig {
 
 export const renderConfig: DebugRenderConfig = {
     drawEdges: true,
+    fillShapes: true,
     drawVertices: false,
     drawContacts: true,
     drawCentroids: false,
@@ -71,6 +73,23 @@ export default function drawCollider(engine: Engine) {
         context.restore();
     };
 
+    const fillVertices = (vertices: Vertices, color: string) => {
+        const c = vertices.centroid;
+        for (let i = 0; i < vertices.length; ++i) {
+            context.beginPath();
+            context.fillStyle = color;
+            
+            const a = vertices.getVertex(i);
+            const b = vertices.getVertex(i+1);
+
+            context.moveTo(a.x, a.y);
+            context.lineTo(b.x, b.y);
+            context.lineTo(c.x, c.y);
+
+            context.fill();
+        }
+    }
+
     const drawFixture = (collider: Collider, fixture: Fixture) => {
         const vertices = fixture.vertices;
         const centroid = fixture.vertices.centroid;
@@ -92,6 +111,10 @@ export default function drawCollider(engine: Engine) {
                 context.lineTo(next.x, next.y);
             }
             context.stroke();
+        }
+
+        if (renderConfig.fillShapes && collider.fillColor) {
+            fillVertices(vertices, collider.fillColor);
         }
 
         if (renderConfig.drawNormals) {

@@ -12,7 +12,7 @@ export default (engine: Engine) => {
     // Handle coloring.
     engine.makeSystem('aliveForTime', 'explodes', 'collider')
         .onEach('tick', entity => {
-            entity.collider.color = Color.lerp(deadColor,
+            entity.collider.fillColor = Color.lerp(deadColor,
                 healthyColor,
                 entity.aliveForTime.remainingTime / entity.aliveForTime.time)
                 .toHexString();

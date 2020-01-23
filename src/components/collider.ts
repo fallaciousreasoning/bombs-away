@@ -14,6 +14,7 @@ export class Collider {
     isTrigger?: boolean;
 
     color?: string;
+    fillColor?: string;
 
     get area() {
         return this.fixtures.reduce((prev, next) => prev + next.vertices.area, 0);
