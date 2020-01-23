@@ -3,11 +3,17 @@ import { tree } from "./collisionDetector";
 import { AABB } from "../core/aabb";
 import Vector2 from "../core/vector2";
 import { destroyCircle } from "./collisionTextureManager";
+import { Color } from "../core/color";
 
 export default (engine: Engine) => {
+    const healthyColor = new Color(0, 0, 0);
+    const deadColor = new Color(255, 255, 255);
+
     // Handle coloring.
     engine.makeSystem('aliveForTime', 'explodes', 'collider')
         .onEach('tick', entity => {
+        entity.collider.color = Color.lerp(deadColor, healthyColor, entity.aliveForTime.time / 5).toHexString();
+        console.log(entity.collider.color);
     });
 
     // Handle destruction.
