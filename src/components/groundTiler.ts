@@ -12,7 +12,7 @@ export default class GroundTiler {
     tileWidth: number = 0;
 
     lastTiledHeight: number;
-    heightPadding: number = 8;
+    heightPadding: number = 25;
 
     widthInTiles: WidthInTiles = 1; 
 
