@@ -15,7 +15,7 @@ export default (engine: Engine) => {
         return (1 - distance / radius) ** exponent;
     }
     const applyExplosiveForce = (centre: Vector2, radius: number, force: number) => {
-        const affected = tree.query(new AABB(centre, new Vector2(radius))).map(c => engine.getEntity(c.bodyId));
+        const affected = tree.query(new AABB(centre, new Vector2(radius*2))).map(c => engine.getEntity(c.bodyId));
 
         for (const entity of affected) {
             const transform = entity.get('transform');
@@ -54,7 +54,7 @@ export default (engine: Engine) => {
         if (!explodes || !transform)
             return;
 
-        const rangeBounds = new AABB(transform.position, new Vector2(explodes.radius));
+        const rangeBounds = new AABB(transform.position, new Vector2(explodes.radius*2));
         const nearbyColliders = tree.query(rangeBounds);
 
         for (const near of nearbyColliders) {

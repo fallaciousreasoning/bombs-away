@@ -42,8 +42,8 @@ window['polyString'] = polygonsToString;
 addFixtureManager(engine);
 
 const makeBomb = () => {
-    const size = 0.2 + Math.random() * 1.5;
-    const radiusMultiplier = 5;
+    const size = 0.2 + Math.random() * 1;
+    const radiusMultiplier = 4;
     const forceMultiplier = 50;
 
     const bomb = new Entity();
