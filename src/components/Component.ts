@@ -6,6 +6,7 @@ import { Camera } from "./camera";
 import { Circle } from "./circle";
 import { Collider } from "./collider";
 import { CollisionTexture } from "./collisionTexture";
+import ContactTracker from "./contactTracker";
 import Damage from "./damage";
 import Explodes from "./explodes";
 import FlipWithMouse from "./flipWithMouse";
@@ -22,4 +23,4 @@ import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;

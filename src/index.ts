@@ -32,6 +32,8 @@ import removeDeadThings from "./systems/removeDeadThings";
 import addSpawn from "./systems/spawnSystem";
 import { Entityish } from "./systems/system";
 import addExplosionManager from "./systems/addExplosionManager";
+import addContactTracker from "./systems/addContactTracker";
+import ContactTracker from "./components/contactTracker";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -81,6 +83,8 @@ bomber.add(new Transform(new Vector2(getWidth()/2, 0)));
 
 const player = new Entity();
 const playerComponent = new Player();
+playerComponent.groundTracker = new ContactTracker('terrain');
+
 const playerTransform = new Transform(new Vector2(5, 3));
 player.add(playerComponent);
 player.add(circleCollider(1, 9));
@@ -91,6 +95,7 @@ const playerGroundDetector = new Entity();
 const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
 playerGroundDetectorTransform.lockRotation = true;
 playerGroundDetector.add(playerGroundDetectorTransform);
+playerGroundDetector.add(playerComponent.groundTracker);
 playerGroundDetector.add(boxCollider(1, 0.2, 'red', true));
 
 const block = new Entity();
@@ -148,4 +153,5 @@ deformTerrain(engine);
 removeDeadThings(engine);
 addRemoveAfterTime(engine);
 addGroundTiler(engine);
+addContactTracker(engine);
 

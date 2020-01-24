@@ -17,6 +17,7 @@ export default function addPlayerController(engine: Engine) {
             let jumpImpulse = 0;
             if (input.getAxis('jump') || input.getTouchCount() >= 2) {
                 jumpImpulse = -player.jumpImpulse;
+                console.log('Has contact?', player.groundTracker.hasContact);
             }
             body.velocity = new Vector2(horizontal * 10 * message.step + body.velocity.x, jumpImpulse || body.velocity.y);
         });
