@@ -42,11 +42,18 @@ window['polyString'] = polygonsToString;
 addFixtureManager(engine);
 
 const makeBomb = () => {
+    const size = 0.2 + Math.random() * 1.5;
+    const radiusMultiplier = 5;
+    const forceMultiplier = 50;
+
     const bomb = new Entity();
 
-    bomb.add(new Explodes());
+    const explodes = new Explodes();
+    explodes.radius = radiusMultiplier * size;
+    explodes.force = forceMultiplier * size;
+    bomb.add(explodes);
     bomb.add(new Transform());
-    bomb.add(circleCollider(0.5, 10));
+    bomb.add(circleCollider(size, 10));
     bomb.add(new AliveForTime(5));
 
     const body = new Body();
@@ -79,7 +86,7 @@ const makeWallTile = () => {
 const bomber = new Entity();
 bomber.add(new Spawn(makeBomb));
 bomber.add(boxCollider(getWidth(), 1, 'red', true))
-bomber.add(new Transform(new Vector2(getWidth()/2, 0)));
+bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
 
 const player = new Entity();
 const playerComponent = new Player();
@@ -111,7 +118,7 @@ dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 10)));
-groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth()/tileWidth));
+groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
 
 const leftWallTiler = new Entity();
 leftWallTiler.add(new Transform(new Vector2(-0.5, 0)));
@@ -122,7 +129,7 @@ rightWallTiler.add(new Transform(new Vector2(getWidth() + 0.5, 0)));
 rightWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const camera = new Entity();
-camera.add(new Transform(new Vector2(canvas.width*METRES_A_PIXEL/2, 0)));
+camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
 camera.add(new FollowTransform(player, true));
 camera.add(new Camera());
 
