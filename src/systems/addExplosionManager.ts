@@ -10,7 +10,7 @@ export default (engine: Engine) => {
     const healthyColor = new Color(0, 0, 0);
     const deadColor = new Color(255, 255, 255);
 
-    const getPower = (distance: number, radius: number, exponent: number = 2) => {
+    const getPower = (distance: number, radius: number, exponent: number = 1) => {
         // (1 - distance/radius)^exponent
         return (1 - distance / radius) ** exponent;
     }
@@ -28,12 +28,18 @@ export default (engine: Engine) => {
             if (!body.isDynamic)
                 continue;
 
-            const distance = transform.position.distance(centre);
-            if (distance > radius)
+            // Find the closest vertex.
+            let minDistance = Number.MAX_SAFE_INTEGER;
+            for (const vertex of collider.getTransformsVertices()) {
+                const distance = vertex.distance(centre);
+                if (distance < minDistance)
+                  minDistance = distance;
+            }
+            if (minDistance > radius)
                 continue;
 
             const dir = transform.position.sub(centre).normalized();
-            const impulse = dir.mul(force).mul(getPower(distance, radius));
+            const impulse = dir.mul(force).mul(getPower(minDistance, radius));
             body.velocity = body.velocity.add(impulse);
         }
     }

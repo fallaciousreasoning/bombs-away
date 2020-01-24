@@ -1,5 +1,6 @@
 import { Fixture } from "../collision/fixture";
 import { AABBTree } from "../geometry/dynamicAabbTree";
+import Vector2 from "../core/vector2";
 
 export class Collider {
     type: 'collider' = 'collider';
@@ -38,6 +39,12 @@ export class Collider {
 
         if (this.tree) {
             this._fixtures.forEach(f => this.tree.add(f));
+        }
+    }
+
+    *getTransformsVertices(): Iterable<Vector2> {
+        for (const fixture of this.fixtures) {
+            yield* fixture.transformedVertices.vertices;
         }
     }
 }
