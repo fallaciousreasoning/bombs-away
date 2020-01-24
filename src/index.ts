@@ -66,7 +66,9 @@ const makeGroundTile = () => {
     const gridSize = 0.333333
     const ground = new Entity();
     ground.add(new Tag('terrain'));
-    ground.add(boxCollider(5, 5));
+    const collider = boxCollider(5, 5, 'green');
+    collider.fillColor = 'green';
+    ground.add(collider);
     ground.add(new Transform());
 
     ground.add(new CollisionTexture(5, 5, gridSize));

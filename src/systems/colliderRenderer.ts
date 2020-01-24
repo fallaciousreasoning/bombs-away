@@ -35,7 +35,7 @@ export const renderConfig: DebugRenderConfig = {
 
 window['renderConfig'] = renderConfig;
 
-export const drawBox = (position: Vector2, width: number, height: number = width, color: string = 'blue', stroke=false) => {
+export const drawBox = (position: Vector2, width: number, height: number = width, color: string = 'blue', stroke = false) => {
     const scaledSize = new Vector2(width, height).mul(PIXELS_A_METRE);
     const origin = position.mul(PIXELS_A_METRE).sub(scaledSize.div(2));
     const type = stroke ? 'stroke' : 'fill';
@@ -74,20 +74,13 @@ export default function drawCollider(engine: Engine) {
     };
 
     const fillVertices = (vertices: Vertices, color: string) => {
-        const c = vertices.centroid;
-        for (let i = 0; i < vertices.length; ++i) {
-            context.beginPath();
-            context.fillStyle = color;
-            
-            const a = vertices.getVertex(i);
-            const b = vertices.getVertex(i+1);
+        context.beginPath();
+        context.fillStyle = color;
 
-            context.moveTo(a.x, a.y);
-            context.lineTo(b.x, b.y);
-            context.lineTo(c.x, c.y);
+        for (const vertex of vertices.vertices)
+            context.lineTo(vertex.x, vertex.y);
 
-            context.fill();
-        }
+        context.fill();
     }
 
     const drawFixture = (collider: Collider, fixture: Fixture) => {
