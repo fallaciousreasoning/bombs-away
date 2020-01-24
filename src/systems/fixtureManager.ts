@@ -46,6 +46,18 @@ export function* dynamicFixtures(): Iterable<Fixture> {
     }
 }
 
+export function* triggerFixtures(): Iterable<Fixture> {
+    if (!colliderFamily)
+      return;
+
+    for (const entity of colliderFamily.entities) {
+        const collider = entity.get('collider');
+        if (!collider.isTrigger) continue;
+
+        yield *collider.fixtures;
+    }
+}
+
 export function* dynamicEntities(): Iterable<Entityish<['body', 'transform', 'collider']>> {
     yield* dynamicFamily.entities as any;
 }

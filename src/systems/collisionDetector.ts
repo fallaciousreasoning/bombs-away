@@ -4,7 +4,7 @@ import { Engine } from "../engine";
 import { Collision, Trigger } from "../messages/collision";
 import solve from './collisionResolver';
 import { Entityish } from "./system";
-import { dynamicFixtures, dynamicEntities, otherFixtures, fixtures } from './fixtureManager';
+import { dynamicFixtures, dynamicEntities, otherFixtures, fixtures, triggerFixtures } from './fixtureManager';
 import { Fixture } from '../collision/fixture';
 import Vector2 from '../core/vector2';
 import { stableHashPair } from '../core/hashHelper'
@@ -54,6 +54,15 @@ export default function addPhysics(engine: Engine) {
                             continue;
 
                         collisionManager.run(dynamicFixture, fixture);
+                    }
+                }
+
+                for (const triggerFixture of triggerFixtures()) {
+                    const nearby = tree.query(triggerFixture.bounds);
+                    for (const fixture of otherFixtures(triggerFixture)) {
+                        if (fixture.bodyId === triggerFixture.bodyId) continue;
+
+                        collisionManager.run(triggerFixture, fixture);
                     }
                 }
 
