@@ -6,6 +6,8 @@ export class Transform {
     localPosition: Vector2;
     localRotation: number;
 
+    lockRotation: boolean;
+
     parent: Transform;
 
     constructor(position?: Vector2, rotation?: number, parent?: Transform){
@@ -23,10 +25,18 @@ export class Transform {
     }
 
     get rotation() {
+        if (this.lockRotation)
+          return this.localRotation;
+
         return this.parent ? this.parent.rotation + this.localRotation : this.localRotation;
     }
 
     set rotation(value: number) {
+        if (this.lockRotation) {
+            this.localRotation = value;
+            return;
+        }
+        
         this.localRotation = this.parent ? value - this.parent.rotation : value;
     }
 }

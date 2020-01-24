@@ -80,10 +80,18 @@ bomber.add(boxCollider(getWidth(), 1, 'red', true))
 bomber.add(new Transform(new Vector2(getWidth()/2, 0)));
 
 const player = new Entity();
-player.add(new Player());
+const playerComponent = new Player();
+const playerTransform = new Transform(new Vector2(5, 3));
+player.add(playerComponent);
 player.add(circleCollider(1, 9));
-player.add(new Transform(new Vector2(5, 3)));
+player.add(playerTransform);
 player.add(new Body(3));
+
+const playerGroundDetector = new Entity();
+const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
+playerGroundDetectorTransform.lockRotation = true;
+playerGroundDetector.add(playerGroundDetectorTransform);
+playerGroundDetector.add(boxCollider(1, 0.2, 'red', true));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -116,6 +124,7 @@ camera.add(new Camera());
 engine.addEntity(dangerousCursor);
 engine.addEntity(block);
 engine.addEntity(player);
+engine.addEntity(playerGroundDetector);
 engine.addEntity(bomber);
 
 engine.addEntity(groundTiler);
