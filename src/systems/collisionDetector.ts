@@ -48,7 +48,7 @@ export default function addPhysics(engine: Engine) {
                 tree.update();
 
                 for (const dynamicFixture of dynamicFixtures()) {
-                    const nearby = otherFixtures(dynamicFixture);//tree.query(dynamicFixture.bounds);
+                    const nearby = tree.query(dynamicFixture.bounds);
                     for (const fixture of nearby) {
                         if (fixture.bodyId === dynamicFixture.bodyId)
                             continue;
