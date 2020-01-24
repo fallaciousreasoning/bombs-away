@@ -130,7 +130,7 @@ engine.addEntity(dangerousCursor);
 engine.addEntity(block);
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
-// engine.addEntity(bomber);
+engine.addEntity(bomber);
 
 engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);

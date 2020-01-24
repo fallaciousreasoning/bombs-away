@@ -63,6 +63,13 @@ export class CollisionManager {
     }
 
     resetIslands() {
+        // Remove islands with no contact last tick.
+        for (const island of this.getIslands()) {
+            if (island.manifolds.length === 0)
+             this.islands.delete(island.hash);
+        }
+
+        // Reset all islands.
         for (const island of this.getIslands()) {
             island.manifolds.length = 0;
             island.seenManifolds.clear();
