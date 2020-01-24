@@ -14,7 +14,7 @@ export default function addSpawn(engine: Engine) {
 
             spawn.tillNextSpawn -= message.step;
 
-            if (spawn.tillNextSpawn < 0 && input.getAxis('jump')) {
+            if (spawn.tillNextSpawn < 0) {
                 const collider = entity.get('collider');
 
                 const spawned = spawn.buildSpawn();
