@@ -59,7 +59,7 @@ export default function addPhysics(engine: Engine) {
 
                 for (const triggerFixture of triggerFixtures()) {
                     const nearby = tree.query(triggerFixture.bounds);
-                    for (const fixture of otherFixtures(triggerFixture)) {
+                    for (const fixture of nearby) {
                         if (fixture.bodyId === triggerFixture.bodyId) continue;
 
                         collisionManager.run(triggerFixture, fixture);

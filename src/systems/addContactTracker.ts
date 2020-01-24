@@ -3,8 +3,7 @@ import { Engine } from "../engine";
 export default (engine: Engine) => {
     engine.makeSystem()
         .onMessage('trigger-enter', ({ moved, hit }) => {
-            console.log('triggered');
-            console.log(moved, hit);
+            console.log('Enter');
             const contactTracker = moved.get('contactTracker');
             if (!contactTracker)
                 return;
@@ -25,6 +24,7 @@ export default (engine: Engine) => {
             collider.fillColor = contactTracker.hasContact ? 'red' : undefined;
         })
         .onMessage('trigger-exit', ({ moved, hit }) => {
+            console.log('Exit');
             const contactTracker = moved.get('contactTracker');
             if (!contactTracker)
                 return;
