@@ -10,7 +10,7 @@ export default (engine: Engine) => {
     const healthyColor = new Color(0, 0, 0);
     const deadColor = new Color(255, 255, 255);
 
-    const getPower = (distance: number, radius: number, exponent: number = 1) => {
+    const getPower = (distance: number, radius: number, exponent: number = 2) => {
         // (1 - distance/radius)^exponent
         return (1 - distance / radius) ** exponent;
     }
