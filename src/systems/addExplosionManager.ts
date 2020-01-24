@@ -4,10 +4,39 @@ import { AABB } from "../core/aabb";
 import Vector2 from "../core/vector2";
 import { destroyCircle } from "./collisionTextureManager";
 import { Color } from "../core/color";
+import { Collider } from "../components/collider";
 
 export default (engine: Engine) => {
     const healthyColor = new Color(0, 0, 0);
     const deadColor = new Color(255, 255, 255);
+
+    const getPower = (distance: number, radius: number, exponent: number = 1) => {
+        // (1 - distance/radius)^exponent
+        return (1 - distance / radius) ** exponent;
+    }
+    const applyExplosiveForce = (centre: Vector2, radius: number, force: number) => {
+        const affected = tree.query(new AABB(centre, new Vector2(radius))).map(c => engine.getEntity(c.bodyId));
+
+        for (const entity of affected) {
+            const transform = entity.get('transform');
+            const collider = entity.get('collider');
+            const body = entity.get('body');
+
+            if (!transform || !body || !collider)
+                continue;
+
+            if (!body.isDynamic)
+                continue;
+
+            const distance = transform.position.distance(centre);
+            if (distance > radius)
+                continue;
+
+            const dir = transform.position.sub(centre).normalized();
+            const impulse = dir.mul(force).mul(getPower(distance, radius));
+            body.velocity = body.velocity.add(impulse);
+        }
+    }
 
     // Handle coloring.
     engine.makeSystem('aliveForTime', 'explodes', 'collider')
@@ -36,5 +65,7 @@ export default (engine: Engine) => {
 
             destroyCircle(entity as any, transform.position, explodes.radius);
         }
+
+        applyExplosiveForce(transform.position, explodes.radius, explodes.force);
     })
 }
