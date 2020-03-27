@@ -3,10 +3,16 @@
 - [x] Refactor components to use generated type unions
 - [x] Refactor systems to a class based model
 - [x] Add message system for update/on collision
-- [ ] Add mousebutton support to input
+- [x] Add mousebutton support to input
 - [ ] Add pressed/released key support
 - [x] Use new collision factory
 - [ ] Refactor components for terrain deformation.
-- [ ] Get resizing working properly
-- [ ] Get touch working properly
-- [ ] Add score tracking
+- [x] Get resizing working properly
+- [ ] Get touch input working properly
+- [x] Add score tracking
+- [ ] Add health (and death)
+- [ ] Add powerups
+  - [ ] Laser
+  - [ ] Grenade
+  - [ ] Invulnerable
+  - [ ] Super fast
