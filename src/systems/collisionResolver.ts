@@ -3,57 +3,20 @@ import { Entity } from "../entity";
 import { Manifold } from "../collision/manifold";
 import { Island } from "../collision/collisionManager";
 
-/**
- * Calculates the inertia for a shape.
- * Based on formula here:
- * https://www.gamedev.net/forums/topic/342822-moment-of-inertia-of-a-polygon-2d/
- * @param entity The entity to get inertia for.
- */
-const getInertia = (entity: Entity) => {
-    const mass = getMass(entity);
-    const collider = entity.get('collider');
-
-    let denominator = 0;
-    let numerator = 0;
-
-    for (const fixture of collider.fixtures) {
-        for (let i = 0; i < fixture.vertices.length; ++i) {
-            const v1 = fixture.vertices.getVertex(i);
-            const v2 = fixture.vertices.getVertex(i + 1);
-
-            let a = Math.abs(v2.cross(v1));
-            let b = v1.lengthSquared() + v1.dot(v2) + v2.lengthSquared();
-
-            denominator += a * b;
-            numerator += a;
+const getMassData = (entity: Entity) => {
+    const body = entity.get('body');
+    if (!body) {
+        return {
+            mass: 0,
+            invMass: 0,
+            inertia: 0,
+            invInertia: 0,
+            area: 0
         }
     }
-
-    if (denominator === 0) return 0;
-
-    const inertia = (mass / 6) * (numerator / denominator);
-    return inertia;
-}
-
-const getInvInertia = (entity: Entity) => {
-    const inertia = getInertia(entity);
-
-    return inertia == 0 ? 0 : 1 / inertia;
-}
-
-const getMass = (entity: Entity) => {
-    const body = entity.get('body');
-    if (!body || body.density === 0) {
-        return 0;
-    }
-
+    
     const collider = entity.get('collider');
-    return body.density * collider.area;
-}
-
-const getInvMass = (entity: Entity) => {
-    const mass = getMass(entity);
-    return mass == 0 ? 0 : 1 / mass;
+    return body.getMassData(collider.fixtures[0]);
 }
 
 const velocityAtPoint = (entity: Entity, at: Vector2) => {
@@ -87,15 +50,13 @@ function solveManifold(island: Island, manifold: Manifold) {
     if (velocityAlongNormal >= 0)
         return;
 
-    // Work out how we're going to hand out the collision response.
-    const aInvMass = getInvMass(island.a);
-    const bInvMass = getInvMass(island.b);
-    const totalInvMass = bInvMass + aInvMass;
+    const aMassData = getMassData(island.a);
+    const bMassData = getMassData(island.b);
 
-    const aInvInertia = getInvInertia(island.a);
-    const bInvIntertia = getInvInertia(island.b);
-    const aInertiaDivisor = Math.pow(contact.sub(island.a.transform.position).cross(normal), 2) * aInvInertia;
-    const bInertiaDivisor = Math.pow(contact.sub(island.b.transform.position).cross(normal), 2) * bInvIntertia;
+    // Work out how we're going to hand out the collision response.
+    const totalInvMass = aMassData.invMass + bMassData.invMass;
+    const aInertiaDivisor = Math.pow(contact.sub(island.a.transform.position).cross(normal), 2) * aMassData.invInertia;
+    const bInertiaDivisor = Math.pow(contact.sub(island.b.transform.position).cross(normal), 2) * bMassData.invInertia;
 
     const elasticity = Math.min(island.a.collider.elasticity, island.b.collider.elasticity);
 
@@ -106,8 +67,8 @@ function solveManifold(island: Island, manifold: Manifold) {
         .mul(magnitude);
 
     for (const contact of manifold.contacts) {
-        aBody && aBody.applyForce(impulse.mul(-1), contact.sub(island.a.transform.position), aInvMass, aInvInertia);
-        bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
+        aBody && aBody.applyForce(impulse.mul(-1), contact.sub(island.a.transform.position), aMassData.invMass, aMassData.invInertia);
+        bBody && bBody.applyForce(impulse, contact.sub(island.b.transform.position), bMassData.invMass, bMassData.invInertia);
     }
 
     // Friction
@@ -128,8 +89,8 @@ function solveManifold(island: Island, manifold: Manifold) {
     if (normal.dot(frictionImpulse) < 0)
         return
 
-    aBody && aBody.applyForce(frictionImpulse, contact.sub(island.a.transform.position), aInvMass, aInvInertia);
-    bBody && bBody.applyForce(frictionImpulse.mul(-1), contact.sub(island.b.transform.position), bInvMass, bInvIntertia);
+    aBody && aBody.applyForce(frictionImpulse, contact.sub(island.a.transform.position), aMassData.invMass, aMassData.invInertia);
+    bBody && bBody.applyForce(frictionImpulse.mul(-1), contact.sub(island.b.transform.position), bMassData.invMass, bMassData.invInertia);
 
     const slop = 0.01;
     const percentCorrection = 0.9;
@@ -141,8 +102,8 @@ function solveManifold(island: Island, manifold: Manifold) {
     if (correctionAwayFromContact >= 0) {
         return;
     }
-    island.a.transform.position = island.a.transform.position.sub(correction.mul(aInvMass).mul(1));
-    island.b.transform.position = island.b.transform.position.sub(correction.mul(bInvMass).mul(-1));
+    island.a.transform.position = island.a.transform.position.sub(correction.mul(aMassData.invMass).mul(1));
+    island.b.transform.position = island.b.transform.position.sub(correction.mul(bMassData.invMass).mul(-1));
 }
 
 export default function solve(island: Island) {
