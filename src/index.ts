@@ -95,7 +95,9 @@ playerComponent.groundTracker = new ContactTracker('player', true);
 
 const playerTransform = new Transform(new Vector2(5, -1));
 player.add(playerComponent);
-player.add(circleCollider(1, 9));
+const playerCollider = circleCollider(1, 9);
+playerCollider.friction = 0.1;
+player.add(playerCollider);
 player.add(playerTransform);
 player.add(new Body(3));
 player.add(new Score());

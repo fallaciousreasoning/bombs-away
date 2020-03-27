@@ -32,7 +32,7 @@ const getInertia = (entity: Entity) => {
     if (denominator === 0) return 0;
 
     const inertia = (mass / 6) * (numerator / denominator);
-    return inertia;
+    return inertia/2;
 }
 
 const getInvInertia = (entity: Entity) => {
