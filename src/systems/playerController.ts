@@ -16,6 +16,13 @@ export default function addPlayerController(engine: Engine) {
                 && player.groundTracker.hasContact) {
                 jumpImpulse = -player.jumpImpulse;
             }
-            body.velocity = new Vector2(horizontal * 10 * message.step + body.velocity.x, jumpImpulse || body.velocity.y);
+            body.angularVelocity += horizontal * player.speed * message.step;
+            if (body.angularVelocity > player.speed)
+                body.angularVelocity = player.speed;
+
+            if (body.angularVelocity < -player.speed)
+                body.angularVelocity = -player.speed;
+
+            body.velocity = new Vector2(body.velocity.x, jumpImpulse || body.velocity.y);
         });
 }

@@ -142,7 +142,7 @@ camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
 camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);
-engine.addEntity(block);
+// engine.addEntity(block);
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
 engine.addEntity(bomber);
