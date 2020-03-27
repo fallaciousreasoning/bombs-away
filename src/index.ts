@@ -1,4 +1,4 @@
-import { boxCollider, circleCollider } from "./collision/colliderFactory";
+import { boxCollider, circleCollider, bombCollider } from "./collision/colliderFactory";
 import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
 import { Camera } from "./components/camera";
@@ -55,7 +55,7 @@ const makeBomb = () => {
     explodes.force = forceMultiplier * size;
     bomb.add(explodes);
     bomb.add(new Transform());
-    bomb.add(circleCollider(size, 10));
+    bomb.add(bombCollider(size, size * 1.5));
     bomb.add(new AliveForTime(5));
 
     const body = new Body();
