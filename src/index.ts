@@ -110,7 +110,7 @@ playerGroundDetector.add(playerComponent.groundTracker);
 playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
 
 const bomber = new Entity();
-bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -10) }));
+bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -20) }));
 bomber.add(new Spawn(makeBomb));
 bomber.add(boxCollider(getWidth(), 1, 'red', true));
 bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
