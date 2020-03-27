@@ -18,8 +18,6 @@ export default function addSpawn(engine: Engine) {
                 const collider = entity.get('collider');
 
                 const spawned = spawn.buildSpawn();
-                spawned.transform.parent = entity.transform;
-
                 if (collider) {
                     spawned.transform.position = new Vector2(
                         collider.bounds.width * Math.random(),
