@@ -23,6 +23,6 @@ export default function addPlayerController(engine: Engine) {
             if (body.angularVelocity < -player.speed)
                 body.angularVelocity = -player.speed;
 
-            body.velocity = new Vector2(body.velocity.x, jumpImpulse || body.velocity.y);
+            body.velocity = new Vector2(body.velocity.x + horizontal*message.step, jumpImpulse || body.velocity.y);
         });
 }

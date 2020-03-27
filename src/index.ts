@@ -105,7 +105,7 @@ const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, player
 playerGroundDetectorTransform.lockRotation = true;
 playerGroundDetector.add(playerGroundDetectorTransform);
 playerGroundDetector.add(playerComponent.groundTracker);
-playerGroundDetector.add(boxCollider(1, 0.2, 'red', true));
+playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
 
 const bomber = new Entity();
 bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -10) }));
@@ -129,11 +129,11 @@ groundTiler.add(new Transform(new Vector2(2.5, 3)));
 groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
 
 const leftWallTiler = new Entity();
-leftWallTiler.add(new Transform(new Vector2(-0.5, 0)));
+leftWallTiler.add(new Transform(new Vector2(-0.5, -20)));
 leftWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const rightWallTiler = new Entity();
-rightWallTiler.add(new Transform(new Vector2(getWidth() + 0.5, 0)));
+rightWallTiler.add(new Transform(new Vector2(getWidth() + 0.5, -20)));
 rightWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const camera = new Entity();
