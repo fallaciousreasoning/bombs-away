@@ -41,12 +41,3 @@ export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionText
         .filter(v => v.area > 0.001)
         .map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));
 }
-
-export const addCollisionTextureManager = (engine: Engine, cursor: Entityish<['transform']>) => {
-    engine.makeSystem('transform', 'collisionTexture', 'collider')
-        .onEach('tick', (entity) => {
-            if (input.getAxis('shoot') === 0) return;
-
-            destroyCircle(entity, cursor.transform.position, 0.5);
-        });
-}

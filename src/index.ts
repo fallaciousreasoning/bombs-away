@@ -23,7 +23,6 @@ import addRemoveAfterTime from "./systems/addRemoveAfterTime";
 import addRenderer, { getWidth, METRES_A_PIXEL } from './systems/addRenderer';
 import drawCollider from "./systems/colliderRenderer";
 import addPhysics from "./systems/collisionDetector";
-import { addCollisionTextureManager } from './systems/collisionTextureManager';
 import convexHullTester from "./systems/convexHullTester";
 import { deformTerrain } from "./systems/deformTerrain";
 import { addFixtureManager } from "./systems/fixtureManager";
@@ -120,12 +119,6 @@ block.add(boxCollider(1, 1));
 block.add(new Transform(new Vector2(7, -3), Math.PI / 2));
 block.add(new Body(10));
 
-const dangerousCursor = new Entity();
-dangerousCursor.add(new Transform());
-dangerousCursor.add(new StayOnMouse());
-dangerousCursor.add(new Tag('destroy-when-e'));
-dangerousCursor.add(new Circle(0.5));
-
 const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 3)));
 groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
@@ -143,8 +136,6 @@ camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
 camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
 camera.add(new Camera());
 
-engine.addEntity(dangerousCursor);
-// engine.addEntity(block);
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
 engine.addEntity(bomber);
@@ -157,7 +148,6 @@ engine.addEntity(camera);
 
 addRenderer(engine);
 
-addCollisionTextureManager(engine, dangerousCursor as any);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);

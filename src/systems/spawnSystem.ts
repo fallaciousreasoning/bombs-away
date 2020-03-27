@@ -26,7 +26,7 @@ export default function addSpawn(engine: Engine) {
 
                 const body = spawned.get('body');
                 if (body && body.isDynamic) {
-                    body.angularVelocity = (Math.random() - 0.5) * 10
+                    body.angularVelocity = (Math.random() - 0.5) * 2
                 }
                 engine.addEntity(spawned);
                 spawn.tillNextSpawn = spawn.spawnRate;
