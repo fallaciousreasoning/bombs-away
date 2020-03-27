@@ -96,9 +96,9 @@ const player = new Entity();
 const playerComponent = new Player();
 playerComponent.groundTracker = new ContactTracker('terrain');
 
-const playerTransform = new Transform(new Vector2(5, 3));
+const playerTransform = new Transform(new Vector2(5, -1));
 player.add(playerComponent);
-player.add(circleCollider(1, 9));
+player.add(circleCollider(0.8, 9));
 player.add(playerTransform);
 player.add(new Body(3));
 player.add(new Score());
@@ -122,7 +122,7 @@ dangerousCursor.add(new Tag('destroy-when-e'));
 dangerousCursor.add(new Circle(0.5));
 
 const groundTiler = new Entity();
-groundTiler.add(new Transform(new Vector2(2.5, 10)));
+groundTiler.add(new Transform(new Vector2(2.5, 3)));
 groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
 
 const leftWallTiler = new Entity();
