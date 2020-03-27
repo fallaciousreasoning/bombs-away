@@ -25,7 +25,7 @@ interface DebugRenderConfig {
 export const renderConfig: DebugRenderConfig = {
     drawEdges: true,
     fillShapes: true,
-    drawVertices: true,
+    drawVertices: false,
     drawContacts: true,
     drawCentroids: false,
     drawNormals: false,
@@ -190,10 +190,5 @@ export default function drawCollider(engine: Engine) {
 
             for (const point of renderConfig.debugPoints)
                 drawBox(point, pointSize, pointSize, 'blue');
-
-            const allFixtures = tree.query(tree.root.bounds);
-            for (const f of allFixtures) {
-                drawVertices(f.transformedVertices, 'cyan')
-            }
         });
 }
