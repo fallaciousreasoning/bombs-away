@@ -17,10 +17,11 @@ import Hull from "./hull";
 import Line from "./line";
 import LookAtMouse from "./lookAtMouse";
 import Player from "./player";
+import Score from "./score";
 import Spawn from "./spawn";
 import { StayOnMouse } from "./stayOnMouse";
 import { Tag } from "./tag";
 import { Transform } from "./transform";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Spawn | StayOnMouse | Tag | Transform | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Score | Spawn | StayOnMouse | Tag | Transform | Weapon;

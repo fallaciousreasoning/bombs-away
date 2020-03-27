@@ -34,6 +34,8 @@ import { Entityish } from "./systems/system";
 import addExplosionManager from "./systems/addExplosionManager";
 import addContactTracker from "./systems/addContactTracker";
 import ContactTracker from "./components/contactTracker";
+import Score from "./components/score";
+import addScoreTracker from "./systems/addScoreTracker";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -99,6 +101,7 @@ player.add(playerComponent);
 player.add(circleCollider(1, 9));
 player.add(playerTransform);
 player.add(new Body(3));
+player.add(new Score());
 
 const playerGroundDetector = new Entity();
 const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
@@ -163,4 +166,5 @@ removeDeadThings(engine);
 addRemoveAfterTime(engine);
 addGroundTiler(engine);
 addContactTracker(engine);
+addScoreTracker(engine);
 
