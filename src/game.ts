@@ -20,8 +20,8 @@ const tick = (timestamp) => {
 };
 
 const updateCanvasSize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const ratio = canvas.clientHeight / canvas.clientWidth;
+    canvas.height = canvas.width*ratio;
 }
 updateCanvasSize();
 window.addEventListener('resize', updateCanvasSize);
