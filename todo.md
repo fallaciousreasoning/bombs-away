@@ -8,3 +8,5 @@
 - [x] Use new collision factory
 - [ ] Refactor components for terrain deformation.
 - [ ] Get resizing working properly
+- [ ] Get touch working properly
+- [ ] Add score tracking
