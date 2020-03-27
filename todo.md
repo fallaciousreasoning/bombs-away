@@ -5,5 +5,5 @@
 - [x] Add message system for update/on collision
 - [ ] Add mousebutton support to input
 - [ ] Add pressed/released key support
-- [ ] Use new collision factory
+- [x] Use new collision factory
 - [ ] Refactor components for terrain deformation.
