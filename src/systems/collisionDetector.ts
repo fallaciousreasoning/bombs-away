@@ -104,4 +104,13 @@ export default function addPhysics(engine: Engine) {
                 drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, color, true);
             }
         });
+
+    // Clean up fixtures when their entities are destroyed.
+    engine.makeSystem('collider')
+        .onMessage('destroy', message => {
+            const collider = message.entity.get('collider');
+            if (!collider) return;
+
+            collider.fixtures.forEach(f => tree.remove(f));
+        })
 }
