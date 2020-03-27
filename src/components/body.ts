@@ -97,6 +97,7 @@ export default class Body {
         this.angularVelocity += invInertia * at.cross(force) / 4;
     }
 
+    // Note: This is hacky that it only takes a single fixture!
     getMassData(fixture: Fixture) {
         if (!this._massData)
           this._massData = computeMassData(this.density, fixture);
