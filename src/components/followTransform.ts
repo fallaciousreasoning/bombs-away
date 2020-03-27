@@ -1,17 +1,30 @@
 import { Transform } from "./transform";
 import { Entity } from "../entity";
+import Vector2 from "../core/vector2";
 
-export class FollowTransform {
+interface FollowOptions {
+    lockX?: boolean;
+    lockY?: boolean;
+    offset?: Vector2;
+    spring?: number;
+}
+
+export class FollowTransform implements FollowOptions{
     type: 'followTransform' = 'followTransform';
     follow: Entity;
-    spring: number = 10;
 
-    lockX: boolean;
-    lockY: boolean;
+    spring?: number;
+    lockX?: boolean;
+    lockY?: boolean;
+    offset?: Vector2;
 
-    constructor(follow?: Entity, lockX?: boolean, lockY?: boolean) {
+    constructor(follow?: Entity, options?: FollowOptions) {
         this.follow = follow;
-        this.lockX = lockX;
-        this.lockY = lockY;
+        
+        if (!options)
+          return;
+
+        for (const key in options)
+            this[key] = options[key];
     }
 }

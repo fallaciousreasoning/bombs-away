@@ -87,11 +87,6 @@ const makeWallTile = () => {
     return wall as Entityish<['transform', 'collider']>;
 }
 
-const bomber = new Entity();
-bomber.add(new Spawn(makeBomb));
-bomber.add(boxCollider(getWidth(), 1, 'red', true))
-bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
-
 const player = new Entity();
 const playerComponent = new Player();
 playerComponent.groundTracker = new ContactTracker('terrain');
@@ -109,6 +104,12 @@ playerGroundDetectorTransform.lockRotation = true;
 playerGroundDetector.add(playerGroundDetectorTransform);
 playerGroundDetector.add(playerComponent.groundTracker);
 playerGroundDetector.add(boxCollider(1, 0.2, 'red', true));
+
+const bomber = new Entity();
+bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -10) }));
+bomber.add(new Spawn(makeBomb));
+bomber.add(boxCollider(getWidth(), 1, 'red', true));
+bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -135,7 +136,7 @@ rightWallTiler.add(new GroundTiler(player, makeWallTile, 1));
 
 const camera = new Entity();
 camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
-camera.add(new FollowTransform(player, true));
+camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
 camera.add(new Camera());
 
 engine.addEntity(dangerousCursor);

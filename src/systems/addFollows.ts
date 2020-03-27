@@ -11,16 +11,22 @@ export default (engine: Engine) => {
 
     engine.makeSystem('followTransform', 'transform')
         .onEach('tick', ({ transform, followTransform }, message) => {
-            let nextPosition = transform.position.add(Vector2.lerp(transform.position,
-                followTransform.follow.get('transform').position,
-                followTransform.spring * message.step));
+            let aimedPosition = followTransform.follow.get('transform').position;
+            if (followTransform.offset)
+                aimedPosition = aimedPosition.add(followTransform.offset);
+
+            if (!isNaN(followTransform.spring)) {
+                aimedPosition = transform.position.add(Vector2.lerp(transform.position,
+                    aimedPosition,
+                    followTransform.spring * message.step));
+            }
 
             if (followTransform.lockX)
-              nextPosition = nextPosition.withX(transform.position.x);
+                aimedPosition = aimedPosition.withX(transform.position.x);
 
             if (followTransform.lockY)
-              nextPosition = nextPosition.withY(transform.position.y);
+                aimedPosition = aimedPosition.withY(transform.position.y);
 
-            transform.position = nextPosition;
+            transform.position = aimedPosition;
         })
 }
