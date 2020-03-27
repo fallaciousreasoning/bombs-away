@@ -3,12 +3,14 @@ export default class ContactTracker {
 
     contactPoints: number = 0;
     tags: string[];
+    ignoreTags: boolean;
 
-    constructor(tags: string | string[]) {
+    constructor(tags: string | string[], ignoreTags: boolean = false) {
         if (!Array.isArray(tags))
             tags = [tags];
 
         this.tags = tags;
+        this.ignoreTags = ignoreTags;
     }
 
     get hasContact() {

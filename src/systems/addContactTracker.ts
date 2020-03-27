@@ -8,11 +8,10 @@ export default (engine: Engine) => {
             return;
 
         const hitTag = hit.get('tag');
+        const hasHitTag = hitTag && contactTracker.tags.some(hitTag.hasTag);
 
-        if (!hitTag)
-            return;
-
-        if (!contactTracker.tags.some(hitTag.hasTag))
+        const shouldIgnore = hasHitTag && contactTracker.ignoreTags;
+        if (shouldIgnore)
             return;
 
         contactTracker.contactPoints += increment;

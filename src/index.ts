@@ -88,12 +88,14 @@ const makeWallTile = () => {
 }
 
 const player = new Entity();
+player.add(new Tag('player'));
 const playerComponent = new Player();
-playerComponent.groundTracker = new ContactTracker('terrain');
+// The player can jump if the ground tracker isn't touching the player.
+playerComponent.groundTracker = new ContactTracker('player', true);
 
 const playerTransform = new Transform(new Vector2(5, -1));
 player.add(playerComponent);
-player.add(circleCollider(0.8, 9));
+player.add(circleCollider(1, 9));
 player.add(playerTransform);
 player.add(new Body(3));
 player.add(new Score());
