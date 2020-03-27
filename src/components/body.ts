@@ -61,6 +61,7 @@ const computeMassData = (density: number, fixture: Fixture): MassData => {
 
     let intertia = area * I;
     intertia += mass * (Vector2.dot(centroid, centroid) - Vector2.dot(centre, centre));
+    intertia = Math.abs(intertia);
 
     return {
         mass: mass,
