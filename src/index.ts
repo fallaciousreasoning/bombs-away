@@ -35,6 +35,8 @@ import addContactTracker from "./systems/addContactTracker";
 import ContactTracker from "./components/contactTracker";
 import Score from "./components/score";
 import addScoreTracker from "./systems/addScoreTracker";
+import addVelocityClamp from "./systems/addVelocityClamp";
+import VelocityClamp from "./components/velocityClamp";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -56,6 +58,7 @@ const makeBomb = () => {
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
     bomb.add(new AliveForTime(5));
+    bomb.add(new VelocityClamp(15, Math.PI))
 
     const body = new Body();
     bomb.add(body);
@@ -162,4 +165,5 @@ addRemoveAfterTime(engine);
 addGroundTiler(engine);
 addContactTracker(engine);
 addScoreTracker(engine);
+addVelocityClamp(engine);
 
