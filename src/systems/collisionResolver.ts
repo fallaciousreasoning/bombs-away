@@ -92,8 +92,8 @@ function solveManifold(island: Island, manifold: Manifold) {
     aBody && aBody.applyForce(frictionImpulse, contact.sub(island.a.transform.position), aMassData.invMass, aMassData.invInertia);
     bBody && bBody.applyForce(frictionImpulse.mul(-1), contact.sub(island.b.transform.position), bMassData.invMass, bMassData.invInertia);
 
-    const slop = 0.01;
-    const percentCorrection = 0.9;
+    const slop = 0.05;
+    const percentCorrection = 0.8;
     const correction = manifold.normal.mul(Math.max(manifold.penetration - slop, 0) * percentCorrection).div(totalInvMass);
 
     const away = island.a.transform.position.sub(contact).normalized();
