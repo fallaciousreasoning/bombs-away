@@ -7,3 +7,4 @@
 - [ ] Add pressed/released key support
 - [x] Use new collision factory
 - [ ] Refactor components for terrain deformation.
+- [ ] Get resizing working properly
