@@ -60,7 +60,11 @@ export default class Vector2 {
     }
 
     dot(vec: Vector2) {
-        return this.x*vec.x + this.y*vec.y;
+        return Vector2.dot(this, vec);
+    }
+
+    static dot(v1: Vector2, v2: Vector2) {
+        return v1.x * v2.x + v1.y*v2.y;
     }
 
     cross(vec: Vector2) {
