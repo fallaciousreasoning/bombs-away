@@ -10,5 +10,12 @@
 
         <!-- Main -->
         <script src="/main.js"></script>
+
+        <!-- Service Worker -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/serviceWorker.js');
+            }
+        </script>
     </body>
 </html>

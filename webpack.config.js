@@ -3,9 +3,12 @@ const webpackUnionGeneratorPlugin = require('./union-generator/generator').defau
 
 module.exports = {
     mode: 'development',
-    entry: "./src/index.ts",
+    entry: {
+        main: "./src/index.ts",
+        serviceWorker: "./src/serviceWorker.ts"
+    },
     output: {
-        filename: "main.js",
+        filename: "[name].js",
         path: __dirname + "/dist"
     },
 
