@@ -69,6 +69,11 @@ export class RandomColorGenerator {
         for (let i = 0; i < channels.length; ++i) {
             let channel = channels[i];
             result[i] = this.min[channel] + (this.max[channel] - this.min[channel]) * Math.random();
+            if (result[i] < 0)
+                result[i] = 0;
+            if (result[i] > 255)
+                result[i] = 255;
+            result[i] = Math.round(result[i]);
         }
 
         return new Color(...result).toHexString();

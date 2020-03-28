@@ -100,5 +100,16 @@ export default (engine: Engine) => {
         }
 
         applyExplosiveForce(transform.position, explodes.radius, explodes.force);
+        
+        // If there's something we should put in our place...
+        if (explodes.with) {
+            const explosion = explodes.with(explodes.radius);
+            const explosionTransform = explosion.get('transform');
+            if (explosionTransform) {
+                explosionTransform.position = transform.position;
+                explosionTransform.rotation = transform.rotation;
+            }
+            engine.addEntity(explosion);
+        }
     })
 }

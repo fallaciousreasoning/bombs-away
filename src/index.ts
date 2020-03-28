@@ -37,7 +37,7 @@ import Score from "./components/score";
 import addScoreTracker from "./systems/addScoreTracker";
 import addVelocityClamp from "./systems/addVelocityClamp";
 import VelocityClamp from "./components/velocityClamp";
-import { basicEmitter } from "./particles/emitterFactory";
+import { basicEmitter, explosionEmitter } from "./particles/emitterFactory";
 import particleManager from "./systems/particleManager";
 
 window['engine'] = engine;
@@ -45,6 +45,13 @@ window['debugPoints'] = [];
 window['polyString'] = polygonsToString;
 
 addFixtureManager(engine);
+
+const makeExplosion = (radius: number) => {
+    const explosion = new Entity();
+    explosion.add(new Transform);
+    explosion.add(explosionEmitter(radius/2));
+    return explosion;
+};
 
 const makeBomb = () => {
     const size = 0.4 + Math.random() * 0.6;
@@ -56,12 +63,11 @@ const makeBomb = () => {
     const explodes = new Explodes();
     explodes.radius = radiusMultiplier * size;
     explodes.force = forceMultiplier * size;
+    explodes.with = makeExplosion;
     bomb.add(explodes);
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
     bomb.add(new AliveForTime(5));
-    // bomb.add(basicEmitter({ startDelay: 5, radius: explodes.radius/2, color: 'green' }));
-
 
     const body = new Body();
     bomb.add(body);
