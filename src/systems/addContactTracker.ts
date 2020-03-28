@@ -10,7 +10,7 @@ export default (engine: Engine) => {
         const hitTag = hit.get('tag');
         const hasHitTag = hitTag && contactTracker.tags.some(hitTag.hasTag);
 
-        const shouldIgnore = hasHitTag && contactTracker.ignoreTags;
+        const shouldIgnore = hasHitTag && contactTracker.ignoreTags || (!hasHitTag && !contactTracker.ignoreTags);
         if (shouldIgnore)
             return;
 

@@ -31,7 +31,7 @@ export default function addPhysics(engine: Engine) {
             collider.fixtures.forEach(f => tree.add(f));
         })
         .onMessage('tick', message => {
-            const steps = 10;
+            const steps = 1;
             const step = message.step / steps;
 
             for (let _ = 0; _ < steps; ++_) {
