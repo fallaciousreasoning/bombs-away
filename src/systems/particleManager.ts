@@ -7,8 +7,6 @@ import ParticleEmitter from "../components/particleEmitter";
 import { Transform } from "../components/transform";
 import { PIXELS_A_METRE, getCamera } from "./addRenderer";
 
-
-
 export default (engine: Engine) => {
     const liveParticles: Particle[] = [];
 
@@ -60,8 +58,18 @@ export default (engine: Engine) => {
             context.rotate(particle.rotation);
 
             context.fillStyle = particle.color;
-            context.fillRect(0, 0, 1, 1);
 
+            switch(particle.emitter.shape) {
+                case 'square':
+                    context.fillRect(0, 0, 1, 1);
+                    break;
+                case "circle":
+                    context.beginPath();
+                    context.arc(0, 0, 0.5, 0, Math.PI*2);
+                    context.fill();
+                    break;
+            }
+            
             context.restore();
         }
 
@@ -74,8 +82,9 @@ export default (engine: Engine) => {
 
         particle.timeToLive = emitter.startLife.getNextValue();
 
-        particle.positionX = transform.position.x;
-        particle.positionY = transform.position.y;
+        const positionModifier = emitter.emitPositionModifier.getNextValue();
+        particle.positionX = transform.position.x + positionModifier.x;
+        particle.positionY = transform.position.y + positionModifier.y;
 
         particle.rotation = transform.rotation + emitter.startRotation.getNextValue();
         particle.scaleX = particle.scaleY = emitter.startSize.getNextValue();

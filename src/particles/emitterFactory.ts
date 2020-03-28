@@ -7,13 +7,17 @@ interface BasicEmitterOptions {
     startDelay: number;
     hasGravity: boolean;
     color: string;
+    radius: number;
+    shape: 'square' | 'circle'
 }
 
 const defaultOptions: BasicEmitterOptions = {
-    speed: 3,
+    speed: 0,
     startDelay: 0,
     hasGravity: true,
     color: 'red',
+    shape: 'square',
+    radius: 0,
 };
 
 export const basicEmitter = (options?: Partial<BasicEmitterOptions>) => {
@@ -35,6 +39,9 @@ export const basicEmitter = (options?: Partial<BasicEmitterOptions>) => {
 
     emitter.numParticles = new GeneralConstraint(100);
 
+    emitter.emitPositionModifier = RandomVector2Generator.fromRadius(options.radius);
+
     emitter.color = options.color;
+    emitter.shape = options.shape;
     return emitter;
 }

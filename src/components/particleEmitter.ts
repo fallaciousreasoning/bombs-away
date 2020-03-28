@@ -28,6 +28,9 @@ export default class ParticleEmitter {
     numParticles: GeneralConstraint;
     emittedParticles: number = 0;
     nextEmitParticles: number = 100;
+
+    emitPositionModifier: RandomVector2Generator;
     
     color: string;
+    shape: 'square' | 'circle';
 }
