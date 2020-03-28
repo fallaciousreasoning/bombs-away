@@ -1,6 +1,7 @@
 import ParticleEmitter from "../components/particleEmitter"
 import { GeneralConstraint, RandomVector2Generator } from "./particleConstraint";
 import Vector2 from "../core/vector2";
+import { alphaModifier } from "./particleModifier";
 
 interface BasicEmitterOptions {
     speed: number;
@@ -43,5 +44,9 @@ export const basicEmitter = (options?: Partial<BasicEmitterOptions>) => {
 
     emitter.color = options.color;
     emitter.shape = options.shape;
+
+    emitter.modifiers = [
+        alphaModifier
+    ]
     return emitter;
 }

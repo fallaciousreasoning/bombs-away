@@ -18,7 +18,12 @@ export const particlePool = new Pool<Particle>(() => ({
     scaleY: 1,
 
     color: 'back',
-    timeToLive: 0
+    timeToLive: 0,
+    _initialLife: undefined,
+
+    alpha: 0,
 }), p => {
     p.emitter = undefined
+    p._initialLife = undefined;
+    p.alpha = 0;
 });

@@ -17,6 +17,9 @@ export interface Particle {
     scaleY: number;
 
     timeToLive: number;
+    _initialLife: number;
+
+    alpha: number;
 
     color: string;
 }

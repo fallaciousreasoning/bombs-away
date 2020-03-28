@@ -35,8 +35,14 @@ export default (engine: Engine) => {
             const particle = liveParticles[i];
             updateParticle(particle, step);
 
+            if (particle._initialLife === undefined)
+                particle._initialLife = particle.timeToLive;
+
             if (particle.timeToLive <= 0)
                 toRemove.push(i);
+
+            for (const modifier of particle.emitter.modifiers || [])
+                modifier(particle);
         }
 
         // Destroy all the dead particles.
@@ -58,6 +64,7 @@ export default (engine: Engine) => {
             context.rotate(particle.rotation);
             context.scale(particle.scaleX, particle.scaleY);
 
+            context.globalAlpha = particle.alpha;
             context.fillStyle = particle.color;
 
             switch(particle.emitter.shape) {

@@ -1,6 +1,7 @@
 import Vector2 from "../core/vector2";
 import { Particle } from "../particles/particle";
 import { GeneralConstraint, RandomVector2Generator } from "../particles/particleConstraint";
+import { ParticleModifier } from "../particles/particleModifier";
 
 export default class ParticleEmitter {
     type: 'particleEmitter' = 'particleEmitter';
@@ -30,6 +31,8 @@ export default class ParticleEmitter {
     nextEmitParticles: number = 100;
 
     emitPositionModifier: RandomVector2Generator;
+
+    modifiers: ParticleModifier[];
     
     color: string;
     shape: 'square' | 'circle';
