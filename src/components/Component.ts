@@ -16,6 +16,7 @@ import Health from "./health";
 import Hull from "./hull";
 import Line from "./line";
 import LookAtMouse from "./lookAtMouse";
+import ParticleEmitter from "./particleEmitter";
 import Player from "./player";
 import Score from "./score";
 import Spawn from "./spawn";
@@ -25,4 +26,4 @@ import { Transform } from "./transform";
 import VelocityClamp from "./velocityClamp";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | Player | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | ParticleEmitter | Player | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;

@@ -37,6 +37,8 @@ import Score from "./components/score";
 import addScoreTracker from "./systems/addScoreTracker";
 import addVelocityClamp from "./systems/addVelocityClamp";
 import VelocityClamp from "./components/velocityClamp";
+import { basicEmitter } from "./particles/emitterFactory";
+import particleManager from "./systems/particleManager";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -138,6 +140,10 @@ camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
 camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
 camera.add(new Camera());
 
+const exampleEmitter = new Entity();
+exampleEmitter.add(basicEmitter({ color: 'green' }));
+exampleEmitter.add(new Transform());
+
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
 engine.addEntity(bomber);
@@ -145,6 +151,8 @@ engine.addEntity(bomber);
 engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);
 engine.addEntity(rightWallTiler);
+
+engine.addEntity(exampleEmitter);
 
 engine.addEntity(camera);
 
@@ -154,6 +162,7 @@ addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);
 drawCollider(engine);
+particleManager(engine);
 addGravity(engine);
 addPlayerController(engine);
 addPhysics(engine);

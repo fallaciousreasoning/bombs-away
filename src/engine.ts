@@ -79,12 +79,13 @@ export class Engine {
         this.broadcastMessage(addMessage);
     }
 
-    removeEntity(entityish: { id: number }) {
-        if (!entityish.id) {
+    removeEntity(entityish: { id: number } | number) {
+        entityish = typeof entityish === 'object' ? entityish.id : entityish;
+        if (!entityish) {
             return;
         }
 
-        const entity = this.entities[entityish.id];
+        const entity = this.entities[entityish];
         if (!entity) return;
 
         const id = entity.id;
