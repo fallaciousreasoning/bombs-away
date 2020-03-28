@@ -27,10 +27,10 @@ export const basicEmitter = (options?: Partial<BasicEmitterOptions>) => {
 
     emitter.startLife = new GeneralConstraint(1, 3);
 
-    emitter.startAngularVelocity = new GeneralConstraint(0)
+    emitter.startAngularVelocity = new GeneralConstraint(-0.1, 0.1)
     emitter.startVelocity = RandomVector2Generator.fromRadius(options.speed);
 
-    emitter.startRotation = new GeneralConstraint(0, Math.PI * 2);
+    emitter.startRotation = new GeneralConstraint(0);
     emitter.startSize = new GeneralConstraint(0.2, 1);
 
     emitter.numParticles = new GeneralConstraint(100);

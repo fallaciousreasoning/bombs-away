@@ -141,7 +141,7 @@ camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
 camera.add(new Camera());
 
 const exampleEmitter = new Entity();
-exampleEmitter.add(basicEmitter({ color: 'green' }));
+exampleEmitter.add(basicEmitter({ color: 'red' }));
 exampleEmitter.add(new Transform());
 
 engine.addEntity(player);
