@@ -31,11 +31,11 @@ export default function addPhysics(engine: Engine) {
             collider.fixtures.forEach(f => tree.add(f));
         })
         .onMessage('tick', message => {
-            const steps = 1;
+            const steps = 10;
             const step = message.step / steps;
 
             for (let _ = 0; _ < steps; ++_) {
-                collisionManager.resetIslands();
+                collisionManager.resetManifolds();
 
                 // Move the dynamic entities.
                 for (const { body, transform } of dynamicEntities()) {
@@ -91,6 +91,8 @@ export default function addPhysics(engine: Engine) {
 
                 island.isNew = false;
             }
+
+            collisionManager.cleanupIslands();
         });
 
     // Render AABBTree
