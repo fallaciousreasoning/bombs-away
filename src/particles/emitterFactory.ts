@@ -12,7 +12,7 @@ interface BasicEmitterOptions {
 }
 
 const defaultOptions: BasicEmitterOptions = {
-    speed: 0,
+    speed: 1,
     startDelay: 0,
     hasGravity: true,
     color: 'red',

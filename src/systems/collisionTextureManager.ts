@@ -12,23 +12,26 @@ import { AABB } from '../core/aabb';
 
 export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
-    const radiusSquared = radius*radius;
+    const radiusSquared = radius * radius;
     let modified = false;
 
     for (let i = 0; i < removeFrom.collisionTexture.grid.length; ++i)
-      for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
-        const point = new Vector2(j, i);
-        const position = point
-        .mul(removeFrom.collisionTexture.gridSize)
-        .add(removeFrom.transform.position)
-        .sub(halfSize)
+        for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
+            const point = new Vector2(j, i);
+            const position = point
+                .mul(removeFrom.collisionTexture.gridSize)
+                .add(removeFrom.transform.position)
+                .sub(halfSize)
 
-        // Mark the point on the texture as empty.
-        if (position.distanceSquared(centre) < radiusSquared) {
-            removeFrom.collisionTexture.grid[point.y][point.x] = 0;
-            modified = true;
+            if (removeFrom.collisionTexture.grid[point.y][point.x] === 0)
+                continue;
+
+            // Mark the point on the texture as empty.
+            if (position.distanceSquared(centre) < radiusSquared) {
+                removeFrom.collisionTexture.grid[point.y][point.x] = 0;
+                modified = true;
+            }
         }
-      }
 
     if (!modified) {
         return;
