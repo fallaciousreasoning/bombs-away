@@ -1,6 +1,6 @@
 import Vector2 from "../core/vector2";
 import { Particle } from "../particles/particle";
-import { GeneralConstraint } from "../particles/particleConstraint";
+import { GeneralConstraint, RandomVector2Generator } from "../particles/particleConstraint";
 
 export default class ParticleEmitter {
     type: 'particleEmitter' = 'particleEmitter';
@@ -20,8 +20,7 @@ export default class ParticleEmitter {
     startLife: GeneralConstraint;
     
     startAngularVelocity: GeneralConstraint;
-    startVelocityX: GeneralConstraint;
-    startVelocityY: GeneralConstraint;
+    startVelocity: RandomVector2Generator;
     
     startRotation: GeneralConstraint;
     startSize: GeneralConstraint;

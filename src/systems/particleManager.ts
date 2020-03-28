@@ -78,16 +78,17 @@ export default (engine: Engine) => {
 
         particle.positionX = transform.position.x;
         particle.positionY = transform.position.y;
-        
+
         particle.rotation = transform.rotation + emitter.startRotation.getNextValue();
         particle.scaleX = particle.scaleY = emitter.startSize.getNextValue();
 
         particle.angularVelocity = emitter.startAngularVelocity.getNextValue();
-        particle.velocityX = emitter.startVelocityX.getNextValue();
-        particle.velocityY = emitter.startVelocityY.getNextValue();
+        const velocity = emitter.startVelocity.getNextValue();
+        particle.velocityX = velocity.x;
+        particle.velocityY = velocity.y;
 
         particle.color = emitter.color;
-        
+
         liveParticles.push(particle);
         emitter.emittedParticles++;
     }
@@ -101,7 +102,7 @@ export default (engine: Engine) => {
 
             // Make sure we have the minimum number of particles.
             while (particleEmitter.emittedParticles < particleEmitter.numParticles.min) {
-                emitParticle( particleEmitter, transform);
+                emitParticle(particleEmitter, transform);
             }
 
             particleEmitter.nextEmitParticles = 0;
