@@ -10,9 +10,9 @@ interface BasicEmitterOptions {
 }
 
 const defaultOptions: BasicEmitterOptions = {
-    speed: 5,
+    speed: 3,
     startDelay: 0,
-    hasGravity: false,
+    hasGravity: true,
     color: 'red',
 };
 
@@ -20,7 +20,7 @@ export const basicEmitter = (options?: Partial<BasicEmitterOptions>) => {
     options = { ...defaultOptions, ...options };
 
     const emitter = new ParticleEmitter();
-    emitter.duration = 10000;
+    emitter.duration = 0;
     emitter.startDelay = options.startDelay;
 
     emitter.forces = options.hasGravity ? [new Vector2(0, 9.8)] : [];

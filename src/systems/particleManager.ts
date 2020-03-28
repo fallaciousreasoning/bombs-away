@@ -5,7 +5,7 @@ import Vector2 from "../core/vector2";
 import { context } from "../game";
 import ParticleEmitter from "../components/particleEmitter";
 import { Transform } from "../components/transform";
-import { PIXELS_A_METRE } from "./addRenderer";
+import { PIXELS_A_METRE, getCamera } from "./addRenderer";
 
 
 
@@ -18,7 +18,7 @@ export default (engine: Engine) => {
 
         const acceleration = forces.mul(particle.mass);
 
-        particle.velocityX += acceleration.y * step;
+        particle.velocityX += acceleration.x * step;
         particle.velocityY += acceleration.y * step;
 
         particle.positionX += particle.velocityX * step;
@@ -50,8 +50,6 @@ export default (engine: Engine) => {
 
     // Particle rendering.
     engine.makeSystem().onMessage('tick', () => {
-        context['resetTransform']();
-
         context.save();
         context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
 
