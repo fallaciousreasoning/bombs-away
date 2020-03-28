@@ -103,7 +103,7 @@ export default (engine: Engine) => {
         particle.velocityX = velocity.x;
         particle.velocityY = velocity.y;
 
-        particle.color = emitter.color;
+        particle.color = emitter.color.getNextValue();
 
         liveParticles.push(particle);
         emitter.emittedParticles++;

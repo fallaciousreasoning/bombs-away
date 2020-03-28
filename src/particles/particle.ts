@@ -20,6 +20,5 @@ export interface Particle {
     _initialLife: number;
 
     alpha: number;
-
     color: string;
 }
