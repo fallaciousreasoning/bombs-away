@@ -82,7 +82,7 @@ export default (engine: Engine) => {
                 p.positionX = point.x;
                 p.positionY = point.y;
 
-                const speed = 10
+                const speed = 3
                 const dist = point.distance(transform.position);
                 const closeness = 1- dist/explodes.radius;
 

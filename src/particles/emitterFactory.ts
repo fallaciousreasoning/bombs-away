@@ -56,20 +56,20 @@ export const explosionEmitter = (radius: number) => {
     const emitter = new ParticleEmitter();
     emitter.duration = 0;
 
-    emitter.startLife = new GeneralConstraint(1, 3);
+    emitter.startLife = new GeneralConstraint(0.2);
 
     emitter.startAngularVelocity = new GeneralConstraint(-0.1, 0.1)
-    emitter.startVelocity = RandomVector2Generator.fromRadius(radius);
+    emitter.startVelocity = RandomVector2Generator.fromRadius(radius*3);
 
     emitter.startRotation = new GeneralConstraint(0);
     emitter.startSize = new GeneralConstraint(0.2, 1);
 
     emitter.numParticles = new GeneralConstraint(100);
 
-    emitter.emitPositionModifier = RandomVector2Generator.fromRadius(radius);
+    emitter.emitPositionModifier = RandomVector2Generator.fromRadius(radius/2);
 
     emitter.color = new RandomColorGenerator(new Color(255, 0, 0), new Color(255, 165, 0));
-    emitter.shape = 'circle';
+    emitter.shape = 'square';
 
     emitter.modifiers = [
         alphaModifier

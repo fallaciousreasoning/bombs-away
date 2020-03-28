@@ -21,9 +21,9 @@ export const particlePool = new Pool<Particle>(() => ({
     timeToLive: 0,
     _initialLife: undefined,
 
-    alpha: 0,
+    alpha: 1,
 }), p => {
     p.emitter = undefined
     p._initialLife = undefined;
-    p.alpha = 0;
+    p.alpha = 1;
 });
