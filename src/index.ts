@@ -59,8 +59,8 @@ const makeBomb = () => {
     bomb.add(explodes);
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
-    // bomb.add(new AliveForTime(5));
-    bomb.add(basicEmitter({ startDelay: 5, radius: explodes.radius/2, color: 'green' }));
+    bomb.add(new AliveForTime(5));
+    // bomb.add(basicEmitter({ startDelay: 5, radius: explodes.radius/2, color: 'green' }));
 
 
     const body = new Body();

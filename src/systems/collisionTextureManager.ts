@@ -13,7 +13,7 @@ import { AABB } from '../core/aabb';
 export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
     const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
     const radiusSquared = radius * radius;
-    let modified = false;
+    let removedPoints: Vector2[] = [];
 
     for (let i = 0; i < removeFrom.collisionTexture.grid.length; ++i)
         for (let j = 0; j < removeFrom.collisionTexture.grid[i].length; ++j) {
@@ -29,12 +29,12 @@ export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionText
             // Mark the point on the texture as empty.
             if (position.distanceSquared(centre) < radiusSquared) {
                 removeFrom.collisionTexture.grid[point.y][point.x] = 0;
-                modified = true;
+                removedPoints.push(position);
             }
         }
 
-    if (!modified) {
-        return;
+    if (!removedPoints.length) {
+        return removedPoints;
     }
 
     const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
@@ -43,4 +43,6 @@ export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionText
     removeFrom.collider.fixtures = decomposedVertices
         .filter(v => v.area > 0.001)
         .map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));
+
+    return removedPoints;
 }

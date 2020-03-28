@@ -7,8 +7,9 @@ import ParticleEmitter from "../components/particleEmitter";
 import { Transform } from "../components/transform";
 import { PIXELS_A_METRE, getCamera } from "./addRenderer";
 
+export const liveParticles: Particle[] = [];
+
 export default (engine: Engine) => {
-    const liveParticles: Particle[] = [];
 
     const updateParticle = (particle: Particle, step: number) => {
         const forces = (particle.emitter ? particle.emitter.forces : [])
@@ -54,13 +55,14 @@ export default (engine: Engine) => {
         for (const particle of liveParticles) {
             context.save();
             context.translate(particle.positionX, particle.positionY);
-            context.scale(particle.scaleX, particle.scaleY);
             context.rotate(particle.rotation);
+            context.scale(particle.scaleX, particle.scaleY);
 
             context.fillStyle = particle.color;
 
             switch(particle.emitter.shape) {
                 case 'square':
+                    context.translate(-0.5, -0.5);
                     context.fillRect(0, 0, 1, 1);
                     break;
                 case "circle":

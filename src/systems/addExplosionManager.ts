@@ -5,6 +5,11 @@ import Vector2 from "../core/vector2";
 import { destroyCircle } from "./collisionTextureManager";
 import { Color } from "../core/color";
 import { Collider } from "../components/collider";
+import { liveParticles } from "./particleManager";
+import { particlePool } from "../particles/particlePool";
+import { basicEmitter } from "../particles/emitterFactory";
+
+const emitter = basicEmitter();
 
 export default (engine: Engine) => {
     const healthyColor = new Color(0, 0, 0);
@@ -69,7 +74,29 @@ export default (engine: Engine) => {
             if (!collisionTexture)
                 continue;
 
-            destroyCircle(entity as any, transform.position, explodes.radius);
+            const removedPoints = destroyCircle(entity as any, transform.position, explodes.radius);
+            for (const point of removedPoints) {
+                const p = particlePool.get();
+                p.color = 'green';
+                p.emitter = emitter;
+                p.positionX = point.x;
+                p.positionY = point.y;
+
+                const speed = 10
+                const dist = point.distance(transform.position);
+                const closeness = 1- dist/explodes.radius;
+
+                const velocity = point.sub(transform.position).normalized().mul(closeness*speed + 1)
+                p.velocityX = velocity.x;
+                p.velocityY = velocity.y;
+                const scale = 1.2;
+                p.scaleX = collisionTexture.gridSize*scale;
+                p.scaleY = collisionTexture.gridSize*scale;
+                p.timeToLive = 5;
+                p.rotation = 0;
+                p.angularVelocity = (point.x <= transform.position.x ? -1 : 1) * 0.1 * closeness
+                liveParticles.push(p)
+            }
         }
 
         applyExplosiveForce(transform.position, explodes.radius, explodes.force);
