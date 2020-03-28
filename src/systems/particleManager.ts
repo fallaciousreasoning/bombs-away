@@ -47,9 +47,10 @@ export default (engine: Engine) => {
 
         // Destroy all the dead particles.
         for (let i = toRemove.length - 1; i >= 0; --i) {
-            liveParticles[i].emitter.emittedParticles--;
-            particlePool.release(liveParticles[i]);
-            liveParticles.splice(i, 1);
+            const index = toRemove[i];
+            liveParticles[index].emitter.emittedParticles--;
+            particlePool.release(liveParticles[index]);
+            liveParticles.splice(index, 1);
         }
     });
 
