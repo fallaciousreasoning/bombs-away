@@ -39,6 +39,7 @@ import addVelocityClamp from "./systems/addVelocityClamp";
 import VelocityClamp from "./components/velocityClamp";
 import { basicEmitter, explosionEmitter } from "./particles/emitterFactory";
 import particleManager from "./systems/particleManager";
+import RemoveWhenFar from "./components/removeWhenFar";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -85,6 +86,7 @@ const makeGroundTile = () => {
     ground.add(new Transform());
 
     ground.add(new CollisionTexture(5, 5, gridSize));
+    ground.add(new RemoveWhenFar(50, player, Vector2.up));
     return ground as Entityish<['transform', 'collider']>;
 }
 
