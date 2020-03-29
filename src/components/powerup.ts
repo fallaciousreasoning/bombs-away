@@ -2,5 +2,9 @@ import ContactTracker from "./contactTracker";
 
 export default class Powerup {
     type: 'powerup' = 'powerup';
-    effect: 'laser' | 'grenade' | 'agility' | 'invulnerable';
+    power: 'laser' | 'grenade' | 'agility' | 'invulnerable';
+
+    constructor(power: Powerup['power']) {
+        this.power = power;
+    }
 }

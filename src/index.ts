@@ -40,6 +40,9 @@ import VelocityClamp from "./components/velocityClamp";
 import { basicEmitter, explosionEmitter } from "./particles/emitterFactory";
 import particleManager from "./systems/particleManager";
 import RemoveWhenFar from "./components/removeWhenFar";
+import Powerupable from "./components/powerupable";
+import powerups from "./systems/powerups";
+import Powerup from "./components/powerUp";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -81,9 +84,10 @@ const makePowerup = () => {
     const powerup = new Entity();
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());
+    powerup.add(new Powerup('laser'))
 
     const collider = triangleCollider(1);
-    collider.fillColor = colors[Math.round(Math.random() * colors.length)];
+    collider.fillColor = colors[0];
     powerup.add(collider);
 
     return powerup;
@@ -127,6 +131,7 @@ player.add(playerCollider);
 player.add(playerTransform);
 player.add(new Body(3));
 player.add(new Score());
+player.add(new Powerupable());
 
 const playerGroundDetector = new Entity();
 const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
@@ -171,6 +176,8 @@ engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);
 engine.addEntity(rightWallTiler);
 
+engine.addEntity(makePowerup());
+
 engine.addEntity(camera);
 
 addRenderer(engine);
@@ -191,4 +198,5 @@ addGroundTiler(engine);
 addContactTracker(engine);
 addScoreTracker(engine);
 addVelocityClamp(engine);
+powerups(engine);
 
