@@ -215,7 +215,6 @@ particleManager(engine);
 addGravity(engine);
 addPlayerController(engine);
 addPhysics(engine);
-convexHullTester(engine);
 deformTerrain(engine);
 removeDeadThings(engine);
 addRemoveAfterTime(engine);
