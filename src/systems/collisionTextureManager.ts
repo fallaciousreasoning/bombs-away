@@ -10,9 +10,19 @@ import { input } from '../game';
 import { tree } from './collisionDetector';
 import { AABB } from '../core/aabb';
 
-export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionTexture', 'collider']>, centre: Vector2, radius: number) => {
-    const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
+type Destroyable = Entityish<['transform', 'collisionTexture', 'collider']>;
+export const destroyCircle = (removeFrom: Destroyable, centre: Vector2, radius: number) => {
     const radiusSquared = radius * radius;
+    return destroyWithPredicate(removeFrom, point => point.distanceSquared(centre) < radiusSquared);
+}
+
+export const destroyBox = (removeFrom: Destroyable, box: AABB) => {
+    return destroyWithPredicate(removeFrom, point => box.contains(point));
+}
+
+type DestroyPredicate = (point: Vector2) => boolean;
+export const destroyWithPredicate = (removeFrom: Destroyable, predicate: DestroyPredicate) => {
+    const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
     let removedPoints: Vector2[] = [];
 
     for (let i = 0; i < removeFrom.collisionTexture.grid.length; ++i)
@@ -27,7 +37,7 @@ export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionText
                 continue;
 
             // Mark the point on the texture as empty.
-            if (position.distanceSquared(centre) < radiusSquared) {
+            if (predicate(position)) {
                 removeFrom.collisionTexture.grid[point.y][point.x] = 0;
                 removedPoints.push(position);
             }
