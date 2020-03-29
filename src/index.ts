@@ -41,7 +41,7 @@ import { basicEmitter, explosionEmitter } from "./particles/emitterFactory";
 import particleManager from "./systems/particleManager";
 import RemoveWhenFar from "./components/removeWhenFar";
 import Powerupable from "./components/powerupable";
-import powerups from "./systems/powerups";
+import powerups, { powerupColors, powers } from "./systems/powerups";
 import Powerup from "./components/powerUp";
 
 window['engine'] = engine;
@@ -80,14 +80,14 @@ const makeBomb = () => {
 }
 
 const makePowerup = () => {
-    const colors = ['limegreen', 'yellow', 'purple', 'lightblue'];
+    const power = powers[Math.round(Math.random() * powers.length)];
     const powerup = new Entity();
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());
-    powerup.add(new Powerup('laser'))
+    powerup.add(new Powerup(power));
 
     const collider = triangleCollider(1);
-    collider.fillColor = colors[0];
+    collider.fillColor = powerupColors[power];
     powerup.add(collider);
 
     return powerup;
