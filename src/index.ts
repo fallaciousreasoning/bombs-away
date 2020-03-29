@@ -81,7 +81,7 @@ const makeBomb = () => {
 }
 
 const makePowerup = () => {
-    const power = powers[Math.round(Math.random() * powers.length)];
+    const power = powers[Math.floor(Math.random() * powers.length)];
     const powerup = new Entity();
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());
@@ -112,8 +112,16 @@ const makeGrenade = () => {
 const makeLaser = () => {
     const laser = new Entity();
     laser.add(new Transform);
-    laser.add(new Box(getWidth()*2, 4, 'darkred'));
+    const width = getWidth() * 2;
+    const height = 4;
+    laser.add(new Box(width, height, 'darkred'));
+
     const explodes = new Explodes();
+    explodes.force = 0;
+    explodes.shape = { type: 'box', width, height };
+
+    laser.add(explodes);
+    laser.add(new AliveForTime(3));
     
     return laser;
 }
