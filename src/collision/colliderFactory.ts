@@ -38,6 +38,26 @@ export const bombCollider = (width: number, height: number): Collider => {
     return collider;
 }
 
+export const triangleCollider = (sideLength: number): Collider => {
+    const collider = new Collider();
+    collider.elasticity = 0.1;
+    collider.friction = 0.4;
+
+    const height = Math.sqrt(sideLength**2 - (sideLength/2) ** 2);
+
+    const vertices = new Vertices([
+        new Vector2(0, -height * 0.5),
+        new Vector2(sideLength/2, height * 0.5),
+        new Vector2(-sideLength/2, height * 0.5),
+    ]);
+
+    collider.fixtures = [
+        new Fixture(vertices),
+    ];
+
+    return collider;
+}
+
 export const fromVertices = (vertices: Vertices) => {
     let collider = new Collider();
     collider.elasticity = 0.05;

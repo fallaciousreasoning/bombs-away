@@ -18,6 +18,7 @@ import Line from "./line";
 import LookAtMouse from "./lookAtMouse";
 import ParticleEmitter from "./particleEmitter";
 import Player from "./player";
+import Powerup from "./powerup";
 import RemoveWhenFar from "./removeWhenFar";
 import Score from "./score";
 import Spawn from "./spawn";
@@ -27,4 +28,4 @@ import { Transform } from "./transform";
 import VelocityClamp from "./velocityClamp";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | ParticleEmitter | Player | RemoveWhenFar | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;
+export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | ParticleEmitter | Player | Powerup | RemoveWhenFar | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;

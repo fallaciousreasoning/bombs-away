@@ -1,4 +1,4 @@
-import { boxCollider, circleCollider, bombCollider } from "./collision/colliderFactory";
+import { boxCollider, circleCollider, bombCollider, triangleCollider } from "./collision/colliderFactory";
 import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
 import { Camera } from "./components/camera";
@@ -50,7 +50,7 @@ addFixtureManager(engine);
 const makeExplosion = (radius: number) => {
     const explosion = new Entity();
     explosion.add(new Transform);
-    explosion.add(explosionEmitter(radius/2));
+    explosion.add(explosionEmitter(radius / 2));
     return explosion;
 };
 
@@ -74,6 +74,19 @@ const makeBomb = () => {
     bomb.add(body);
 
     return bomb as Entityish<['transform']>;
+}
+
+const makePowerup = () => {
+    const colors = ['limegreen', 'yellow', 'purple', 'lightblue'];
+    const powerup = new Entity();
+    powerup.add(new Transform(new Vector2(2, -4)));
+    powerup.add(new Body());
+
+    const collider = triangleCollider(1);
+    collider.fillColor = colors[Math.round(Math.random() * colors.length)];
+    powerup.add(collider);
+
+    return powerup;
 }
 
 const makeGroundTile = () => {
