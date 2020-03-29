@@ -1,5 +1,5 @@
 import { Collider } from "../components/collider";
-import { makeBox, makeCircle } from "../geometry/createPolygon";
+import { makeBox, makeCircle, makeBomb } from "../geometry/createPolygon";
 import { Fixture } from "./fixture";
 import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
@@ -31,27 +31,8 @@ export const bombCollider = (width: number, height: number): Collider => {
     collider.elasticity = 0.1;
     collider.friction = 0.4;
 
-    const numSpokes = 10;
-
-    const vertices = [
-        // Top left
-        new Vector2(-width/2, -height/2),
-        // Top right
-        new Vector2(width/2, -height/2),
-    ];
-
-    const circleCentre = new Vector2(0, height/2 - width/2);
-    const spoke = new Vector2(width/2, 0);
-
-    const rotateBy = Math.PI/numSpokes;
-    for (let i = 0; i < numSpokes; ++i) {
-        vertices.push(spoke.rotate(rotateBy*i).add(circleCentre));
-    };
-
-    const v = new Vertices(vertices);
-    v.forceCounterClockwise();
     collider.fixtures = [
-        new Fixture(v),
+        new Fixture(makeBomb(width, height)),
     ];
 
     return collider;

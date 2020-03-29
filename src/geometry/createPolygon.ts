@@ -1,15 +1,17 @@
 import Vector2 from "../core/vector2";
 import { Vertices } from "./vertices";
 
-export const makeBox = (width: number, height: number) => {
-    const halfSize = new Vector2(width, height).div(2);
+const boxVertices = new Vertices([
+    new Vector2(-0.5, -0.5),
+    new Vector2(0.5, -0.5),
+    new Vector2(0.5, 0.5),
+    new Vector2(-0.5, 0.5)
+]);
+// Calculate properties so they can be copied to all boxes.
+boxVertices.calculateProperties();
 
-    return new Vertices([
-        halfSize.mul(-1),
-        new Vector2(halfSize.x, -halfSize.y),
-        halfSize,
-        new Vector2(-halfSize.x, halfSize.y)
-    ]);
+export const makeBox = (width: number, height: number) => {
+    return boxVertices.scale(new Vector2(width, height));
 }
 
 export const makeCircle = (radius: number, triangles = 8) => {
@@ -22,4 +24,26 @@ export const makeCircle = (radius: number, triangles = 8) => {
     }
 
     return new Vertices(vertices);
+}
+
+const numSpokes = 10;
+const vertices = [
+    // Top left
+    new Vector2(-0.5, -0.5),
+    // Top right
+    new Vector2(0.5, -0.5),
+];
+const circleCentre = Vector2.zero;
+const spoke = new Vector2(0.5, 0);
+
+const rotateBy = Math.PI/numSpokes;
+for (let i = 0; i < numSpokes; ++i) {
+    vertices.push(spoke.rotate(rotateBy*i).add(circleCentre));
+};
+const bombVertices = new Vertices(vertices);
+bombVertices.forceCounterClockwise();
+bombVertices.calculateProperties();
+
+export const makeBomb = (width: number, height: number) => {
+    return bombVertices.scale(new Vector2(width, height));
 }

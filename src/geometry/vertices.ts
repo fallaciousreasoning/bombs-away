@@ -92,6 +92,14 @@ export class Vertices {
         this.internalArea = undefined;
     }
 
+    // Helper method to ensure properties are calculated.
+    calculateProperties() {
+        this.normals;
+        this.area;
+        this.bounds;
+        this.centroid;
+    }
+
     isCounterClockwise() {
         return this.area > 0;
     }
