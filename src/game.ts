@@ -17,6 +17,7 @@ const tick = (timestamp) => {
     engine.broadcastMessage(tickEvent);
     lastTick = timestamp;
     requestAnimationFrame(tick);
+    input.tick();
 };
 
 const updateCanvasSize = () => {

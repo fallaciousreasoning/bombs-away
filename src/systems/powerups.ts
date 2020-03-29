@@ -1,6 +1,6 @@
 import Powerup from "../components/powerUp";
 import { Engine } from "../engine";
-import { context, canvas } from "../game";
+import { context, canvas, input } from "../game";
 
 export type Powers = Powerup['power'];
 export const powerupColors: { [P in Powerup['power']]: string } = {
@@ -36,5 +36,17 @@ export default (engine: Engine) => {
                 context.fillStyle = powerupColors[power];
                 context.fillRect(canvas.width - (indicatorSize + padding) * (1 + i), padding, indicatorSize, indicatorSize);
             }
+        });
+
+    engine.makeSystem('powerupable', 'transform', 'collider')
+        .onEach('tick', ({ powerupable, transform, collider }) => {
+            if (!input.wasPressed('mousePrimary'))
+                return;
+
+            const tappedSelf = collider.fixtures.some(f => f.transformedVertices.contains(input.mousePosition));
+            if (!tappedSelf)
+                return;
+
+            console.log('Tapped self!');
         });
 }

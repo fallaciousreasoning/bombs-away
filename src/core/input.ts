@@ -16,6 +16,13 @@ const transformScreenToCanvas = (screenPosition: Vector2, canvas: HTMLCanvasElem
         .mul(new Vector2(scaleX, scaleY));
 }
 
+const buttons = {
+    mousePrimary: 1,
+    mouseSecondary: 2
+} as const;
+
+type Button = keyof typeof buttons;
+
 export default class Input {
     name = 'Input';
 
@@ -25,6 +32,7 @@ export default class Input {
 
     private touchCount = 0;
     private downKeys = {};
+    private previousDownKeys = {};
 
     private axes: { [name: string]: AxisInfo } = {
         horizontal: {
@@ -88,11 +96,31 @@ export default class Input {
     setMousePos(event: { x: number, y: number }) {
         this.mousePosition = transformScreenToCanvas(new Vector2(event.x, event.y), this.on)
             .mul(METRES_A_PIXEL)
-        .add(getCamera().transform.position)
-        .sub(new Vector2(getWidth(), getHeight()).div(2));
+            .add(getCamera().transform.position)
+            .sub(new Vector2(getWidth(), getHeight()).div(2));
     }
 
     setTouches(touchEvent: TouchEvent) {
         this.touchCount = touchEvent.touches.length;
+    }
+
+    wasDown(button: Button) {
+        if (!buttons[button])
+            return;
+        return this.previousDownKeys[buttons[button]];
+    }
+
+    isDown(button: Button) {
+        if (!buttons[button])
+            return;
+        return this.downKeys[buttons[button]];
+    }
+
+    wasPressed(button: Button) {
+        return this.wasDown(button) && !this.isDown(button);
+    }
+
+    tick() {
+        this.previousDownKeys = { ...this.downKeys };
     }
 }
