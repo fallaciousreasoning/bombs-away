@@ -112,7 +112,7 @@ const makeGrenade = () => {
 const makeLaser = () => {
     const laser = new Entity();
     laser.add(new Transform);
-    laser.add(new Box(getWidth()*2, 1, 'darkred'));
+    laser.add(new Box(getWidth()*2, 4, 'darkred'));
     const explodes = new Explodes();
     
     return laser;
