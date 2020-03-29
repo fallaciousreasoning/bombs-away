@@ -13,9 +13,13 @@ export const getHeight = () => canvas.height * METRES_A_PIXEL;
 
 let camera: Entityish<['camera', 'transform']>;
 export const getCamera = () => camera;
-export const useGameView = () => {
+export const useCamera = () => {
     context.setTransform(1, 0, 0, 1, -getCamera().transform.position.x*PIXELS_A_METRE + canvas.width/2,
         -getCamera().transform.position.y*PIXELS_A_METRE + canvas.height / 2);
+}
+
+export const useGameView = () => {
+    useCamera();
     context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
 }
 
@@ -39,6 +43,9 @@ export default function addRenderer(engine: Engine) {
 
             context.save();
 
+            if (box.useCameraCoords)
+                useCamera();
+
             context.translate(position.x, position.y);
             context.rotate(transform.rotation);
             context.fillStyle = box.color;
@@ -53,6 +60,9 @@ export default function addRenderer(engine: Engine) {
             const position = transform.position.mul(PIXELS_A_METRE).round();
 
             context.save();
+
+            if (circle.useCameraCoords)
+                useCamera();
 
             context.translate(position.x, position.y);
             context.fillStyle = 'red';
@@ -74,11 +84,18 @@ export default function addRenderer(engine: Engine) {
                 .add(position)
                 .round();
 
+            context.save();
+
+            if (line.useCameraCoords)
+                useCamera();
+
             context.beginPath();
             context.lineWidth = line.width * PIXELS_A_METRE;
             context.strokeStyle = line.color;
             context.moveTo(position.x, position.y);
             context.lineTo(lineEnd.x, lineEnd.y);
             context.stroke();
+
+            context.restore();
         });
 }

@@ -43,6 +43,7 @@ import RemoveWhenFar from "./components/removeWhenFar";
 import Powerupable from "./components/powerupable";
 import powerups, { powerupColors, powers } from "./systems/powerups";
 import Powerup from "./components/powerup";
+import Box from "./components/box";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -106,6 +107,15 @@ const makeGrenade = () => {
     grenade.add(new AliveForTime(0));
 
     return grenade;
+}
+
+const makeLaser = () => {
+    const laser = new Entity();
+    laser.add(new Transform);
+    laser.add(new Box(getWidth()*2, 1, 'darkred'));
+    const explodes = new Explodes();
+    
+    return laser;
 }
 
 const makeGroundTile = () => {
@@ -213,5 +223,5 @@ addGroundTiler(engine);
 addContactTracker(engine);
 addScoreTracker(engine);
 addVelocityClamp(engine);
-powerups(engine, makeGrenade);
+powerups(engine, makeGrenade, makeLaser);
 

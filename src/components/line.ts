@@ -10,6 +10,8 @@ export default class Line {
 
     color: string;
 
+    useCameraCoords = true;
+
     constructor(length: number, width?: number, color?: string){
         this.length = length;
         this.width = width || 1/64;

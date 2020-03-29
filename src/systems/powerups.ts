@@ -12,7 +12,7 @@ export const powerupColors: { [P in Powerup['power']]: string } = {
 };
 export const powers: Powers[] = Object.keys(powerupColors) as any;
 
-export default (engine: Engine, makeGrenade: () => Entity) => {
+export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Entity) => {
     engine.makeSystem()
         .onMessage('collision-enter', message => {
             const powerup = message.moved.get('powerup');
@@ -48,23 +48,27 @@ export default (engine: Engine, makeGrenade: () => Entity) => {
             if (!tappedSelf)
                 return;
 
-            // if (!powerupable.powerups.length)
-            //     return;
+            if (!powerupable.powerups.length)
+                return;
 
-            // const power = powerupable.powerups.splice(0, 1)[0];
+            const power: Powers = powerupable.powerups.splice(0, 1)[0];
             let entity: Entity;
-            entity = makeGrenade();
-            // switch (power) {
-            //     case "grenade":
-            //         break;
-            //     default:
-            //         let never: never;
-            // }
+            switch (power) {
+                case "grenade":
+                    entity = makeGrenade();
+                    break;
+                case "laser":
+                    entity = makeLaser();
+                    break;
+                default:
+                    let never: never;
+            }
 
             if (entity) {
                 const t = entity.get('transform');
-                t.position = transform.position;
-                t.rotation = transform.rotation;
+                if (t) {
+                    t.position = transform.position;
+                }
                 engine.addEntity(entity);
             }
         });

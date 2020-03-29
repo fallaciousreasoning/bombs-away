@@ -4,6 +4,8 @@ export default class Box {
     width: number;
     height: number;
 
+    useCameraCoords: boolean = true;
+
     color: string;
 
     constructor(width: number, height?: number, color?: string){
