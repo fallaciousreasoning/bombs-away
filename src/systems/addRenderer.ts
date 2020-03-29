@@ -49,7 +49,7 @@ export default function addRenderer(engine: Engine) {
             context.translate(position.x, position.y);
             context.rotate(transform.rotation);
             context.scale(transform.scale.x, transform.scale.y);
-            
+
             context.fillStyle = box.color;
             context.fillRect(-halfSize.x, -halfSize.y, size.x, size.y);
 
@@ -97,6 +97,25 @@ export default function addRenderer(engine: Engine) {
             context.moveTo(position.x, position.y);
             context.lineTo(lineEnd.x, lineEnd.y);
             context.stroke();
+
+            context.restore();
+        });    engine
+        .makeSystem("text", "transform")
+        .onEach('tick', ({ transform, text }) => {
+            const position = transform.position.mul(PIXELS_A_METRE).round();
+
+            context.save();
+
+            if (text.useCameraCoords)
+                useCamera();
+
+            context.fillStyle = text.color;
+            context.font = `${text.fontSize}px ${text.font}`;
+            context.textBaseline = text.verticalAlign;
+            context.textAlign = text.horizontalAlign;
+
+            const string = text.getText();
+            context.fillText(string, position.x, position.y);
 
             context.restore();
         });

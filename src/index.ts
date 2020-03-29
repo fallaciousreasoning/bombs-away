@@ -47,6 +47,7 @@ import Box from "./components/box";
 import animator from "./systems/animator";
 import AnimateSize from "./components/animateSize";
 import { getVerticesFromTexture } from "./systems/collisionTextureManager";
+import { Text } from './components/text';
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -187,6 +188,12 @@ playerGroundDetector.add(playerGroundDetectorTransform);
 playerGroundDetector.add(playerComponent.groundTracker);
 playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
 
+const scoreDisplay = new Entity();
+scoreDisplay.add(new Transform(new Vector2(0.1)));
+const scoreText = new Text();
+scoreText.getText = () => `Score: ${player.get('score').score}`;
+scoreDisplay.add(scoreText);
+
 const bomber = new Entity();
 bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -20) }));
 bomber.add(new Spawn(makeBomb));
@@ -226,6 +233,8 @@ engine.addEntity(rightWallTiler);
 engine.addEntity(makePowerup());
 
 engine.addEntity(camera);
+
+engine.addEntity(scoreDisplay);
 
 addRenderer(engine);
 
