@@ -48,6 +48,8 @@ export default function addRenderer(engine: Engine) {
 
             context.translate(position.x, position.y);
             context.rotate(transform.rotation);
+            context.scale(transform.scale.x, transform.scale.y);
+            
             context.fillStyle = box.color;
             context.fillRect(-halfSize.x, -halfSize.y, size.x, size.y);
 

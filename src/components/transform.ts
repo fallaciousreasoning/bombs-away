@@ -5,6 +5,7 @@ export class Transform {
 
     localPosition: Vector2;
     localRotation: number;
+    localScale: Vector2 = Vector2.one;
 
     lockRotation: boolean;
 
@@ -38,5 +39,16 @@ export class Transform {
         }
         
         this.localRotation = this.parent ? value - this.parent.rotation : value;
+    }
+
+    get scale() {
+        return this.parent ? this.parent.scale.mul(this.localScale) : this.localScale;
+    }
+
+    set scale(scale: Vector2) {
+        if (this.parent) {
+            scale = scale.div(this.parent.scale);
+        }
+        this.localScale = scale;
     }
 }

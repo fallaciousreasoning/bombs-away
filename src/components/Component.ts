@@ -1,4 +1,5 @@
 import AliveForTime from "./aliveForTime";
+import AnimateSize from "./animateSize";
 import Body from "./body";
 import { Bounce } from "./bounce";
 import Box from "./box";
@@ -29,4 +30,4 @@ import { Transform } from "./transform";
 import VelocityClamp from "./velocityClamp";
 import Weapon from "./weapon";
 
-export type Component = AliveForTime | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | ParticleEmitter | Player | Powerup | Powerupable | RemoveWhenFar | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;
+export type Component = AliveForTime | AnimateSize | Body | Bounce | Box | Camera | Circle | Collider | CollisionTexture | ContactTracker | Damage | Explodes | FlipWithMouse | FollowTransform | GroundTiler | Health | Hull | Line | LookAtMouse | ParticleEmitter | Player | Powerup | Powerupable | RemoveWhenFar | Score | Spawn | StayOnMouse | Tag | Transform | VelocityClamp | Weapon;

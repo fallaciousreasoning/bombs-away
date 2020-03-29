@@ -44,6 +44,8 @@ import Powerupable from "./components/powerupable";
 import powerups, { powerupColors, powers } from "./systems/powerups";
 import Powerup from "./components/powerup";
 import Box from "./components/box";
+import animator from "./systems/animator";
+import AnimateSize from "./components/animateSize";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -122,6 +124,7 @@ const makeLaser = () => {
 
     laser.add(explodes);
     laser.add(new AliveForTime(3));
+    laser.add(new AnimateSize(new Vector2(1, 0), Vector2.one, 3));
     
     return laser;
 }
@@ -231,4 +234,5 @@ addContactTracker(engine);
 addScoreTracker(engine);
 addVelocityClamp(engine);
 powerups(engine, makeGrenade, makeLaser);
+animator(engine);
 
