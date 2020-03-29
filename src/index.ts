@@ -93,6 +93,21 @@ const makePowerup = () => {
     return powerup;
 }
 
+const makeGrenade = () => {
+    const grenade = new Entity();
+    grenade.add(new Transform);
+    const explodes = new Explodes();
+    explodes.radius = 5;
+    explodes.force = 100;
+    explodes.with = makeExplosion;
+    grenade.add(explodes);
+
+    // Grenades explode immediately.
+    grenade.add(new AliveForTime(0));
+
+    return grenade;
+}
+
 const makeGroundTile = () => {
     const gridSize = 0.333333
     const ground = new Entity();
@@ -198,5 +213,5 @@ addGroundTiler(engine);
 addContactTracker(engine);
 addScoreTracker(engine);
 addVelocityClamp(engine);
-powerups(engine);
+powerups(engine, makeGrenade);
 

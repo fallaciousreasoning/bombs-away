@@ -1,6 +1,7 @@
 import Powerup from "../components/powerup";
 import { Engine } from "../engine";
 import { context, canvas, input } from "../game";
+import { Entity } from "../entity";
 
 export type Powers = Powerup['power'];
 export const powerupColors: { [P in Powerup['power']]: string } = {
@@ -11,7 +12,7 @@ export const powerupColors: { [P in Powerup['power']]: string } = {
 };
 export const powers: Powers[] = Object.keys(powerupColors) as any;
 
-export default (engine: Engine) => {
+export default (engine: Engine, makeGrenade: () => Entity) => {
     engine.makeSystem()
         .onMessage('collision-enter', message => {
             const powerup = message.moved.get('powerup');
@@ -47,6 +48,24 @@ export default (engine: Engine) => {
             if (!tappedSelf)
                 return;
 
-            console.log('Tapped self!');
+            // if (!powerupable.powerups.length)
+            //     return;
+
+            // const power = powerupable.powerups.splice(0, 1)[0];
+            let entity: Entity;
+            entity = makeGrenade();
+            // switch (power) {
+            //     case "grenade":
+            //         break;
+            //     default:
+            //         let never: never;
+            // }
+
+            if (entity) {
+                const t = entity.get('transform');
+                t.position = transform.position;
+                t.rotation = transform.rotation;
+                engine.addEntity(entity);
+            }
         });
 }

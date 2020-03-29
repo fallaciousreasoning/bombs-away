@@ -1,3 +1,5 @@
+import { Entity } from "../entity";
+
 export default class Powerup {
     type: 'powerup' = 'powerup';
     power: 'laser' | 'grenade' | 'agility' | 'invulnerable';
