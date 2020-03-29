@@ -189,9 +189,9 @@ playerGroundDetector.add(playerComponent.groundTracker);
 playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
 
 const scoreDisplay = new Entity();
-scoreDisplay.add(new Transform(new Vector2(0.1)));
+scoreDisplay.add(new Transform(new Vector2(0.2)));
 const scoreText = new Text();
-scoreText.getText = () => `Score: ${player.get('score').score}`;
+scoreText.getText = () => `Score: ${Math.round(player.get('score').score)}`;
 scoreDisplay.add(scoreText);
 
 const bomber = new Entity();

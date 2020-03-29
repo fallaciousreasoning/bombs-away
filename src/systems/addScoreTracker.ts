@@ -4,6 +4,11 @@ import { canvas, context } from '../game';
 import { useGameView, getWidth } from './addRenderer';
 
 export default function addScoreTracker(engine: Engine) {
+    engine.makeSystem('score', 'transform')
+        .onEach('tick', ({ transform, score }) => {
+            score.score = Math.max(score.score, transform.position.y);
+        });
+        
     // Render a line for the current score.
     engine.makeSystem('score')
         .onEach('tick', ({ score }) => {
@@ -13,6 +18,6 @@ export default function addScoreTracker(engine: Engine) {
             const stripeOffset = 0.8;
 
             context.fillStyle = 'red';
-            context.fillRect(0, score.score + stripeHeight/2 + stripeOffset, getWidth(), stripeHeight);
+            context.fillRect(0, score.score + stripeHeight / 2 + stripeOffset, getWidth(), stripeHeight);
         });
 }
