@@ -66,9 +66,9 @@ const makeBomb = () => {
     const bomb = new Entity();
 
     const explodes = new Explodes();
-    explodes.radius = radiusMultiplier * size;
+    explodes.shape = { type: 'circle', radius: radiusMultiplier * size };
     explodes.force = forceMultiplier * size;
-    explodes.with = makeExplosion;
+    explodes.with = (shape: any) => makeExplosion(shape.radius);
     bomb.add(explodes);
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
@@ -98,9 +98,9 @@ const makeGrenade = () => {
     const grenade = new Entity();
     grenade.add(new Transform);
     const explodes = new Explodes();
-    explodes.radius = 5;
+    explodes.shape = { type: 'circle', radius: 5 };
     explodes.force = 100;
-    explodes.with = makeExplosion;
+    explodes.with = (shape: any) => makeExplosion(shape.radius);
     grenade.add(explodes);
 
     // Grenades explode immediately.

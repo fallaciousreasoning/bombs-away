@@ -2,7 +2,7 @@ import { Engine } from "../engine";
 import { tree } from "./collisionDetector";
 import { AABB } from "../core/aabb";
 import Vector2 from "../core/vector2";
-import { destroyCircle } from "./collisionTextureManager";
+import { destroyCircle, destroyBox } from "./collisionTextureManager";
 import { Color } from "../core/color";
 import { Collider } from "../components/collider";
 import { liveParticles } from "./particleManager";
@@ -20,7 +20,7 @@ export default (engine: Engine) => {
         return (1 - distance / radius) ** exponent;
     }
     const applyExplosiveForce = (centre: Vector2, radius: number, force: number) => {
-        const affected = tree.query(new AABB(centre, new Vector2(radius*2))).map(c => engine.getEntity(c.bodyId));
+        const affected = tree.query(new AABB(centre, new Vector2(radius * 2))).map(c => engine.getEntity(c.bodyId));
 
         for (const entity of affected) {
             const transform = entity.get('transform');
@@ -38,7 +38,7 @@ export default (engine: Engine) => {
             for (const vertex of collider.getTransformsVertices()) {
                 const distance = vertex.distance(centre);
                 if (distance < minDistance)
-                  minDistance = distance;
+                    minDistance = distance;
             }
             if (minDistance > radius)
                 continue;
@@ -64,8 +64,14 @@ export default (engine: Engine) => {
         const transform = entity.get('transform');
         if (!explodes || !transform)
             return;
+        const effectiveRadius = explodes.shape.type === 'circle'
+            ? explodes.shape.radius
+            : Math.sqrt(explodes.shape.width ** 2 + explodes.shape.height ** 2);
 
-        const rangeBounds = new AABB(transform.position, new Vector2(explodes.radius*2));
+        const rangeBounds = explodes.shape.type === 'circle'
+            ? new AABB(transform.position, new Vector2(explodes.shape.radius * 2))
+            : new AABB(transform.position, new Vector2(explodes.shape.width, explodes.shape.height));
+
         const nearbyColliders = tree.query(rangeBounds);
 
         for (const near of nearbyColliders) {
@@ -74,7 +80,10 @@ export default (engine: Engine) => {
             if (!collisionTexture)
                 continue;
 
-            const removedPoints = destroyCircle(entity as any, transform.position, explodes.radius);
+            const removedPoints = explodes.shape.type === 'circle'
+                ? destroyCircle(entity as any, transform.position, explodes.shape.radius)
+                : destroyBox(entity as any, rangeBounds);
+
             for (const point of removedPoints) {
                 const p = particlePool.get();
                 p.color = 'green';
@@ -84,14 +93,14 @@ export default (engine: Engine) => {
 
                 const speed = 3
                 const dist = point.distance(transform.position);
-                const closeness = 1- dist/explodes.radius;
+                const closeness = 1 - dist / effectiveRadius;
 
-                const velocity = point.sub(transform.position).normalized().mul(closeness*speed + 1)
+                const velocity = point.sub(transform.position).normalized().mul(closeness * speed + 1)
                 p.velocityX = velocity.x;
                 p.velocityY = velocity.y;
                 const scale = 1.2;
-                p.scaleX = collisionTexture.gridSize*scale;
-                p.scaleY = collisionTexture.gridSize*scale;
+                p.scaleX = collisionTexture.gridSize * scale;
+                p.scaleY = collisionTexture.gridSize * scale;
                 p.timeToLive = 5;
                 p.rotation = 0;
                 p.angularVelocity = (point.x <= transform.position.x ? -1 : 1) * 0.1 * closeness
@@ -99,11 +108,13 @@ export default (engine: Engine) => {
             }
         }
 
-        applyExplosiveForce(transform.position, explodes.radius, explodes.force);
-        
+        if (explodes.force !== 0) {
+            applyExplosiveForce(transform.position, effectiveRadius, explodes.force);
+        }
+
         // If there's something we should put in our place...
         if (explodes.with) {
-            const explosion = explodes.with(explodes.radius);
+            const explosion = explodes.with(explodes.shape);
             const explosionTransform = explosion.get('transform');
             if (explosionTransform) {
                 explosionTransform.position = transform.position;

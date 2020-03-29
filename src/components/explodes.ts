@@ -1,9 +1,19 @@
 import { Entity } from "../entity";
+import { AABB } from "../core/aabb";
+
+type ExplosionShape = {
+    type: 'circle',
+    radius: number;
+} | {
+    type: 'box',
+    width: number,
+    height: number
+};
 
 export default class Explodes {
     type: "explodes" = "explodes";
-    radius: number = 5;
-    force: number = 100;
+    shape: ExplosionShape;
+    force: number = 0;
 
-    with?: (radius: number) => Entity;
+    with?: (shape: ExplosionShape) => Entity;
 }
