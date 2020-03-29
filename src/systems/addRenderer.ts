@@ -2,17 +2,22 @@ import Line from "../components/line";
 import { Transform } from "../components/transform";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
-import { canvas } from "../game";
+import { canvas, context } from "../game";
 import { Entityish } from "./system";
 
 export const PIXELS_A_METRE = 64;
-export const METRES_A_PIXEL = 1/PIXELS_A_METRE;
+export const METRES_A_PIXEL = 1 / PIXELS_A_METRE;
 
 export const getWidth = () => canvas.width * METRES_A_PIXEL;
 export const getHeight = () => canvas.height * METRES_A_PIXEL;
 
 let camera: Entityish<['camera', 'transform']>;
 export const getCamera = () => camera;
+export const useGameView = () => {
+    context.setTransform(1, 0, 0, 1, -getCamera().transform.position.x*PIXELS_A_METRE + canvas.width/2,
+        -getCamera().transform.position.y*PIXELS_A_METRE + canvas.height / 2);
+    context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+}
 
 export default function addRenderer(engine: Engine) {
     const context = canvas.getContext('2d');
@@ -21,11 +26,8 @@ export default function addRenderer(engine: Engine) {
     engine.makeSystem('camera', 'transform')
         .onEach('tick', entity => {
             camera = entity;
-            
             (context as any).resetTransform();
             context.clearRect(0, 0, canvas.width, canvas.height)
-            context.setTransform(1, 0, 0, 1, -entity.transform.position.x*PIXELS_A_METRE + canvas.width/2,
-                -entity.transform.position.y*PIXELS_A_METRE + canvas.height / 2);
         });
 
     engine
@@ -55,7 +57,7 @@ export default function addRenderer(engine: Engine) {
             context.translate(position.x, position.y);
             context.fillStyle = 'red';
             context.beginPath();
-            context.arc(0, 0, radius, 0, Math.PI*2);
+            context.arc(0, 0, radius, 0, Math.PI * 2);
             context.fill();
 
             context.restore();
@@ -71,7 +73,7 @@ export default function addRenderer(engine: Engine) {
                 .mul(PIXELS_A_METRE)
                 .add(position)
                 .round();
-            
+
             context.beginPath();
             context.lineWidth = line.width * PIXELS_A_METRE;
             context.strokeStyle = line.color;

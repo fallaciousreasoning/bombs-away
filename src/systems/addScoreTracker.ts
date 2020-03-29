@@ -3,6 +3,7 @@ import { Engine } from "../engine";
 import { canvas, context } from '../game';
 
 export default function addScoreTracker(engine: Engine) {
+    // Render the current score.
     engine
         .makeSystem('score', 'transform')
         .onEach('tick', ({ score, transform }) => {
@@ -16,5 +17,11 @@ export default function addScoreTracker(engine: Engine) {
             const text = `Score: ${score.score}`;
 
             context.fillText(text, 10, 10);
+        });
+
+    // Render a line for the current score.
+    engine.makeSystem('score')
+        .onEach('tick', ({ score }) => {
+
         });
 }

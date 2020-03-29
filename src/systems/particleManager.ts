@@ -5,7 +5,7 @@ import Vector2 from "../core/vector2";
 import { context } from "../game";
 import ParticleEmitter from "../components/particleEmitter";
 import { Transform } from "../components/transform";
-import { PIXELS_A_METRE, getCamera } from "./addRenderer";
+import { PIXELS_A_METRE, getCamera, useGameView } from "./addRenderer";
 
 export const liveParticles: Particle[] = [];
 
@@ -57,7 +57,7 @@ export default (engine: Engine) => {
     // Particle rendering.
     engine.makeSystem().onMessage('tick', () => {
         context.save();
-        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+        useGameView();
 
         for (const particle of liveParticles) {
             context.save();

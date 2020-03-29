@@ -7,6 +7,7 @@ import { AABBTree } from "../geometry/dynamicAabbTree";
 import { fixtures } from "./fixtureManager";
 import { context, canvas } from "../game";
 import { tree } from "./collisionDetector";
+import { useGameView } from "./addRenderer";
 
 export const PIXELS_A_METRE = 64;
 
@@ -55,7 +56,7 @@ export default function drawCollider(engine: Engine) {
     const drawVertices = (vertices: Vertices, color: string) => {
         context.save();
 
-        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+        useGameView();
 
         if (renderConfig.drawEdges) {
             context.beginPath();
@@ -89,7 +90,7 @@ export default function drawCollider(engine: Engine) {
         const centroid = fixture.vertices.centroid;
         context.save();
 
-        context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+        useGameView();
         context.translate(fixture.transform.position.x, fixture.transform.position.y);
         context.rotate(fixture.transform.rotation);
 
@@ -163,7 +164,7 @@ export default function drawCollider(engine: Engine) {
 
             context.save();
 
-            context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
+            useGameView();
             context.fillStyle = "red";
 
             const pointSize = 0.2;
