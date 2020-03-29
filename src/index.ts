@@ -116,15 +116,17 @@ const makeLaser = () => {
     laser.add(new Transform);
     const width = getWidth() * 2;
     const height = 4;
-    laser.add(new Box(width, height, 'darkred'));
+    laser.add(new Box(width, height, '#ff9900'));
 
     const explodes = new Explodes();
     explodes.force = 0;
     explodes.shape = { type: 'box', width, height };
 
     laser.add(explodes);
-    laser.add(new AliveForTime(3));
-    laser.add(new AnimateSize(new Vector2(1, 0), Vector2.one, 3));
+
+    const duration = 1;
+    laser.add(new AliveForTime(duration));
+    laser.add(new AnimateSize(new Vector2(1, 0), Vector2.one, duration));
     
     return laser;
 }

@@ -51,7 +51,7 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
             if (!powerupable.powerups.length)
                 return;
 
-            const power: Powers = powerupable.powerups.splice(0, 1)[0];
+            const power: Powers = powerupable.powerups[0];//powerupable.powerups.splice(0, 1)[0];
             let entity: Entity;
             switch (power) {
                 case "grenade":
