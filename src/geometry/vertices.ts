@@ -52,7 +52,7 @@ export class Vertices {
                 (next.y - current.y),
                 -(next.x - current.x)
             ).normalized();
-            
+
             this.internalNormals.push(normal);
         }
 
@@ -97,7 +97,7 @@ export class Vertices {
     }
 
     forceCounterClockwise() {
-        if (this.isCounterClockwise()) 
+        if (this.isCounterClockwise())
             return;
 
         this.vertices = this.vertices.reverse();
@@ -119,15 +119,58 @@ export class Vertices {
     }
 
     translate(by: Vector2) {
-        return new Vertices(this.vertices.map(v => v.add(by)));
+        const result = new Vertices(this.vertices.map(v => v.add(by)));
+
+        if (this.internalBounds)
+            result.internalBounds = this.internalBounds.offset(by);
+
+        if (this.internalArea)
+            result.internalArea = this.internalArea;
+
+        if (this.internalNormals)
+            result.internalNormals = this.internalNormals;
+
+        if (this.internalCentroid)
+            result.internalCentroid = this.internalCentroid.add(by);
+
+        return result;
     }
 
     rotate(angle: number) {
-        return new Vertices(this.vertices.map(v => v.rotate(angle)));
+        const result = new Vertices(this.vertices.map(v => v.rotate(angle)));
+
+        if (this.internalArea)
+            result.internalArea = this.internalArea;
+
+        if (this.internalCentroid)
+            result.internalCentroid = this.internalCentroid.rotate(angle);
+
+        if (this.internalNormals) {
+            result.internalNormals = this.internalNormals.map(n => n.rotate(angle));
+        }
+
+        return result;
     }
 
     scale(scale: number | Vector2) {
-        return new Vertices(this.vertices.map(v => v.mul(scale)));
+        const result = new Vertices(this.vertices.map(v => v.mul(scale)));
+
+        if (this.internalBounds) {
+            result.internalBounds = new AABB(this.internalBounds.centre, this.internalBounds.size.mul(scale));
+        }
+
+        if (this.internalNormals)
+            result.internalNormals = this.internalNormals;
+
+        if (this.internalCentroid)
+            result.internalCentroid = this.internalCentroid;
+
+        if (this.internalArea) {
+            const mul = typeof scale === 'number' ? scale : scale.x * scale.y;
+            result.internalArea = this.internalArea * mul;
+        }
+
+        return result;
     }
 
     average() {
@@ -185,7 +228,7 @@ export class Vertices {
     slice(from: number, to: number) {
         from = this.safeIndex(from);
         to = this.safeIndex(to);
-        
+
         const vertices = [];
 
         while (from != to) {

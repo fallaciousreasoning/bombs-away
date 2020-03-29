@@ -39,7 +39,11 @@ export const destroyCircle = (removeFrom: Entityish<['transform', 'collisionText
 
     const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
     const vertices = textureConverter.getVertices();
-    const decomposedVertices = vertices.map(v => convexPartition(v)).reduce((prev, next) => [...prev, ...next], []).map(v => v.scale(removeFrom.collisionTexture.gridSize));
+    const decomposedVertices = vertices
+        .map(v => convexPartition(v))
+        .reduce((prev, next) => [...prev, ...next], [])
+        .map(v => v.scale(removeFrom.collisionTexture.gridSize));
+        
     removeFrom.collider.fixtures = decomposedVertices
         .filter(v => v.area > 0.001)
         .map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));

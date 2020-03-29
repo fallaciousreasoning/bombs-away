@@ -2,6 +2,7 @@ import { Transform } from "../components/transform";
 import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
 import { AABBTreeChild, AABBTreeNode } from '../geometry/dynamicAabbTree';
+import { AABB } from "../core/aabb";
 
 export class Fixture implements AABBTreeChild<Fixture> {
     private static nextId: number = 1;
