@@ -9,6 +9,8 @@ import { Fixture } from '../collision/fixture';
 import { input } from '../game';
 import { tree } from './collisionDetector';
 import { AABB } from '../core/aabb';
+import { collinearSimplify } from '../geometry/simplifyTools';
+import { CollisionTexture } from '../components/collisionTexture';
 
 type Destroyable = Entityish<['transform', 'collisionTexture', 'collider']>;
 export const destroyCircle = (removeFrom: Destroyable, centre: Vector2, radius: number) => {
@@ -22,7 +24,6 @@ export const destroyBox = (removeFrom: Destroyable, box: AABB) => {
 
 type DestroyPredicate = (point: Vector2) => boolean;
 export const destroyWithPredicate = (removeFrom: Destroyable, predicate: DestroyPredicate) => {
-    const halfSize = new Vector2(removeFrom.collisionTexture.width, removeFrom.collisionTexture.height).div(2);
     let removedPoints: Vector2[] = [];
 
     for (let i = 0; i < removeFrom.collisionTexture.grid.length; ++i)
@@ -31,7 +32,7 @@ export const destroyWithPredicate = (removeFrom: Destroyable, predicate: Destroy
             const position = point
                 .mul(removeFrom.collisionTexture.gridSize)
                 .add(removeFrom.transform.position)
-                .sub(halfSize)
+                .sub(removeFrom.collisionTexture.halfSize);
 
             if (removeFrom.collisionTexture.grid[point.y][point.x] === 0)
                 continue;
@@ -47,16 +48,23 @@ export const destroyWithPredicate = (removeFrom: Destroyable, predicate: Destroy
         return removedPoints;
     }
 
-    const textureConverter = new TextureConverter(removeFrom.collisionTexture.grid);
+    const fixtures = getVerticesFromTexture(removeFrom.collisionTexture)
+        .map(v => new Fixture(v, removeFrom.transform, removeFrom.id));
+    removeFrom.collider.fixtures = fixtures;
+
+    return removedPoints;
+}
+
+export const getVerticesFromTexture = (collisionTexture: CollisionTexture) => {
+    const textureConverter = new TextureConverter(collisionTexture.grid);
     const vertices = textureConverter.getVertices();
     const decomposedVertices = vertices
         .map(v => convexPartition(v))
         .reduce((prev, next) => [...prev, ...next], [])
-        .map(v => v.scale(removeFrom.collisionTexture.gridSize));
+        .map(v => v.scale(collisionTexture.gridSize));
         
-    removeFrom.collider.fixtures = decomposedVertices
+    return decomposedVertices
         .filter(v => v.area > 0.001)
-        .map(v => new Fixture(v.translate(halfSize.negate()), removeFrom.transform, removeFrom.id));
-
-    return removedPoints;
+        .map(v => v.translate(collisionTexture.halfSize.negate()));
+        // .map(v => new Fixture(v.translate(collisionTexture.halfSize.negate()), removeFrom.transform, removeFrom.id));
 }

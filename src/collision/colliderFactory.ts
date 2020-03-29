@@ -58,12 +58,10 @@ export const triangleCollider = (sideLength: number): Collider => {
     return collider;
 }
 
-export const fromVertices = (vertices: Vertices) => {
+export const fromVertices = (...vertices: Vertices[]) => {
     let collider = new Collider();
     collider.elasticity = 0.05;
     collider.friction = 0.5;
-    collider.fixtures = [
-        new Fixture(vertices)
-    ];
+    collider.fixtures = vertices.map(v => new Fixture(v));
     return collider;
 }

@@ -1,4 +1,4 @@
-import { boxCollider, circleCollider, bombCollider, triangleCollider } from "./collision/colliderFactory";
+import { boxCollider, circleCollider, bombCollider, triangleCollider, fromVertices } from "./collision/colliderFactory";
 import AliveForTime from "./components/aliveForTime";
 import Body from "./components/body";
 import { Camera } from "./components/camera";
@@ -46,6 +46,7 @@ import Powerup from "./components/powerup";
 import Box from "./components/box";
 import animator from "./systems/animator";
 import AnimateSize from "./components/animateSize";
+import { getVerticesFromTexture } from "./systems/collisionTextureManager";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -127,21 +128,29 @@ const makeLaser = () => {
     const duration = 1;
     laser.add(new AliveForTime(duration));
     laser.add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
-    
+
     return laser;
 }
 
 const makeGroundTile = () => {
-    const gridSize = 0.333333
+    const width = 5;
+    const height = 5;
+
+    const gridSize = 0.5
     const ground = new Entity();
     ground.add(new Tag('terrain'));
-    const collider = boxCollider(5, 5, 'green');
-    collider.fillColor = 'green';
-    ground.add(collider);
+
     ground.add(new Transform());
 
-    ground.add(new CollisionTexture(5, 5, gridSize));
+    const texture = new CollisionTexture(width, height, gridSize);
+    ground.add(texture);
     ground.add(new RemoveWhenFar(50, player, Vector2.up));
+
+    const collider = fromVertices(...getVerticesFromTexture(texture));
+    collider.fillColor = 'green';
+    collider.color = 'green';
+    ground.add(collider);
+
     return ground as Entityish<['transform', 'collider']>;
 }
 
