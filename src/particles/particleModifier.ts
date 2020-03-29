@@ -8,5 +8,11 @@ export const alphaModifier: ParticleModifier = (particle: Particle) => {
         particle.alpha = 0;
         return;
     }
-    particle.alpha = particle.timeToLive/particle._initialLife;
+    particle.alpha = particle.timeToLive / particle._initialLife;
+}
+
+export const velocityDamper: (amount: number) => ParticleModifier = (amount) => (particle) => {
+    particle.velocityX *= amount;
+    particle.velocityY *= amount;
+    particle.angularVelocity *= amount;
 }

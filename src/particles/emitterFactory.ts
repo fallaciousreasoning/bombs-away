@@ -1,8 +1,9 @@
 import ParticleEmitter from "../components/particleEmitter"
 import { GeneralConstraint, RandomVector2Generator, RandomColorGenerator } from "./particleConstraint";
 import Vector2 from "../core/vector2";
-import { alphaModifier } from "./particleModifier";
+import { alphaModifier, velocityDamper } from "./particleModifier";
 import { Color } from "../core/color";
+import { Particle } from "./particle";
 
 interface BasicEmitterOptions {
     speed: number;
@@ -58,8 +59,8 @@ export const explosionEmitter = (radius: number) => {
 
     emitter.startLife = new GeneralConstraint(0.2);
 
-    emitter.startAngularVelocity = new GeneralConstraint(-0.1, 0.1)
-    emitter.startVelocity = RandomVector2Generator.fromRadius(radius*3);
+    emitter.startAngularVelocity = new GeneralConstraint(-0.5, 0.5)
+    emitter.startVelocity = RandomVector2Generator.fromRadius(radius*10);
 
     emitter.startRotation = new GeneralConstraint(0);
     emitter.startSize = new GeneralConstraint(0.2, 1);
@@ -69,10 +70,11 @@ export const explosionEmitter = (radius: number) => {
     emitter.emitPositionModifier = RandomVector2Generator.fromRadius(radius/2);
 
     emitter.color = new RandomColorGenerator(new Color(255, 0, 0), new Color(255, 165, 0));
-    emitter.shape = 'square';
+    emitter.shape = 'circle';
 
     emitter.modifiers = [
-        alphaModifier
+        alphaModifier,
+        velocityDamper(0.9),
     ]
     return emitter;
 }
