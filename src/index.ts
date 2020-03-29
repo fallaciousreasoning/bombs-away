@@ -126,7 +126,7 @@ const makeLaser = () => {
 
     const duration = 1;
     laser.add(new AliveForTime(duration));
-    laser.add(new AnimateSize(new Vector2(1, 0), Vector2.one, duration));
+    laser.add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
     
     return laser;
 }
