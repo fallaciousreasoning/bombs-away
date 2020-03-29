@@ -42,7 +42,7 @@ import particleManager from "./systems/particleManager";
 import RemoveWhenFar from "./components/removeWhenFar";
 import Powerupable from "./components/powerupable";
 import powerups, { powerupColors, powers } from "./systems/powerups";
-import Powerup from "./components/powerUp";
+import Powerup from "./components/powerup";
 
 window['engine'] = engine;
 window['debugPoints'] = [];

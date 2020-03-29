@@ -1,4 +1,4 @@
-import Powerup from "../components/powerUp";
+import Powerup from "../components/powerup";
 import { Engine } from "../engine";
 import { context, canvas, input } from "../game";
 
