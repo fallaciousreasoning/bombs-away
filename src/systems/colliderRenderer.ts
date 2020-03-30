@@ -60,6 +60,7 @@ export default function drawCollider(engine: Engine) {
 
         if (renderConfig.drawEdges) {
             context.beginPath();
+            context.lineWidth = 1;
             context.strokeStyle = color;
             for (let i = 0; i < vertices.length; ++i) {
                 const curr = vertices.getVertex(i);
@@ -96,15 +97,17 @@ export default function drawCollider(engine: Engine) {
 
         if (renderConfig.drawEdges) {
             context.beginPath();
+            context.lineWidth = collider.strokeThickness / PIXELS_A_METRE;
             context.strokeStyle = collider.color || 'black';
-            for (let i = 0; i < vertices.length; ++i) {
-                const curr = vertices.getVertex(i);
-                const next = vertices.getVertex(i + 1);
 
-                context.lineWidth = 1 / PIXELS_A_METRE;
-                context.moveTo(curr.x, curr.y);
-                context.lineTo(next.x, next.y);
+            const first = vertices.getVertex(0);
+            context.moveTo(first.x, first.y);
+            for (let i = 1; i < vertices.length; ++i) {
+                const curr = vertices.getVertex(i);
+                context.lineTo(curr.x, curr.y);
             }
+            context.closePath();
+
             context.stroke();
         }
 

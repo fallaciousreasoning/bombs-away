@@ -2,11 +2,27 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { input } from "../game";
 import { getWidth } from "./addRenderer";
+import Player from "../components/player";
+import { Collider } from "../components/collider";
 
 export default function addPlayerController(engine: Engine) {
+    const managePowers = (player: Player, collider: Collider, step: number) => {
+        if (player.isFast)
+            player.fastFor -= step;
+
+        if (player.isInvulnerable)
+            player.invulnerableFor -= step;
+
+        collider.fillColor = player.isFast ? 'purple' : undefined;
+        collider.color = player.isInvulnerable ? 'blue' : 'black';
+        collider.strokeThickness = player.isInvulnerable ? 10 : 1;
+    }
+
     engine
-        .makeSystem('player', 'body', 'transform')
-        .onEach('tick', ({ player, body, transform }, message) => {
+        .makeSystem('player', 'body', 'collider')
+        .onEach('tick', ({ player, body, collider }, message) => {
+            managePowers(player, collider, message.step);
+
             let horizontal = input.getAxis('horizontal');
             if (input.getAxis('shoot'))
                 horizontal += input.mousePosition.x < getWidth() / 2 ? -1 : 1;
@@ -23,6 +39,6 @@ export default function addPlayerController(engine: Engine) {
             if (body.angularVelocity < -player.speed)
                 body.angularVelocity = -player.speed;
 
-            body.velocity = new Vector2(body.velocity.x + horizontal*2*message.step, jumpImpulse || body.velocity.y);
+            body.velocity = new Vector2(body.velocity.x + horizontal * 2 * message.step, jumpImpulse || body.velocity.y);
         });
 }

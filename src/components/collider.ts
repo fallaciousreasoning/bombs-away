@@ -14,6 +14,7 @@ export class Collider {
 
     isTrigger?: boolean;
 
+    strokeThickness = 1;
     color?: string;
     fillColor?: string;
 
