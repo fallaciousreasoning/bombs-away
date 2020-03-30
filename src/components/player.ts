@@ -20,7 +20,7 @@ export default class Player {
         return result;
     }
 
-    invulnerableTime = 30;
+    invulnerableTime = 10;
     invulnerableFor: number;
     get isInvulnerable() {
         return this.invulnerableFor > 0;
@@ -28,7 +28,7 @@ export default class Player {
     
     fastJumpMultiplier = 2.5;
     fastSpeedMultiplier = 5;
-    fastTime = 30;
+    fastTime = 10;
     fastFor: number;
     get isFast() {
         return this.fastFor > 0;

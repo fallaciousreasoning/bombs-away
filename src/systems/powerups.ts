@@ -39,8 +39,8 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
             }
         });
 
-    engine.makeSystem('powerupable', 'transform', 'collider')
-        .onEach('tick', ({ powerupable, transform, collider }) => {
+    engine.makeSystem('powerupable', 'transform', 'collider', 'player')
+        .onEach('tick', ({ powerupable, transform, collider, player }) => {
             if (!input.wasPressed('mousePrimary'))
                 return;
 
@@ -51,7 +51,7 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
             if (!powerupable.powerups.length)
                 return;
 
-            const power: Powers = powerupable.powerups[0];//powerupable.powerups.splice(0, 1)[0];
+            const power: Powers = powerupable.powerups.splice(0, 1)[0];
             let entity: Entity;
             switch (power) {
                 case "grenade":
@@ -59,6 +59,12 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
                     break;
                 case "laser":
                     entity = makeLaser();
+                    break;
+                case "invulnerable":
+                    player.invulnerableFor = player.invulnerableTime;
+                    break;
+                case "agility":
+                    player.fastFor = player.fastTime
                     break;
                 default:
                     let never: never;
