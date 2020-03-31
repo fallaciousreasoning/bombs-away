@@ -47,11 +47,11 @@ export default (engine: Engine) => {
     }
 
     // Handle destruction.
-    engine.makeSystem().onMessage('destroy', ({ entity }) => {
-        const explodes = entity.get('explodes');
-        const transform = entity.get('transform');
-        if (!explodes || !transform)
-            return;
+    engine.makeSystem('explodes', 'transform')
+        .onTargetedMessage('destroy', ({ entity }) => {
+        const explodes = entity.explodes;
+        const transform = entity.transform;
+
         const effectiveRadius = explodes.shape.type === 'circle'
             ? explodes.shape.radius
             : Math.sqrt(explodes.shape.width ** 2 + explodes.shape.height ** 2);

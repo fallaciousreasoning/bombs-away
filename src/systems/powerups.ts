@@ -15,16 +15,13 @@ export const powerupColors: { [P in Powerup['power']]: Color } = {
 export const powers: Powers[] = Object.keys(powerupColors) as any;
 
 export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Entity) => {
-    engine.makeSystem()
-        .onMessage('collision-enter', message => {
-            const powerup = message.entity.get('powerup');
-            const powerupable = message.hit.get('powerupable');
-
-            if (!powerupable || !powerup)
+    engine.makeSystem('powerupable')
+        .onTargetedMessage('collision-enter', ({ entity, hit }) => {
+            if (!hit.has('powerup'))
                 return;
 
-            powerupable.powerups.push(powerup.power);
-            engine.removeEntity(message.entity);
+            entity.powerupable.powerups.push(hit.powerup.power);
+            engine.removeEntity(hit);
         });
 
     engine.makeSystem('powerupable')

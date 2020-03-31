@@ -2,11 +2,9 @@ import { Engine } from "../engine";
 
 export default function addBounce(engine: Engine) {
     engine
-        .makeSystem().onMessage('collision', ({ entity: moved }) => {
-            const bounce = moved.get('bounce');
-            const body = moved.get('body');
-            if (!bounce || !body) return;
-
+        .makeSystem('bounce', 'body')
+        .onTargetedMessage('collision', ({ entity }) => {
+            const { bounce, body } = entity;
             if (bounce.y)
                 body.velocity = body.velocity.withY(-body.velocity.y * bounce.bounciness);
             if (bounce.x)

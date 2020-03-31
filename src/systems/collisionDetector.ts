@@ -22,13 +22,10 @@ export default function addPhysics(engine: Engine) {
         tree.add(f);
 
     engine
-        .makeSystem()
-        .onMessage('instantiate', ({ entity }) => {
-            const collider = entity.get('collider');
-            if (!collider) return;
-
-            collider.tree = tree;
-            collider.fixtures.forEach(f => tree.add(f));
+        .makeSystem('collider')
+        .onTargetedMessage('instantiate', ({ entity }) => {
+            entity.collider.tree = tree;
+            entity.collider.fixtures.forEach(f => tree.add(f));
         })
         .onMessage('tick', message => {
             const steps = 10;
@@ -109,10 +106,7 @@ export default function addPhysics(engine: Engine) {
 
     // Clean up fixtures when their entities are destroyed.
     engine.makeSystem('collider')
-        .onMessage('destroy', message => {
-            const collider = message.entity.get('collider');
-            if (!collider) return;
-
-            collider.fixtures.forEach(f => tree.remove(f));
+        .onTargetedMessage('destroy', ({ entity }) => {
+            entity.collider.fixtures.forEach(f => tree.remove(f));
         })
 }
