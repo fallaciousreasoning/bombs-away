@@ -52,6 +52,21 @@ export class System<T0 extends ComponentType,
         return this;
     }
 
+    onTargetedMessage<M extends MessageType>(messageType: M, handler: (message?: Narrow<Message, M> & { entity: Entityish<[T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]>}) => void) {
+        return this.onMessage(messageType, message => {
+            // Is this a targeted message?
+            if (!('entity' in message))
+              return;
+
+            // Is this the type we expect?
+            if (this.types.some(t => !message.entity.has(t)))
+                return;
+
+            // Handle the message (we know it has the appropriate type).
+            handler(message as any);
+        });
+    }
+
     onMessage<M extends MessageType>(messageType: M, handler: (message?: Narrow<Message, M>) => void) {
         return this.onMessageInternal(messageType, (_, message) => handler(message));
     }

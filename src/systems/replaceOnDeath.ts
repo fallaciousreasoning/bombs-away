@@ -2,20 +2,17 @@ import { Engine } from "../engine"
 
 export default (engine: Engine) => {
     engine.makeSystem('replaceable')
-        .onMessage('destroy', ({ entity }) => {
-            const replaceable = entity.get('replaceable');
-            if (!replaceable)
-                return;
+        .onTargetedMessage('destroy', ({ entity }) => {
             const transform = entity.get('transform');
 
-            const replacement = replaceable.makeReplacement();
+            const replacement = entity.replaceable.makeReplacement();
             const replacementTransform = replacement.get('transform');
             if (replacementTransform && transform) {
-                if (replaceable.copyTransform)
+                if (entity.replaceable.copyTransform)
                     replacementTransform.position = transform.position;
-                if (replaceable.copyRotation)
+                if (entity.replaceable.copyRotation)
                     replacementTransform.rotation = transform.rotation;
-                if (replaceable.copyScale)
+                if (entity.replaceable.copyScale)
                     replacementTransform.scale = transform.scale;
             }
 
