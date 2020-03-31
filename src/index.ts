@@ -91,6 +91,7 @@ const makePowerup = () => {
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());
     powerup.add(new Powerup(power));
+    powerup.add(new AliveForTime(30));
 
     const collider = triangleCollider(1);
     collider.fillColor = powerupColors[power];
