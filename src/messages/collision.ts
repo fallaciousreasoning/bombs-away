@@ -2,7 +2,7 @@ import Vector2 from "../core/vector2";
 import { Entityish } from "../systems/system";
 
 interface CollisionInfo {
-    moved: Entityish<['collider', 'transform']>;
+    entity: Entityish<['collider', 'transform']>;
     hit: Entityish<['collider', 'transform']>;
 
     normal: Vector2;

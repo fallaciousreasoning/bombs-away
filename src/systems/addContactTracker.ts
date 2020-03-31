@@ -1,9 +1,9 @@
 import { Engine } from "../engine";
-import { Entity } from "../entity";
+import { Collision } from "../messages/collision";
 
 export default (engine: Engine) => {
-    const updateContact = (increment: number) => ({ moved, hit }: { moved: Entity, hit: Entity }) => {
-        const contactTracker = moved.get('contactTracker');
+    const updateContact = (increment: number) => ({ entity, hit }: Collision) => {
+        const contactTracker = entity.get('contactTracker');
         if (!contactTracker)
             return;
 
@@ -16,7 +16,7 @@ export default (engine: Engine) => {
 
         contactTracker.contactPoints += increment;
 
-        const collider = moved.get('collider');
+        const collider = entity.get('collider');
         collider.fillColor = contactTracker.hasContact ? 'red' : undefined;
     };
 

@@ -17,14 +17,14 @@ export const powers: Powers[] = Object.keys(powerupColors) as any;
 export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Entity) => {
     engine.makeSystem()
         .onMessage('collision-enter', message => {
-            const powerup = message.moved.get('powerup');
+            const powerup = message.entity.get('powerup');
             const powerupable = message.hit.get('powerupable');
 
             if (!powerupable || !powerup)
                 return;
 
             powerupable.powerups.push(powerup.power);
-            engine.removeEntity(message.moved);
+            engine.removeEntity(message.entity);
         });
 
     engine.makeSystem('powerupable')

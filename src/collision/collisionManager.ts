@@ -46,13 +46,13 @@ export class CollisionManager {
         this.message.friction = Math.sqrt(island.a.collider.friction * island.a.collider.friction + island.b.collider.friction * island.b.collider.friction);
         this.message.penetration = manifold.penetration;
 
-        this.message.moved = island.b;
+        this.message.entity = island.b;
         this.message.hit = island.a;
         this.message.normal = manifold.normal.negate();
         this.engine.broadcastMessage(this.message);
 
         this.message.hit = island.b;
-        this.message.moved = island.a;
+        this.message.entity = island.a;
         this.message.normal = manifold.normal;
 
         this.engine.broadcastMessage(this.message);
