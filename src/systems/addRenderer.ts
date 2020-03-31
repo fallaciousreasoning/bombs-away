@@ -26,7 +26,6 @@ export const useGameView = () => {
 export default function addRenderer(engine: Engine) {
     const context = canvas.getContext('2d');
 
-    engine.makeSystem().on('tick', () => context.clearRect(0, 0, canvas.width, canvas.height));
     engine.makeSystem('camera', 'transform')
         .onEach('tick', entity => {
             camera = entity;
