@@ -10,6 +10,6 @@ export class ColliderRenderer {
 
     constructor(fill?: Color | string, stroke?: Color | string) {
         this.fill = fill || Color.transparent;
-        this.stroke = stroke || this.fill;
+        this.stroke = stroke || Color.transparent;
     }
 }
