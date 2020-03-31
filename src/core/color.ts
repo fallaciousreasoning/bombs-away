@@ -8,6 +8,9 @@ const toPaddedHexString = (value: number, padTo=2) => {
 }
 
 export class Color {
+    static black = new Color(0, 0, 0);
+    static white = new Color(255, 255, 255);
+
     r: number;
     g: number;
     b: number;

@@ -48,6 +48,7 @@ import animator from "./systems/animator";
 import AnimateSize from "./components/animateSize";
 import { getVerticesFromTexture } from "./systems/collisionTextureManager";
 import { Text } from './components/text';
+import { random, randomValue } from "./utils/random";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -63,7 +64,7 @@ const makeExplosion = (radius: number) => {
 };
 
 const makeBomb = () => {
-    const size = 0.4 + Math.random() * 0.6;
+    const size = random(0.4, 1);
     const radiusMultiplier = 4;
     const forceMultiplier = 50;
 
@@ -85,7 +86,7 @@ const makeBomb = () => {
 }
 
 const makePowerup = () => {
-    const power = powers[Math.floor(Math.random() * powers.length)];
+    const power = randomValue(powers);
     const powerup = new Entity();
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());

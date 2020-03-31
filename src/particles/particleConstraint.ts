@@ -1,5 +1,6 @@
 import Vector2 from "../core/vector2";
 import { Color } from "../core/color";
+import { random, randomColor } from "../utils/random";
 
 export class GeneralConstraint {
     min: number;
@@ -11,7 +12,7 @@ export class GeneralConstraint {
     }
 
     getNextValue() {
-        return this.min + Math.random() * (this.max - this.min);
+        return random(this.min, this.max);
     }
 }
 
@@ -45,8 +46,8 @@ export class RandomVector2Generator {
     }
 
     getNextValue() {
-        const randomAngle = Math.random() * Math.PI * 2;
-        const length = this.maxLength * Math.random();
+        const randomAngle = random(Math.PI*2);
+        const length = random(this.maxLength);
 
         return new Vector2(length, 0)
             .rotate(randomAngle)
@@ -64,18 +65,6 @@ export class RandomColorGenerator {
     }
 
     getNextValue() {
-        const channels = ['r', 'g', 'b'];
-        let result: [number, number, number] = [0,0,0];
-        for (let i = 0; i < channels.length; ++i) {
-            let channel = channels[i];
-            result[i] = this.min[channel] + (this.max[channel] - this.min[channel]) * Math.random();
-            if (result[i] < 0)
-                result[i] = 0;
-            if (result[i] > 255)
-                result[i] = 255;
-            result[i] = Math.round(result[i]);
-        }
-
-        return new Color(...result).toHexString();
+        return randomColor(this.min, this.max).toHexString();
     }
 }
