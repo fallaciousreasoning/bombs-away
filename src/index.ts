@@ -162,15 +162,17 @@ const makeGroundTile = () => {
     return ground as Entityish<['transform', 'collider']>;
 }
 
-const makeWallTile = () => {
-    const height = 10;
+const makeWall = (side: 'left' | 'right') => {
+    const height = 50;
     const width = 1;
     const wall = new Entity();
     wall.add(new Tag('wall'));
     wall.add(boxCollider(width, height, 'blue'));
-    wall.add(new Transform());
-    wall.add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up));
-    return wall as Entityish<['transform', 'collider']>;
+    wall.add(new Transform(new Vector2(side === 'left'
+        ? -0.5
+        : getWidth() + 0.5, 0)));
+    wall.add(new FollowTransform(player, { lockX: true }));
+    return wall;
 }
 
 const player = new Entity();
@@ -212,7 +214,7 @@ bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
 const powerupper = new Entity();
 powerupper.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
 const powerupSpawn = new Spawn(makePowerup);
-powerupSpawn.spawnRate = 1/30;
+powerupSpawn.spawnRate = 1 / 30;
 powerupper.add(powerupSpawn);
 powerupper.add(boxCollider(getWidth(), 1, 'red', true));
 powerupper.add(new Transform(new Vector2(getWidth() / 2, 0)));
@@ -226,14 +228,6 @@ const groundTiler = new Entity();
 groundTiler.add(new Transform(new Vector2(2.5, 3)));
 groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
 
-const leftWallTiler = new Entity();
-leftWallTiler.add(new Transform(new Vector2(-0.5, -20)));
-leftWallTiler.add(new GroundTiler(player, makeWallTile, 1));
-
-const rightWallTiler = new Entity();
-rightWallTiler.add(new Transform(new Vector2(getWidth() + 0.5, -20)));
-rightWallTiler.add(new GroundTiler(player, makeWallTile, 1));
-
 const camera = new Entity();
 camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
 camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
@@ -241,13 +235,13 @@ camera.add(new Camera());
 
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
+engine.addEntity(makeWall('left'));
+engine.addEntity(makeWall('right'));
 
 engine.addEntity(bomber);
 engine.addEntity(powerupper);
 
 engine.addEntity(groundTiler);
-engine.addEntity(leftWallTiler);
-engine.addEntity(rightWallTiler);
 
 engine.addEntity(camera);
 
