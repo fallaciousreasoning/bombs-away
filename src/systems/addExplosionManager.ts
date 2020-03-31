@@ -12,9 +12,6 @@ import { basicEmitter } from "../particles/emitterFactory";
 const emitter = basicEmitter();
 
 export default (engine: Engine) => {
-    const healthyColor = new Color(0, 0, 0);
-    const deadColor = new Color(255, 255, 255);
-
     const getPower = (distance: number, radius: number, exponent: number = 1) => {
         // (1 - distance/radius)^exponent
         return (1 - distance / radius) ** exponent;
@@ -48,15 +45,6 @@ export default (engine: Engine) => {
             body.velocity = body.velocity.add(impulse);
         }
     }
-
-    // Handle coloring.
-    engine.makeSystem('aliveForTime', 'explodes', 'collider')
-        .onEach('tick', entity => {
-            entity.collider.fillColor = Color.lerp(deadColor,
-                healthyColor,
-                entity.aliveForTime.remainingTime / entity.aliveForTime.time)
-                .toHexString();
-        });
 
     // Handle destruction.
     engine.makeSystem().onMessage('destroy', ({ entity }) => {

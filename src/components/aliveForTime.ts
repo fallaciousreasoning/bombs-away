@@ -14,11 +14,13 @@ export default class AliveForTime {
     }
 
     get percent() {
-        return Math.min(0, this.remainingTime / this.time_);
+        return 1 - Math.max(0, this.remainingTime / this.time_);
     }
 
-    constructor(time: number) {
+    constructor(time: number, aliveColor?: Color, deadColor?: Color) {
         this.time_ = time;
         this.remainingTime = time;
+        this.aliveColor = aliveColor;
+        this.deadColor = deadColor;
     }
 }

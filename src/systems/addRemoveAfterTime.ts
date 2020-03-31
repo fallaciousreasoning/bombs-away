@@ -17,9 +17,10 @@ export default function addRemoveAfterTime(engine: Engine) {
             if (!aliveForTime.aliveColor || !aliveForTime.deadColor)
                 return;
 
-            collider.color = Color.lerp(
+            const resultColor = Color.lerp(
                 aliveForTime.aliveColor,
                 aliveForTime.deadColor,
-                aliveForTime.percent).toHexString();
+                aliveForTime.percent);
+            collider.fillColor = resultColor.toHexString();
         })
 }

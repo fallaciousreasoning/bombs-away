@@ -78,7 +78,7 @@ const makeBomb = () => {
     bomb.add(explodes);
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
-    bomb.add(new AliveForTime(5));
+    bomb.add(new AliveForTime(5, Color.black, Color.white));
 
     const body = new Body();
     bomb.add(body);
