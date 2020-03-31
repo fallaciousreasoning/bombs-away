@@ -259,7 +259,6 @@ engine.addEntity(camera);
 engine.addEntity(scoreDisplay);
 
 addRenderer(engine);
-
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);

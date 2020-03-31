@@ -1,5 +1,5 @@
 import { Component } from "./components/Component";
-import { ComponentType, Narrow } from "./systems/system";
+import { ComponentType, Narrow, Entityish } from "./systems/system";
 
 export class Entity {
     id: number;
@@ -11,8 +11,8 @@ export class Entity {
         return (<any>this)[name] as Narrow<Component, Key>;
     }
 
-    has(name: ComponentType) {
-        return !!this[name];
+    has<Key extends ComponentType>(name: Key): this is Entityish<[Key]> {
+        return !!(<any>this)[name];
     }
 
     add(component: Component) {
