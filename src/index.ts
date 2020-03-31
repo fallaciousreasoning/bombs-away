@@ -50,6 +50,8 @@ import { getVerticesFromTexture } from "./systems/collisionTextureManager";
 import { Text } from './components/text';
 import { random, randomValue } from "./utils/random";
 import { Color } from "./core/color";
+import { Replaceable } from "./components/replaceable";
+import replaceOnDeath from "./systems/replaceOnDeath";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -66,19 +68,20 @@ const makeExplosion = (radius: number) => {
 
 const makeBomb = () => {
     const size = random(0.4, 1);
-    const radiusMultiplier = 4;
-    const forceMultiplier = 50;
+    const radius = 4 * size;
+    const force = 50 * size;
 
     const bomb = new Entity();
 
     const explodes = new Explodes();
-    explodes.shape = { type: 'circle', radius: radiusMultiplier * size };
-    explodes.force = forceMultiplier * size;
-    explodes.with = (shape: any) => makeExplosion(shape.radius);
+    explodes.shape = { type: 'circle', radius };
+    explodes.force = force;
     bomb.add(explodes);
+
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
     bomb.add(new AliveForTime(5, Color.black, Color.white));
+    bomb.add(new Replaceable(() => makeExplosion(radius)))
 
     const body = new Body();
     bomb.add(body);
@@ -106,12 +109,13 @@ const makePowerup = () => {
 }
 
 const makeGrenade = () => {
+    const size = 5;
     const grenade = new Entity();
     grenade.add(new Transform);
     const explodes = new Explodes();
-    explodes.shape = { type: 'circle', radius: 5 };
+    explodes.shape = { type: 'circle', radius: size };
     explodes.force = 100;
-    explodes.with = (shape: any) => makeExplosion(shape.radius);
+    grenade.add(new Replaceable(() => makeExplosion(size)))
     grenade.add(explodes);
 
     // Grenades explode immediately.
@@ -273,4 +277,5 @@ addScoreTracker(engine);
 addVelocityClamp(engine);
 powerups(engine, makeGrenade, makeLaser);
 animator(engine);
+replaceOnDeath(engine);
 
