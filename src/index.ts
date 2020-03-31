@@ -205,6 +205,7 @@ bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
 const powerupper = new Entity();
 powerupper.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
 const powerupSpawn = new Spawn(makePowerup);
+powerupSpawn.spawnRate = 1/30;
 powerupper.add(powerupSpawn);
 powerupper.add(boxCollider(getWidth(), 1, 'red', true));
 powerupper.add(new Transform(new Vector2(getWidth() / 2, 0)));

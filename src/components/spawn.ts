@@ -6,6 +6,8 @@ type Spawner = () => Entity;
 
 export default class Spawn {
     type: 'spawn' = 'spawn';
+
+    // Approximate spawns a second.
     spawnRate = 1;
     tillNextSpawn: number = 0;
 

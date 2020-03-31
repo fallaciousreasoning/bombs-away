@@ -5,13 +5,16 @@ import { Color } from "../core/color";
 /**
  * Returns a random number between first and second, not inclusive of second. If second is omitted, 0 is used as the lower bound, first as the upper.
  */
-export const random = (first: number, second?: number) => {
-    if (second === undefined) {
-        second = first;
-        first = 0;
+export const random = (min?: number, max?: number) => {
+    if (min === undefined)
+        min = 1;
+        
+    if (max === undefined) {
+        max = min;
+        min = 0;
     }
 
-    return first + Math.random() * (second - first);
+    return min + Math.random() * (max - min);
 }
 
 /**
