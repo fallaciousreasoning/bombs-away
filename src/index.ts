@@ -167,7 +167,11 @@ const makeWall = (side: 'left' | 'right') => {
     const width = 1;
     const wall = new Entity();
     wall.add(new Tag('wall'));
-    wall.add(boxCollider(width, height, 'blue'));
+
+    const collider = boxCollider(width, height, 'blue');
+    collider.friction = 0;
+    wall.add(collider);
+
     wall.add(new Transform(new Vector2(side === 'left'
         ? -0.5
         : getWidth() + 0.5, 0)));
