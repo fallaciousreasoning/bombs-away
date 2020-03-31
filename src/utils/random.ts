@@ -1,0 +1,41 @@
+import Vector2 from "../core/vector2";
+import { AABB } from "../core/aabb";
+
+/**
+ * Returns a random number between first and second, not inclusive of second. If second is omitted, 0 is used as the lower bound, first as the upper.
+ */
+export const random = (first: number, second?: number) => {
+    if (second === undefined) {
+        second = first;
+        first = 0;
+    }
+
+    return first + Math.random() * (second - first);
+}
+
+/**
+ * Same as random, except it returns a whole number.
+ */
+export const randomInt = (first: number, second?: number) => {
+    return Math.floor(random(first, second));
+}
+
+/**
+ * Selects a random value from an array.
+ */
+export const randomValue = <T>(fromArray: T[]) => {
+    return fromArray[randomInt(fromArray.length)];
+}
+
+export const randomInBounds = (bounds: AABB) => {
+    return randomVector2(bounds.min, bounds.max);
+}
+
+export const randomVector2 = (min: Vector2, max?: Vector2) => {
+    if (!max) {
+        max = min;
+        min = Vector2.zero;
+    }
+
+    return new Vector2(random(min.x, max.x), random(min.y, max.y));
+}

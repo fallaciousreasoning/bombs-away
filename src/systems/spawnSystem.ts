@@ -2,6 +2,7 @@ import Input from "../core/input";
 import { Engine } from "../engine";
 import { input } from "../game";
 import Vector2 from "../core/vector2";
+import { randomValue, random, randomInBounds } from "../utils/random";
 
 export default function addSpawn(engine: Engine) {
     engine
@@ -17,11 +18,12 @@ export default function addSpawn(engine: Engine) {
             if (spawn.tillNextSpawn < 0) {
                 const collider = entity.get('collider');
 
-                const spawned = spawn.buildSpawn();
-                if (collider) {
-                    spawned.transform.position = new Vector2(
-                        collider.bounds.width * Math.random(),
-                        entity.transform.position.y);
+                const spawned = spawn.makeSpawn();
+                const spawnedTransform = spawned.get('transform');
+                if (spawnedTransform) {
+                    spawnedTransform.position = collider
+                        ? randomInBounds(collider.bounds)
+                        : entity.transform.position;
                 }
 
                 const body = spawned.get('body');

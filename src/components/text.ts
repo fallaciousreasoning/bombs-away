@@ -3,7 +3,7 @@ export class Text {
 
     horizontalAlign: 'left' | 'right' | 'center' = 'left';
     verticalAlign: 'top' | 'bottom' | 'middle' = 'top';
-    fontSize = 50;
+    fontSize = 30;
     font: 'Arial';
 
     private _text: string;
