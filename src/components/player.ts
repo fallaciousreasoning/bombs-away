@@ -24,14 +24,14 @@ export default class Player {
     type: 'player' = 'player';
 
     normalColor: ColorScheme = {
-        fill: Color.white,
+        fill: Color.red,
         stroke: Color.black,
         thickness: 1
     };
 
     invulnerableColor: Partial<ColorScheme> = {
         stroke: Color.lightblue,
-        thickness: 20
+        thickness: 30
     };
 
     fastColor: Partial<ColorScheme> = {

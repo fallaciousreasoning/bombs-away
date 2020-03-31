@@ -205,6 +205,7 @@ playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
 const scoreDisplay = new Entity();
 scoreDisplay.add(new Transform(new Vector2(0.2)));
 const scoreText = new Text();
+scoreText.color = 'white';
 scoreText.getText = () => `Score: ${Math.round(player.get('score').score)}`;
 scoreDisplay.add(scoreText);
 
@@ -251,7 +252,7 @@ engine.addEntity(camera);
 
 engine.addEntity(scoreDisplay);
 
-addRenderer(engine, Color.white);
+addRenderer(engine, Color.black);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);
