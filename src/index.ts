@@ -76,7 +76,7 @@ const makeBomb = () => {
 
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
-    bomb.add(new ColliderRenderer(Color.white));
+    bomb.add(new ColliderRenderer());
     bomb.add(new AliveForTime(5, Color.black, Color.white));
     bomb.add(new Replaceable(() => makeExplosion(radius)))
 
