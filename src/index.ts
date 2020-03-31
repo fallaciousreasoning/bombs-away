@@ -195,11 +195,19 @@ const scoreText = new Text();
 scoreText.getText = () => `Score: ${Math.round(player.get('score').score)}`;
 scoreDisplay.add(scoreText);
 
+const spawnOffsets = new Vector2(0, -20);
 const bomber = new Entity();
-bomber.add(new FollowTransform(player, { lockX: true, offset: new Vector2(0, -20) }));
+bomber.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
 bomber.add(new Spawn(makeBomb));
 bomber.add(boxCollider(getWidth(), 1, 'red', true));
 bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
+
+const powerupper = new Entity();
+powerupper.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
+const powerupSpawn = new Spawn(makePowerup);
+powerupper.add(powerupSpawn);
+powerupper.add(boxCollider(getWidth(), 1, 'red', true));
+powerupper.add(new Transform(new Vector2(getWidth() / 2, 0)));
 
 const block = new Entity();
 block.add(boxCollider(1, 1));
@@ -225,7 +233,9 @@ camera.add(new Camera());
 
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
+
 engine.addEntity(bomber);
+engine.addEntity(powerupper);
 
 engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);
