@@ -21,6 +21,6 @@ export default function addRemoveAfterTime(engine: Engine) {
                 aliveForTime.aliveColor,
                 aliveForTime.deadColor,
                 aliveForTime.percent);
-            collider.fillColor = resultColor.toHexString();
+            collider.fillColor = resultColor.hex;
         })
 }

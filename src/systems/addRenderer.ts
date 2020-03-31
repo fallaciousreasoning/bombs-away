@@ -4,6 +4,7 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { canvas, context } from "../game";
 import { Entityish } from "./system";
+import { Color } from "../core/color";
 
 export const PIXELS_A_METRE = 64;
 export const METRES_A_PIXEL = 1 / PIXELS_A_METRE;
@@ -23,14 +24,15 @@ export const useGameView = () => {
     context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
 }
 
-export default function addRenderer(engine: Engine) {
+export default function addRenderer(engine: Engine, clearColor: Color=Color.white) {
     const context = canvas.getContext('2d');
 
     engine.makeSystem('camera', 'transform')
         .onEach('tick', entity => {
             camera = entity;
             (context as any).resetTransform();
-            context.clearRect(0, 0, canvas.width, canvas.height)
+            context.fillStyle = clearColor.hex;
+            context.fillRect(0, 0, canvas.width, canvas.height)
         });
 
     engine

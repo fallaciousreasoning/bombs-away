@@ -33,7 +33,7 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
 
             for (let i = 0; i < powerupable.powerups.length; ++i) {
                 const power = powerupable.powerups[i];
-                context.fillStyle = powerupColors[power].toHexString();
+                context.fillStyle = powerupColors[power].hex;
                 context.fillRect(canvas.width - (indicatorSize + padding) * (1 + i), padding, indicatorSize, indicatorSize);
             }
         });

@@ -65,6 +65,6 @@ export class RandomColorGenerator {
     }
 
     getNextValue() {
-        return randomColor(this.min, this.max).toHexString();
+        return randomColor(this.min, this.max).hex;
     }
 }

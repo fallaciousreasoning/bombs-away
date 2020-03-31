@@ -97,7 +97,7 @@ const makePowerup = () => {
     powerup.add(aliveForTime);
 
     const collider = triangleCollider(1);
-    collider.fillColor = powerupColors[power].toHexString();
+    collider.fillColor = powerupColors[power].hex;
     powerup.add(collider);
 
     return powerup;
@@ -251,7 +251,7 @@ engine.addEntity(camera);
 
 engine.addEntity(scoreDisplay);
 
-addRenderer(engine);
+addRenderer(engine, Color.white);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);

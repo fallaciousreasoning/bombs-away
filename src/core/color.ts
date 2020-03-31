@@ -24,6 +24,13 @@ export class Color {
     b: number;
     a: number;
 
+    private _asHex: string;
+    get hex() {
+        if (!this._asHex)
+            this._asHex = `#${toPaddedHexString(this.r)}${toPaddedHexString(this.g)}${toPaddedHexString(this.b)}${toPaddedHexString(this.a)}`;
+        return this._asHex;
+    }
+
     constructor(r: number, g: number, b: number, a = 255) {
         this.r = r;
         this.g = g;
@@ -37,9 +44,5 @@ export class Color {
         let b = Math.round(clamp(c1.b + (c2.b - c1.b) * percent, 0, 255));
         let a = Math.round(clamp(c1.a + (c2.a - c1.a) * percent, 0, 255));
         return new Color(r, g, b, a);
-    }
-
-    toHexString() {
-        return `#${toPaddedHexString(this.r)}${toPaddedHexString(this.g)}${toPaddedHexString(this.b)}${toPaddedHexString(this.a)}`
     }
 }
