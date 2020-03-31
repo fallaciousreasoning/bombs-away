@@ -2,14 +2,16 @@ import Powerup from "../components/powerup";
 import { Engine } from "../engine";
 import { context, canvas, input } from "../game";
 import { Entity } from "../entity";
+import { Color } from "../core/color";
 
 export type Powers = Powerup['power'];
-export const powerupColors: { [P in Powerup['power']]: string } = {
-    laser: 'limegreen',
-    agility: 'purple',
-    grenade: 'yellow',
-    invulnerable: 'lightblue'
+export const powerupColors: { [P in Powerup['power']]: Color } = {
+    laser: Color.limegreen,
+    agility: Color.purple,
+    grenade: Color.yellow,
+    invulnerable: Color.lightblue
 };
+
 export const powers: Powers[] = Object.keys(powerupColors) as any;
 
 export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Entity) => {
@@ -34,7 +36,7 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
 
             for (let i = 0; i < powerupable.powerups.length; ++i) {
                 const power = powerupable.powerups[i];
-                context.fillStyle = powerupColors[power];
+                context.fillStyle = powerupColors[power].toHexString();
                 context.fillRect(canvas.width - (indicatorSize + padding) * (1 + i), padding, indicatorSize, indicatorSize);
             }
         });

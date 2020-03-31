@@ -95,6 +95,8 @@ export default function drawCollider(engine: Engine) {
         context.translate(fixture.transform.position.x, fixture.transform.position.y);
         context.rotate(fixture.transform.rotation);
 
+        context.globalAlpha = collider.alpha;
+
         if (renderConfig.drawEdges) {
             context.beginPath();
             context.lineWidth = collider.strokeThickness / PIXELS_A_METRE;

@@ -17,6 +17,7 @@ export class Collider {
     strokeThickness = 1;
     color?: string;
     fillColor?: string;
+    alpha?: number = 1;
 
     get area() {
         return this.fixtures.reduce((prev, next) => prev + next.vertices.area, 0);

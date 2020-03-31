@@ -49,6 +49,7 @@ import AnimateSize from "./components/animateSize";
 import { getVerticesFromTexture } from "./systems/collisionTextureManager";
 import { Text } from './components/text';
 import { random, randomValue } from "./utils/random";
+import { Color } from "./core/color";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -91,10 +92,14 @@ const makePowerup = () => {
     powerup.add(new Transform(new Vector2(2, -4)));
     powerup.add(new Body());
     powerup.add(new Powerup(power));
-    powerup.add(new AliveForTime(30));
+
+    const aliveForTime = new AliveForTime(30);
+    aliveForTime.aliveColor = powerupColors[power];
+    aliveForTime.deadColor = new Color(aliveForTime.aliveColor.r, aliveForTime.aliveColor.g, aliveForTime.aliveColor.b, 0);
+    powerup.add(aliveForTime);
 
     const collider = triangleCollider(1);
-    collider.fillColor = powerupColors[power];
+    collider.fillColor = powerupColors[power].toHexString();
     powerup.add(collider);
 
     return powerup;
