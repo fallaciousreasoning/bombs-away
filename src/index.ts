@@ -186,6 +186,7 @@ const playerTransform = new Transform(new Vector2(5, -1));
 player.add(playerComponent);
 const playerCollider = circleCollider(1, 20);
 playerCollider.friction = 0.1;
+playerCollider.elasticity = 0;
 player.add(playerCollider);
 player.add(playerTransform);
 player.add(new Body(3));
