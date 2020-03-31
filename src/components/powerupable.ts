@@ -3,5 +3,5 @@ import Powerup from "./powerup";
 
 export default class Powerupable {
     type: 'powerupable' = 'powerupable';
-    powerups: Powerup['power'][] = ['laser'];
+    powerups: Powerup['power'][] = [];
 }

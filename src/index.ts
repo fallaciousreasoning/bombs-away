@@ -247,8 +247,6 @@ engine.addEntity(groundTiler);
 engine.addEntity(leftWallTiler);
 engine.addEntity(rightWallTiler);
 
-engine.addEntity(makePowerup());
-
 engine.addEntity(camera);
 
 engine.addEntity(scoreDisplay);
