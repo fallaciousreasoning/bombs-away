@@ -38,6 +38,8 @@ export default class Player {
         fill: Color.purple,
     };
 
+    angularDrag: number = 0.5;
+
     defaultSpeed = 25;
     get speed() {
         let result = this.defaultSpeed;
