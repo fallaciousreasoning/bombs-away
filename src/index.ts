@@ -139,6 +139,7 @@ const makeLaser = () => {
     return laser;
 }
 
+const distanceConsideredFar = 50;
 const makeGroundTile = () => {
     const width = 5;
     const height = 5;
@@ -151,7 +152,7 @@ const makeGroundTile = () => {
 
     const texture = new CollisionTexture(width, height, gridSize);
     ground.add(texture);
-    ground.add(new RemoveWhenFar(50, player, Vector2.up));
+    ground.add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up));
 
     const collider = fromVertices(...getVerticesFromTexture(texture));
     collider.fillColor = 'green';
@@ -168,6 +169,7 @@ const makeWallTile = () => {
     wall.add(new Tag('wall'));
     wall.add(boxCollider(width, height, 'blue'));
     wall.add(new Transform());
+    wall.add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up));
     return wall as Entityish<['transform', 'collider']>;
 }
 
