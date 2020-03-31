@@ -2,20 +2,26 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { input } from "../game";
 import { getWidth } from "./addRenderer";
-import Player from "../components/player";
+import Player, { mergeIn } from "../components/player";
 import { Collider } from "../components/collider";
 
 export default function addPlayerController(engine: Engine) {
     const managePowers = (player: Player, collider: Collider, step: number) => {
-        if (player.isFast)
+        let colorScheme = player.normalColor;
+
+        if (player.isFast) {
+            colorScheme = mergeIn(colorScheme, player.fastColor, player.fastFor / player.fastTime);
             player.fastFor -= step;
+        }
 
-        if (player.isInvulnerable)
+        if (player.isInvulnerable) {
+            colorScheme = mergeIn(colorScheme, player.invulnerableColor, player.invulnerableFor / player.invulnerableTime);
             player.invulnerableFor -= step;
+        }
 
-        collider.fillColor = player.isFast ? 'purple' : undefined;
-        collider.color = player.isInvulnerable ? 'blue' : 'black';
-        collider.strokeThickness = player.isInvulnerable ? 10 : 1;
+        collider.fillColor = colorScheme.fill.hex;
+        collider.color = colorScheme.stroke.hex;
+        collider.strokeThickness = colorScheme.thickness
     }
 
     engine

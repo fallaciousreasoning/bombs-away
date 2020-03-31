@@ -1,7 +1,42 @@
 import ContactTracker from "./contactTracker";
+import { Color } from "../core/color";
+
+interface ColorScheme {
+    fill: Color;
+    stroke: Color;
+    thickness: number;
+}
+
+export const mergeIn = (current: ColorScheme, mergeIn: Partial<ColorScheme>, weighting: number): ColorScheme => {
+    const copy = { ...current };
+    for (const property in mergeIn) {
+        const value = mergeIn[property];
+        if (value instanceof Color)
+            copy[property] = Color.lerp(current[property], value, weighting);
+        else if (typeof value === 'number')
+            copy[property] = current[property] + (value - current[property]) * weighting;
+        else throw new Error(`Unknown property to merge in ${property}`);
+    }
+    return copy;
+}
 
 export default class Player {
     type: 'player' = 'player';
+
+    normalColor: ColorScheme = {
+        fill: Color.white,
+        stroke: Color.black,
+        thickness: 1
+    };
+
+    invulnerableColor: Partial<ColorScheme> = {
+        stroke: Color.lightblue,
+        thickness: 20
+    };
+
+    fastColor: Partial<ColorScheme> = {
+        fill: Color.purple,
+    };
 
     defaultSpeed = 25;
     get speed() {
@@ -25,7 +60,7 @@ export default class Player {
     get isInvulnerable() {
         return this.invulnerableFor > 0;
     }
-    
+
     fastJumpMultiplier = 2.5;
     fastSpeedMultiplier = 5;
     fastTime = 10;
