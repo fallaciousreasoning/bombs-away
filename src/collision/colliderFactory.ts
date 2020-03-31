@@ -4,9 +4,8 @@ import { Fixture } from "./fixture";
 import { Vertices } from "../geometry/vertices";
 import Vector2 from "../core/vector2";
 
-export const boxCollider = (width: number, height: number, color?: string, isTrigger?: boolean): Collider => {
+export const boxCollider = (width: number, height: number, isTrigger?: boolean): Collider => {
     let collider = new Collider();
-    collider.color = color;
     collider.elasticity = 0.05;
     collider.friction = 0.5;
     collider.isTrigger = isTrigger;

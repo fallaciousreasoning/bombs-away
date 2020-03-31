@@ -15,9 +15,6 @@ export default (engine: Engine) => {
             return;
 
         contactTracker.contactPoints += increment;
-
-        const collider = entity.get('collider');
-        collider.fillColor = contactTracker.hasContact ? 'red' : undefined;
     };
 
     engine.makeSystem()

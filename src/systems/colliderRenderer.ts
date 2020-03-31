@@ -8,6 +8,8 @@ import { fixtures } from "./fixtureManager";
 import { context, canvas } from "../game";
 import { tree } from "./collisionDetector";
 import { useGameView } from "./addRenderer";
+import { ColliderRenderer } from "../components/colliderRenderer";
+import { Color } from "../core/color";
 
 export const PIXELS_A_METRE = 64;
 
@@ -76,9 +78,9 @@ export default function drawCollider(engine: Engine) {
         context.restore();
     };
 
-    const fillVertices = (vertices: Vertices, color: string) => {
+    const fillVertices = (vertices: Vertices, color: Color | string) => {
         context.beginPath();
-        context.fillStyle = color;
+        context.fillStyle = typeof color === 'string' ? color : color.hex;
 
         for (const vertex of vertices.vertices)
             context.lineTo(vertex.x, vertex.y);
@@ -86,7 +88,7 @@ export default function drawCollider(engine: Engine) {
         context.fill();
     }
 
-    const drawFixture = (collider: Collider, fixture: Fixture) => {
+    const drawFixture = (collider: Collider, renderer: ColliderRenderer, fixture: Fixture) => {
         const vertices = fixture.vertices;
         const centroid = fixture.vertices.centroid;
         context.save();
@@ -95,12 +97,12 @@ export default function drawCollider(engine: Engine) {
         context.translate(fixture.transform.position.x, fixture.transform.position.y);
         context.rotate(fixture.transform.rotation);
 
-        context.globalAlpha = collider.alpha;
+        context.globalAlpha = renderer.alpha;
 
         if (renderConfig.drawEdges) {
             context.beginPath();
-            context.lineWidth = collider.strokeThickness / PIXELS_A_METRE;
-            context.strokeStyle = collider.color || 'black';
+            context.lineWidth = renderer.strokeWidth / PIXELS_A_METRE;
+            context.strokeStyle = typeof renderer.stroke === 'string' ? renderer.stroke : renderer.stroke.hex;
 
             const first = vertices.getVertex(0);
             context.moveTo(first.x, first.y);
@@ -113,8 +115,8 @@ export default function drawCollider(engine: Engine) {
             context.stroke();
         }
 
-        if (renderConfig.fillShapes && collider.fillColor) {
-            fillVertices(vertices, collider.fillColor);
+        if (renderConfig.fillShapes && renderer.fill) {
+            fillVertices(vertices, renderer.fill);
         }
 
         if (renderConfig.drawNormals) {
@@ -150,10 +152,10 @@ export default function drawCollider(engine: Engine) {
     }
 
     engine
-        .makeSystem("collider")
-        .onEach('tick', ({ collider }) => {
+        .makeSystem("collider", "colliderRenderer")
+        .onEach('tick', ({ collider, colliderRenderer }) => {
             for (const fixture of collider.fixtures)
-                drawFixture(collider, fixture);
+                drawFixture(collider, colliderRenderer, fixture);
         });
 
     engine

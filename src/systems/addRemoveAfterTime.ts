@@ -12,8 +12,8 @@ export default function addRemoveAfterTime(engine: Engine) {
             }
         });
 
-    engine.makeSystem('aliveForTime', 'collider')
-        .onEach('tick', ({ aliveForTime, collider }) => {
+    engine.makeSystem('aliveForTime', 'colliderRenderer')
+        .onEach('tick', ({ aliveForTime, colliderRenderer }) => {
             if (!aliveForTime.aliveColor || !aliveForTime.deadColor)
                 return;
 
@@ -21,6 +21,6 @@ export default function addRemoveAfterTime(engine: Engine) {
                 aliveForTime.aliveColor,
                 aliveForTime.deadColor,
                 aliveForTime.percent);
-            collider.fillColor = resultColor.hex;
+            colliderRenderer.fill = resultColor.hex;
         })
 }

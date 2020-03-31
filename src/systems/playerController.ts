@@ -4,9 +4,10 @@ import { input } from "../game";
 import { getWidth } from "./addRenderer";
 import Player, { mergeIn } from "../components/player";
 import { Collider } from "../components/collider";
+import { ColliderRenderer } from "../components/colliderRenderer";
 
 export default function addPlayerController(engine: Engine) {
-    const managePowers = (player: Player, collider: Collider, step: number) => {
+    const managePowers = (player: Player, renderer: ColliderRenderer, step: number) => {
         let colorScheme = player.normalColor;
 
         if (player.isFast) {
@@ -19,15 +20,15 @@ export default function addPlayerController(engine: Engine) {
             player.invulnerableFor -= step;
         }
 
-        collider.fillColor = colorScheme.fill.hex;
-        collider.color = colorScheme.stroke.hex;
-        collider.strokeThickness = colorScheme.thickness
+        renderer.fill = colorScheme.fill.hex;
+        renderer.stroke = colorScheme.stroke.hex;
+        renderer.strokeWidth = colorScheme.thickness
     }
 
     engine
-        .makeSystem('player', 'body', 'collider')
-        .onEach('tick', ({ player, body, collider }, message) => {
-            managePowers(player, collider, message.step);
+        .makeSystem('player', 'body', 'colliderRenderer')
+        .onEach('tick', ({ player, body, colliderRenderer }, message) => {
+            managePowers(player, colliderRenderer, message.step);
 
             let horizontal = input.getAxis('horizontal');
             if (input.getAxis('shoot'))

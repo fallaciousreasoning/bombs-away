@@ -47,6 +47,7 @@ import replaceOnDeath from "./systems/replaceOnDeath";
 import addSpawn from "./systems/spawnSystem";
 import { Entityish } from "./systems/system";
 import { random, randomValue } from "./utils/random";
+import { ColliderRenderer } from "./components/colliderRenderer";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -75,6 +76,7 @@ const makeBomb = () => {
 
     bomb.add(new Transform());
     bomb.add(bombCollider(size, size * 1.5));
+    bomb.add(new ColliderRenderer(Color.white));
     bomb.add(new AliveForTime(5, Color.black, Color.white));
     bomb.add(new Replaceable(() => makeExplosion(radius)))
 
@@ -95,10 +97,8 @@ const makePowerup = () => {
     aliveForTime.aliveColor = powerupColors[power];
     aliveForTime.deadColor = new Color(aliveForTime.aliveColor.r, aliveForTime.aliveColor.g, aliveForTime.aliveColor.b, 0);
     powerup.add(aliveForTime);
-
-    const collider = triangleCollider(1);
-    collider.fillColor = powerupColors[power].hex;
-    powerup.add(collider);
+    powerup.add(triangleCollider(1));
+    powerup.add(new ColliderRenderer(powerupColors[power]))
 
     return powerup;
 }
@@ -153,11 +153,8 @@ const makeGroundTile = () => {
     const texture = new CollisionTexture(width, height, gridSize);
     ground.add(texture);
     ground.add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up));
-
-    const collider = fromVertices(...getVerticesFromTexture(texture));
-    collider.fillColor = 'green';
-    collider.color = 'green';
-    ground.add(collider);
+    ground.add(fromVertices(...getVerticesFromTexture(texture)));
+    ground.add(new ColliderRenderer('green', 'green'));
 
     return ground as Entityish<['transform', 'collider']>;
 }
@@ -168,7 +165,7 @@ const makeWall = (side: 'left' | 'right') => {
     const wall = new Entity();
     wall.add(new Tag('wall'));
 
-    const collider = boxCollider(width, height, 'blue');
+    const collider = boxCollider(width, height);
     collider.friction = 0;
     wall.add(collider);
 
@@ -194,13 +191,14 @@ player.add(playerTransform);
 player.add(new Body(3));
 player.add(new Score());
 player.add(new Powerupable());
+player.add(new ColliderRenderer());
 
 const playerGroundDetector = new Entity();
 const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
 playerGroundDetectorTransform.lockRotation = true;
 playerGroundDetector.add(playerGroundDetectorTransform);
 playerGroundDetector.add(playerComponent.groundTracker);
-playerGroundDetector.add(boxCollider(1.2, 0.2, 'red', true));
+playerGroundDetector.add(boxCollider(1.2, 0.2, true));
 
 const scoreDisplay = new Entity();
 scoreDisplay.add(new Transform(new Vector2(0.2)));
@@ -213,7 +211,7 @@ const spawnOffsets = new Vector2(0, -20);
 const bomber = new Entity();
 bomber.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
 bomber.add(new Spawn(makeBomb));
-bomber.add(boxCollider(getWidth(), 1, 'red', true));
+bomber.add(boxCollider(getWidth(), 1, true));
 bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
 
 const powerupper = new Entity();
@@ -221,7 +219,7 @@ powerupper.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }
 const powerupSpawn = new Spawn(makePowerup);
 powerupSpawn.spawnRate = 1 / 30;
 powerupper.add(powerupSpawn);
-powerupper.add(boxCollider(getWidth(), 1, 'red', true));
+powerupper.add(boxCollider(getWidth(), 1, true));
 powerupper.add(new Transform(new Vector2(getWidth() / 2, 0)));
 
 const block = new Entity();
