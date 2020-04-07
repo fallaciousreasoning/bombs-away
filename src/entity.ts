@@ -24,11 +24,12 @@ export class Entity {
         return this as any;
     }
 
-    remove(component: Component | string) {
+    remove<Type extends ComponentType, This extends Entity>(this: This, component: { type: Type } | Type): Omit<This, Type> {
         const name = typeof component === "string" ? component : component.type;
-        component = this[name];
-        delete this[name];
+        component = this[name as ComponentType];
+        delete this[name as ComponentType];
 
         this.onComponentRemoved(this, component as Component);
+        return this as any;
     }
 }
