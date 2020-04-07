@@ -15,9 +15,13 @@ export class Entity {
         return !!(<any>this)[name];
     }
 
-    add(component: Component) {
+    add<ComponentType extends Component, This extends Entity>(this: This, component: ComponentType | ((entity: This) => ComponentType)): this & Entityish<[ComponentType['type']]> {
+        if (typeof component === 'function')
+            component = component(this);
+
         this[component.type] = component;
         this.onComponentAdded && this.onComponentAdded(this, component);
+        return this as any;
     }
 
     remove(component: Component | string) {

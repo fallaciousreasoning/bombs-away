@@ -162,18 +162,17 @@ const makeGroundTile = () => {
 const makeWall = (side: 'left' | 'right') => {
     const height = 50;
     const width = 1;
-    const wall = new Entity();
-    wall.add(new Tag('wall'));
-
-    const collider = boxCollider(width, height);
-    collider.friction = 0;
-    wall.add(collider);
-
-    wall.add(new Transform(new Vector2(side === 'left'
-        ? -0.5
-        : getWidth() + 0.5, 0)));
-    wall.add(new FollowTransform(player, { lockX: true }));
-    return wall;
+    return new Entity()
+        .add(new Tag('wall'))
+        .add(new Transform(new Vector2(side === 'left'
+            ? -0.5
+            : getWidth() + 0.5, 0)))
+        .add(new FollowTransform(player, { lockX: true }))
+        .add(() => {
+            const collider = boxCollider(width, height);
+            collider.friction = 0;
+            return collider;
+        });
 }
 
 const player = new Entity();
