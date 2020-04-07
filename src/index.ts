@@ -55,108 +55,92 @@ window['polyString'] = polygonsToString;
 
 addFixtureManager(engine);
 
-const makeExplosion = (radius: number) => {
-    const explosion = new Entity();
-    explosion.add(new Transform);
-    explosion.add(explosionEmitter(radius / 2));
-    return explosion;
-};
+const makeExplosion = (radius: number) => new Entity()
+    .add(new Transform)
+    .add(explosionEmitter(radius / 2));
 
 const makeBomb = () => {
     const size = random(0.4, 1);
     const radius = 4 * size;
     const force = 50 * size;
 
-    const bomb = new Entity();
-
-    const explodes = new Explodes();
-    explodes.shape = { type: 'circle', radius };
-    explodes.force = force;
-    bomb.add(explodes);
-
-    bomb.add(new Transform());
-    bomb.add(bombCollider(size, size * 1.5));
-    bomb.add(new ColliderRenderer());
-    bomb.add(new AliveForTime(5, Color.black, Color.white));
-    bomb.add(new Replaceable(() => makeExplosion(radius)))
-
-    const body = new Body();
-    bomb.add(body);
-
-    return bomb as Entityish<['transform']>;
+    return new Entity()
+        .add(() => {
+            const explodes = new Explodes();
+            explodes.shape = { type: 'circle', radius };
+            explodes.force = force;
+            return explodes;
+        })
+        .add(new Transform())
+        .add(bombCollider(size, size * 1.5))
+        .add(new ColliderRenderer())
+        .add(new AliveForTime(5, Color.black, Color.white))
+        .add(new Replaceable(() => makeExplosion(radius)))
+        .add(new Body());
 }
 
 const makePowerup = () => {
     const power = randomValue(powers);
-    const powerup = new Entity();
-    powerup.add(new Transform(new Vector2(2, -4)));
-    powerup.add(new Body());
-    powerup.add(new Powerup(power));
-
-    const aliveForTime = new AliveForTime(30);
-    aliveForTime.aliveColor = powerupColors[power];
-    aliveForTime.deadColor = new Color(aliveForTime.aliveColor.r, aliveForTime.aliveColor.g, aliveForTime.aliveColor.b, 0);
-    powerup.add(aliveForTime);
-    powerup.add(triangleCollider(1));
-    powerup.add(new ColliderRenderer(powerupColors[power]))
-
-    return powerup;
+    return new Entity()
+        .add(new Transform(new Vector2(2, -4)))
+        .add(new Body())
+        .add(new Powerup(power))
+        .add(() => {
+            const aliveForTime = new AliveForTime(30);
+            aliveForTime.aliveColor = powerupColors[power];
+            aliveForTime.deadColor = new Color(aliveForTime.aliveColor.r, aliveForTime.aliveColor.g, aliveForTime.aliveColor.b, 0);
+            return aliveForTime;
+        })
+        .add(triangleCollider(1))
+        .add(new ColliderRenderer(powerupColors[power]));
 }
 
 const makeGrenade = () => {
     const size = 5;
-    const grenade = new Entity();
-    grenade.add(new Transform);
-    const explodes = new Explodes();
-    explodes.shape = { type: 'circle', radius: size };
-    explodes.force = 100;
-    grenade.add(new Replaceable(() => makeExplosion(size)))
-    grenade.add(explodes);
-
-    // Grenades explode immediately.
-    grenade.add(new AliveForTime(0));
-
-    return grenade;
+    return new Entity()
+        .add(new Transform)
+        .add(() => {
+            const explodes = new Explodes();
+            explodes.shape = { type: 'circle', radius: size };
+            explodes.force = 100;
+            return explodes;
+        })
+        .add(new Replaceable(() => makeExplosion(size)))
+        // Grenades explode immediately.
+        .add(new AliveForTime(0));
 }
 
 const makeLaser = () => {
-    const laser = new Entity();
-    laser.add(new Transform);
     const width = getWidth() * 2;
     const height = 4;
-    laser.add(new Box(width, height, '#ff9900'));
-
-    const explodes = new Explodes();
-    explodes.force = 0;
-    explodes.shape = { type: 'box', width, height };
-
-    laser.add(explodes);
-
     const duration = 1;
-    laser.add(new AliveForTime(duration));
-    laser.add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
 
-    return laser;
+    return new Entity()
+        .add(new Transform)
+        .add(new Box(width, height, '#ff9900'))
+        .add(() => {
+            const explodes = new Explodes();
+            explodes.force = 0;
+            explodes.shape = { type: 'box', width, height };
+            return explodes;
+        })
+        .add(new AliveForTime(duration))
+        .add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
 }
 
 const distanceConsideredFar = 50;
 const makeGroundTile = () => {
     const width = 5;
     const height = 5;
+    const gridSize = 0.5;
 
-    const gridSize = 0.5
-    const ground = new Entity();
-    ground.add(new Tag('terrain'));
-
-    ground.add(new Transform());
-
-    const texture = new CollisionTexture(width, height, gridSize);
-    ground.add(texture);
-    ground.add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up));
-    ground.add(fromVertices(...getVerticesFromTexture(texture)));
-    ground.add(new ColliderRenderer('green', 'green'));
-
-    return ground as Entityish<['transform', 'collider']>;
+    return new Entity()
+        .add(new Tag('terrain'))
+        .add(new Transform())
+        .add(new CollisionTexture(width, height, gridSize))
+        .add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up))
+        .add(e => fromVertices(...getVerticesFromTexture(e.collisionTexture)))
+        .add(new ColliderRenderer('green', 'green'));
 }
 
 const makeWall = (side: 'left' | 'right') => {
@@ -175,66 +159,68 @@ const makeWall = (side: 'left' | 'right') => {
         });
 }
 
-const player = new Entity();
-player.add(new Tag('player'));
-const playerComponent = new Player();
-// The player can jump if the ground tracker isn't touching the player.
-playerComponent.groundTracker = new ContactTracker('player', true);
+const player = new Entity()
+    .add(new Tag('player'))
+    .add(new ContactTracker('player', true))
+    .add(new Transform(new Vector2(5, -1)))
+    .add(e => {
+        const player = new Player();
+        // The player can jump if the ground tracker isn't touching the player.
+        player.groundTracker = e.contactTracker;
+        return player;
+    })
+    .add(() => {
+        const collider = circleCollider(1, 20);
+        collider.friction = 0.1;
+        collider.elasticity = 0;
+        return collider;
+    })
+    .add(new Body(3))
+    .add(new Score())
+    .add(new Powerupable())
+    .add(new ColliderRenderer());
 
-const playerTransform = new Transform(new Vector2(5, -1));
-player.add(playerComponent);
-const playerCollider = circleCollider(1, 20);
-playerCollider.friction = 0.1;
-playerCollider.elasticity = 0;
-player.add(playerCollider);
-player.add(playerTransform);
-player.add(new Body(3));
-player.add(new Score());
-player.add(new Powerupable());
-player.add(new ColliderRenderer());
+const playerGroundDetector = new Entity()
+    .add(new Transform(new Vector2(0, 1), 0, player.transform))
+    .add(player.player.groundTracker)
+    .add(boxCollider(1.2, 0.2, true));
 
-const playerGroundDetector = new Entity();
-const playerGroundDetectorTransform = new Transform(new Vector2(0, 1), 0, playerTransform);
-playerGroundDetectorTransform.lockRotation = true;
-playerGroundDetector.add(playerGroundDetectorTransform);
-playerGroundDetector.add(playerComponent.groundTracker);
-playerGroundDetector.add(boxCollider(1.2, 0.2, true));
-
-const scoreDisplay = new Entity();
-scoreDisplay.add(new Transform(new Vector2(0.2)));
-const scoreText = new Text();
-scoreText.color = 'white';
-scoreText.getText = () => `Score: ${Math.round(player.get('score').score)}`;
-scoreDisplay.add(scoreText);
+const scoreDisplay = new Entity()
+    .add(new Transform(new Vector2(0.2)))
+    .add(() => {
+        const text = new Text();
+        text.color = 'white';
+        text.getText = () => `Score: ${Math.round(player.get('score').score)}`;
+        return text;
+    });
 
 const spawnOffsets = new Vector2(0, -20);
-const bomber = new Entity();
-bomber.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
-bomber.add(new Spawn(makeBomb));
-bomber.add(boxCollider(getWidth(), 1, true));
-bomber.add(new Transform(new Vector2(getWidth() / 2, 0)));
+const bomber = new Entity()
+    .add(new Transform(new Vector2(getWidth() / 2, 0)))
+    .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
+    .add(new Spawn(makeBomb))
+    .add(boxCollider(getWidth(), 1, true));
 
-const powerupper = new Entity();
-powerupper.add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }));
-const powerupSpawn = new Spawn(makePowerup);
-powerupSpawn.spawnRate = 1 / 30;
-powerupper.add(powerupSpawn);
-powerupper.add(boxCollider(getWidth(), 1, true));
-powerupper.add(new Transform(new Vector2(getWidth() / 2, 0)));
+const powerupper = new Entity()
+    .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
+    .add(() => {
+        const spawn = new Spawn(makePowerup);
+        spawn.spawnRate = 1 / 30;
+        return spawn;
+    })
+    .add(boxCollider(getWidth(), 1, true))
+    .add(new Transform(new Vector2(getWidth() / 2, 0)));
 
-const block = new Entity();
-block.add(boxCollider(1, 1));
-block.add(new Transform(new Vector2(7, -3), Math.PI / 2));
-block.add(new Body(10));
+const groundTiler = new Entity()
+    .add(new Transform(new Vector2(2.5, 3)))
+    .add(new GroundTiler(player,
+        makeGroundTile,
+        (tileWidth) => getWidth() / tileWidth));
 
-const groundTiler = new Entity();
-groundTiler.add(new Transform(new Vector2(2.5, 3)));
-groundTiler.add(new GroundTiler(player, makeGroundTile, (tileWidth) => getWidth() / tileWidth));
-
-const camera = new Entity();
-camera.add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)));
-camera.add(new FollowTransform(player, { lockX: true, spring: 10 }));
-camera.add(new Camera());
+const camera = new Entity()
+    .add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)))
+    .add(new FollowTransform(player, { lockX: true, spring: 10 }))
+    .add(new Camera());
 
 engine.addEntity(player);
 engine.addEntity(playerGroundDetector);
