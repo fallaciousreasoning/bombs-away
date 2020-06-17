@@ -48,6 +48,7 @@ import addSpawn from "./systems/spawnSystem";
 import { Entityish } from "./systems/system";
 import { random, randomValue } from "./utils/random";
 import { ColliderRenderer } from "./components/colliderRenderer";
+import "./menu";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
