@@ -16,7 +16,7 @@ export default (engine: Engine) => {
         // (1 - distance/radius)^exponent
         return (1 - distance / radius) ** exponent;
     }
-    const applyExplosiveForce = (centre: Vector2, radius: number, force: number) => {
+    const applyExplosiveForce = (centre: Vector2, radius: number, force: number, damage?: number) => {
         const affected = tree.query(new AABB(centre, new Vector2(radius * 2))).map(c => engine.getEntity(c.bodyId));
 
         for (const entity of affected) {
@@ -46,7 +46,7 @@ export default (engine: Engine) => {
             
             // Maybe damage things with health?
             if (entity.has('health')) {
-                entity.health.health -= 10;
+                entity.health.health -= damage;
             }
         }
     }
@@ -102,7 +102,10 @@ export default (engine: Engine) => {
         }
 
         if (explodes.force !== 0) {
-            applyExplosiveForce(transform.position, effectiveRadius, explodes.force);
+            applyExplosiveForce(transform.position,
+                effectiveRadius,
+                explodes.force,
+                explodes.damage);
         }
     })
 }
