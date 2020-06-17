@@ -5,9 +5,10 @@ import { Engine } from "../engine";
 import { input } from "../game";
 import { getWidth } from "./addRenderer";
 import { showMenu } from "../hud";
+import Health from "../components/health";
 
 export default function addPlayerController(engine: Engine) {
-    const managePowers = (player: Player, renderer: ColliderRenderer, step: number) => {
+    const managePowers = (player: Player, renderer: ColliderRenderer, health: Health, step: number) => {
         let colorScheme = player.normalColor;
 
         if (player.isFast) {
@@ -18,6 +19,13 @@ export default function addPlayerController(engine: Engine) {
         if (player.isInvulnerable) {
             colorScheme = mergeIn(colorScheme, player.invulnerableColor, player.invulnerableFor / player.invulnerableTime);
             player.invulnerableFor -= step;
+
+            health.health = Number.POSITIVE_INFINITY;
+
+            // If we're no longer invulnerable, restore the player's
+            // health.
+            if (!player.isInvulnerable)
+                health.health = player.defaultHealth;
         }
 
         renderer.fill = colorScheme.fill.hex;
@@ -26,9 +34,9 @@ export default function addPlayerController(engine: Engine) {
     }
 
     engine
-        .makeSystem('player', 'body', 'colliderRenderer')
-        .onEach('tick', ({ player, body, colliderRenderer }, message) => {
-            managePowers(player, colliderRenderer, message.step);
+        .makeSystem('player', 'body', 'colliderRenderer', 'health')
+        .onEach('tick', ({ player, body, colliderRenderer, health }, message) => {
+            managePowers(player, colliderRenderer, health, message.step);
 
             let horizontal = input.getAxis('horizontal');
             if (input.getAxis('shoot'))

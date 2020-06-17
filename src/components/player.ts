@@ -72,4 +72,6 @@ export default class Player {
     }
 
     groundTracker: ContactTracker;
+
+    defaultHealth = 1;
 }
