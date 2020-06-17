@@ -90,12 +90,18 @@ export class Engine {
 
         const id = entity.id;
         entity.id = undefined;
-        
+
         destroyMessage.entity = entity;
         this.broadcastMessage(destroyMessage);
-        
+
         this.entities[id];
         this.families.forEach(f => f.onEntityRemoved(entity));
+    }
+
+    clearEntities() {
+        for (const id in this.entities) {
+            this.removeEntity(this.entities[id]);
+        }
     }
 
     private onComponentAdded(entity: Entity, component: Component) {

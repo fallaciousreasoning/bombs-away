@@ -1,10 +1,9 @@
+import { ColliderRenderer } from "../components/colliderRenderer";
+import Player, { mergeIn } from "../components/player";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { input } from "../game";
 import { getWidth } from "./addRenderer";
-import Player, { mergeIn } from "../components/player";
-import { Collider } from "../components/collider";
-import { ColliderRenderer } from "../components/colliderRenderer";
 
 export default function addPlayerController(engine: Engine) {
     const managePowers = (player: Player, renderer: ColliderRenderer, step: number) => {

@@ -128,7 +128,9 @@ const makeLaser = () => {
         .add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
 }
 
-const newGame = () => {
+export const newGame = () => {
+    engine.clearEntities();
+
     const distanceConsideredFar = 50;
     const makeGroundTile = () => {
         const width = 5;
