@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-        <link rel="manifest" href="/manifest.json">
-    </head>
-    <body style="margin: 0; overflow: hidden;">
-        <canvas id="root" width="1920" height="1080" style="width: 100vw; height: 100vh;"></canvas>
 
-        <!-- Main -->
-        <script src="/main.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+    <canvas id="root" width="1920" height="1080" style="width: 100vw; height: 100vh;"></canvas>
+    <div class="menu">
+        <div class="menu-layout">
+            <div>
+                Best Score:
+                <span class="best-score"></span>
+            </div>
+            <div>
+                <button>
+                    New Game
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <script src="/main.js"></script>
+</body>
+
 </html>
