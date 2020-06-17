@@ -26,7 +26,7 @@ interface DebugRenderConfig {
 }
 
 export const renderConfig: DebugRenderConfig = {
-    drawEdges: true,
+    drawEdges: false,
     fillShapes: true,
     drawVertices: false,
     drawContacts: false,
