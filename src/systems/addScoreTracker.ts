@@ -7,7 +7,10 @@ export default function addScoreTracker(engine: Engine) {
     engine.makeSystem('score', 'transform')
         .onEach('tick', ({ transform, score }) => {
             score.score = Math.max(score.score, transform.position.y);
-            score.element.innerText = score.score.toFixed(0);
+            score.scoreElement.innerText = score.score.toFixed(0);
+
+            score.highScore = Math.max(score.score, score.highScore);
+            score.highScoreElement.innerText = score.highScore.toFixed(0);
         });
         
     // Render a line for the current score.
@@ -21,4 +24,10 @@ export default function addScoreTracker(engine: Engine) {
             context.fillStyle = 'red';
             context.fillRect(0, score.score + stripeHeight / 2 + stripeOffset, getWidth(), stripeHeight);
         });
+
+    // Save the score when an entity with a score is destroyed.
+    engine.makeSystem('score')
+        .onTargetedMessage('destroy', ({ entity }) => {
+            localStorage.setItem(entity.score.scoreName, entity.score.highScore.toString());
+        })
 }

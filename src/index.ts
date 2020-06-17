@@ -182,7 +182,7 @@ export const newGame = (noPlayer?: boolean) => {
             return collider;
         })
         .add(new Body(3))
-        .add(new Score('#score'))
+        .add(new Score('#score', '#highscore'))
         .add(new Powerupable())
         .add(new ColliderRenderer());
 
