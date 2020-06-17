@@ -29,7 +29,7 @@ export const renderConfig: DebugRenderConfig = {
     drawEdges: true,
     fillShapes: true,
     drawVertices: false,
-    drawContacts: true,
+    drawContacts: false,
     drawCentroids: false,
     drawNormals: false,
     drawAABBTree: false,
