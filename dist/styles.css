@@ -17,6 +17,13 @@ body {
     color: white;
     font-size: 2em;
     padding: 8px;
+
+    /* HUD text shouldn't be
+     * selectable because it
+     * gets in the way of
+     * gameplay.
+     */
+    user-select: none;
 }
 
 #menu {
