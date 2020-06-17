@@ -4,15 +4,19 @@
 - [x] Refactor systems to a class based model
 - [x] Add message system for update/on collision
 - [x] Add mousebutton support to input
-- [ ] Add pressed/released key support
+- [x] Add pressed/released key support
 - [x] Use new collision factory
-- [ ] Refactor components for terrain deformation.
+- [x] Refactor components for terrain deformation.
 - [x] Get resizing working properly
-- [ ] Get touch input working properly
+- [x] Get touch input working properly
 - [x] Add score tracking
-- [ ] Add health (and death)
+- [x] Add health (and death)
+- [x] Menus
+- [ ] Difficulty should increase
+- [ ] Camping should be prohibited
 - [ ] Add powerups
-  - [ ] Laser
+  - [x] Laser
   - [ ] Grenade
-  - [ ] Invulnerable
-  - [ ] Super fast
+      -  needs to not kill player
+  - [x] Invulnerable
+  - [x] Super fast
