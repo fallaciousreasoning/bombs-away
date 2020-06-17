@@ -130,7 +130,7 @@ const makeLaser = () => {
         .add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
 }
 
-export const newGame = () => {
+export const newGame = (noPlayer?: boolean) => {
     engine.clearEntities();
 
     const distanceConsideredFar = 50;
@@ -219,7 +219,8 @@ export const newGame = () => {
         .add(new FollowTransform(player, { lockX: true, spring: 10 }))
         .add(new Camera());
 
-    engine.addEntity(player);
+    if (!noPlayer)
+        engine.addEntity(player);
     engine.addEntity(playerGroundDetector);
     engine.addEntity(makeWall('left'));
     engine.addEntity(makeWall('right'));
@@ -232,7 +233,9 @@ export const newGame = () => {
     engine.addEntity(camera);
 }
 
-newGame();
+// Don't add a player, so we get a call backdrop
+// to the menu on first load.
+newGame(/** noPlayer = */true);
 
 addRenderer(engine, Color.black);
 addFollows(engine);
