@@ -23,29 +23,34 @@ export default (engine: Engine) => {
             const transform = entity.get('transform');
             const collider = entity.get('collider');
             const body = entity.get('body');
-
+            
             if (!transform || !body || !collider)
-                continue;
-
+            continue;
+            
             if (!body.isDynamic)
-                continue;
-
+            continue;
+            
             // Find the closest vertex.
             let minDistance = Number.MAX_SAFE_INTEGER;
             for (const vertex of collider.getTransformsVertices()) {
                 const distance = vertex.distance(centre);
                 if (distance < minDistance)
-                    minDistance = distance;
+                minDistance = distance;
             }
             if (minDistance > radius)
-                continue;
-
+            continue;
+            
             const dir = transform.position.sub(centre).normalized();
             const impulse = dir.mul(force).mul(getPower(minDistance, radius));
             body.velocity = body.velocity.add(impulse);
+            
+            // Maybe damage things with health?
+            if (entity.has('health')) {
+                entity.health.health -= 10;
+            }
         }
     }
-
+    
     // Handle destruction.
     engine.makeSystem('explodes', 'transform')
         .onTargetedMessage('destroy', ({ entity }) => {

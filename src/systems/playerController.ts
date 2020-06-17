@@ -4,6 +4,7 @@ import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { input } from "../game";
 import { getWidth } from "./addRenderer";
+import { showMenu } from "../hud";
 
 export default function addPlayerController(engine: Engine) {
     const managePowers = (player: Player, renderer: ColliderRenderer, step: number) => {
@@ -50,4 +51,9 @@ export default function addPlayerController(engine: Engine) {
 
             body.velocity = new Vector2(body.velocity.x + horizontal * 2 * message.step, jumpImpulse || body.velocity.y);
         });
+
+    engine.makeSystem('player')
+        .onTargetedMessage('destroy', () => {
+            showMenu();
+        })
 }

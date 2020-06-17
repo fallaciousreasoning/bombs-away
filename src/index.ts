@@ -49,6 +49,7 @@ import { Entityish } from "./systems/system";
 import { random, randomValue } from "./utils/random";
 import { ColliderRenderer } from "./components/colliderRenderer";
 import "./hud";
+import Health from "./components/health";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -166,6 +167,8 @@ export const newGame = () => {
         .add(new Tag('player'))
         .add(new ContactTracker('player', true))
         .add(new Transform(new Vector2(5, -1)))
+        // Player is only ever dead or alive.
+        .add(new Health(1))
         .add(e => {
             const player = new Player();
             // The player can jump if the ground tracker isn't touching the player.
