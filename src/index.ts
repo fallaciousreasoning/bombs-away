@@ -128,113 +128,116 @@ const makeLaser = () => {
         .add(new AnimateSize(new Vector2(1, 0.1), Vector2.one, duration));
 }
 
-const distanceConsideredFar = 50;
-const makeGroundTile = () => {
-    const width = 5;
-    const height = 5;
-    const gridSize = 0.5;
+const newGame = () => {
+    const distanceConsideredFar = 50;
+    const makeGroundTile = () => {
+        const width = 5;
+        const height = 5;
+        const gridSize = 0.5;
 
-    return new Entity()
-        .add(new Tag('terrain'))
-        .add(new Transform())
-        .add(new CollisionTexture(width, height, gridSize))
-        .add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up))
-        .add(e => fromVertices(...getVerticesFromTexture(e.collisionTexture)))
-        .add(new ColliderRenderer('green', 'green'));
-}
+        return new Entity()
+            .add(new Tag('terrain'))
+            .add(new Transform())
+            .add(new CollisionTexture(width, height, gridSize))
+            .add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up))
+            .add(e => fromVertices(...getVerticesFromTexture(e.collisionTexture)))
+            .add(new ColliderRenderer('green', 'green'));
+    }
 
-const makeWall = (side: 'left' | 'right') => {
-    const height = 50;
-    const width = 1;
-    return new Entity()
-        .add(new Tag('wall'))
-        .add(new Transform(new Vector2(side === 'left'
-            ? -0.5
-            : getWidth() + 0.5, 0)))
-        .add(new FollowTransform(player, { lockX: true }))
+    const makeWall = (side: 'left' | 'right') => {
+        const height = 50;
+        const width = 1;
+        return new Entity()
+            .add(new Tag('wall'))
+            .add(new Transform(new Vector2(side === 'left'
+                ? -0.5
+                : getWidth() + 0.5, 0)))
+            .add(new FollowTransform(player, { lockX: true }))
+            .add(() => {
+                const collider = boxCollider(width, height);
+                collider.friction = 0;
+                return collider;
+            });
+    }
+    const player = new Entity()
+        .add(new Tag('player'))
+        .add(new ContactTracker('player', true))
+        .add(new Transform(new Vector2(5, -1)))
+        .add(e => {
+            const player = new Player();
+            // The player can jump if the ground tracker isn't touching the player.
+            player.groundTracker = e.contactTracker;
+            return player;
+        })
         .add(() => {
-            const collider = boxCollider(width, height);
-            collider.friction = 0;
+            const collider = circleCollider(1, 20);
+            collider.friction = 0.1;
+            collider.elasticity = 0;
             return collider;
+        })
+        .add(new Body(3))
+        .add(new Score())
+        .add(new Powerupable())
+        .add(new ColliderRenderer());
+
+    const playerGroundDetector = new Entity()
+        .add(new Transform(new Vector2(0, 1), 0, player.transform))
+        .add(player.player.groundTracker)
+        .add(boxCollider(1.2, 0.2, true));
+
+    const scoreDisplay = new Entity()
+        .add(new Transform(new Vector2(0.2)))
+        .add(() => {
+            const text = new Text();
+            text.color = 'white';
+            text.getText = () => `Score: ${Math.round(player.get('score').score)}`;
+            return text;
         });
+
+    const spawnOffsets = new Vector2(0, -20);
+    const bomber = new Entity()
+        .add(new Transform(new Vector2(getWidth() / 2, 0)))
+        .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
+        .add(new Spawn(makeBomb))
+        .add(boxCollider(getWidth(), 1, true));
+
+    const powerupper = new Entity()
+        .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
+        .add(() => {
+            const spawn = new Spawn(makePowerup);
+            spawn.spawnRate = 1 / 30;
+            return spawn;
+        })
+        .add(boxCollider(getWidth(), 1, true))
+        .add(new Transform(new Vector2(getWidth() / 2, 0)));
+
+    const groundTiler = new Entity()
+        .add(new Transform(new Vector2(2.5, 3)))
+        .add(new GroundTiler(player,
+            makeGroundTile,
+            (tileWidth) => getWidth() / tileWidth));
+
+    const camera = new Entity()
+        .add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)))
+        .add(new FollowTransform(player, { lockX: true, spring: 10 }))
+        .add(new Camera());
+
+    engine.addEntity(player);
+    engine.addEntity(playerGroundDetector);
+    engine.addEntity(makeWall('left'));
+    engine.addEntity(makeWall('right'));
+
+    engine.addEntity(bomber);
+    engine.addEntity(powerupper);
+
+    engine.addEntity(groundTiler);
+
+    engine.addEntity(camera);
+
+    engine.addEntity(scoreDisplay);
 }
 
-const player = new Entity()
-    .add(new Tag('player'))
-    .add(new ContactTracker('player', true))
-    .add(new Transform(new Vector2(5, -1)))
-    .add(e => {
-        const player = new Player();
-        // The player can jump if the ground tracker isn't touching the player.
-        player.groundTracker = e.contactTracker;
-        return player;
-    })
-    .add(() => {
-        const collider = circleCollider(1, 20);
-        collider.friction = 0.1;
-        collider.elasticity = 0;
-        return collider;
-    })
-    .add(new Body(3))
-    .add(new Score())
-    .add(new Powerupable())
-    .add(new ColliderRenderer());
-
-const playerGroundDetector = new Entity()
-    .add(new Transform(new Vector2(0, 1), 0, player.transform))
-    .add(player.player.groundTracker)
-    .add(boxCollider(1.2, 0.2, true));
-
-const scoreDisplay = new Entity()
-    .add(new Transform(new Vector2(0.2)))
-    .add(() => {
-        const text = new Text();
-        text.color = 'white';
-        text.getText = () => `Score: ${Math.round(player.get('score').score)}`;
-        return text;
-    });
-
-const spawnOffsets = new Vector2(0, -20);
-const bomber = new Entity()
-    .add(new Transform(new Vector2(getWidth() / 2, 0)))
-    .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
-    .add(new Spawn(makeBomb))
-    .add(boxCollider(getWidth(), 1, true));
-
-const powerupper = new Entity()
-    .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
-    .add(() => {
-        const spawn = new Spawn(makePowerup);
-        spawn.spawnRate = 1 / 30;
-        return spawn;
-    })
-    .add(boxCollider(getWidth(), 1, true))
-    .add(new Transform(new Vector2(getWidth() / 2, 0)));
-
-const groundTiler = new Entity()
-    .add(new Transform(new Vector2(2.5, 3)))
-    .add(new GroundTiler(player,
-        makeGroundTile,
-        (tileWidth) => getWidth() / tileWidth));
-
-const camera = new Entity()
-    .add(new Transform(new Vector2(canvas.width * METRES_A_PIXEL / 2, 0)))
-    .add(new FollowTransform(player, { lockX: true, spring: 10 }))
-    .add(new Camera());
-
-engine.addEntity(player);
-engine.addEntity(playerGroundDetector);
-engine.addEntity(makeWall('left'));
-engine.addEntity(makeWall('right'));
-
-engine.addEntity(bomber);
-engine.addEntity(powerupper);
-
-engine.addEntity(groundTiler);
-
-engine.addEntity(camera);
-
-engine.addEntity(scoreDisplay);
+newGame();
 
 addRenderer(engine, Color.black);
 addFollows(engine);
