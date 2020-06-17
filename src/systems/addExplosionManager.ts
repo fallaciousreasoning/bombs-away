@@ -45,7 +45,7 @@ export default (engine: Engine) => {
             body.velocity = body.velocity.add(impulse);
             
             // Maybe damage things with health?
-            if (entity.has('health')) {
+            if (entity.has('health') && minDistance < radius/2) {
                 entity.health.health -= damage;
             }
         }
@@ -106,6 +106,8 @@ export default (engine: Engine) => {
                 effectiveRadius,
                 explodes.force,
                 explodes.damage);
+
+            navigator.vibrate(50);
         }
     })
 }
