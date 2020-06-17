@@ -7,6 +7,7 @@ export default function addScoreTracker(engine: Engine) {
     engine.makeSystem('score', 'transform')
         .onEach('tick', ({ transform, score }) => {
             score.score = Math.max(score.score, transform.position.y);
+            score.element.innerText = score.score.toFixed(0);
         });
         
     // Render a line for the current score.

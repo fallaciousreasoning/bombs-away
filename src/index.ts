@@ -48,7 +48,7 @@ import addSpawn from "./systems/spawnSystem";
 import { Entityish } from "./systems/system";
 import { random, randomValue } from "./utils/random";
 import { ColliderRenderer } from "./components/colliderRenderer";
-import "./menu";
+import "./hud";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -179,7 +179,7 @@ export const newGame = () => {
             return collider;
         })
         .add(new Body(3))
-        .add(new Score())
+        .add(new Score('#score'))
         .add(new Powerupable())
         .add(new ColliderRenderer());
 
@@ -187,15 +187,6 @@ export const newGame = () => {
         .add(new Transform(new Vector2(0, 1), 0, player.transform))
         .add(player.player.groundTracker)
         .add(boxCollider(1.2, 0.2, true));
-
-    const scoreDisplay = new Entity()
-        .add(new Transform(new Vector2(0.2)))
-        .add(() => {
-            const text = new Text();
-            text.color = 'white';
-            text.getText = () => `Score: ${Math.round(player.get('score').score)}`;
-            return text;
-        });
 
     const spawnOffsets = new Vector2(0, -20);
     const bomber = new Entity()
@@ -236,8 +227,6 @@ export const newGame = () => {
     engine.addEntity(groundTiler);
 
     engine.addEntity(camera);
-
-    engine.addEntity(scoreDisplay);
 }
 
 newGame();
