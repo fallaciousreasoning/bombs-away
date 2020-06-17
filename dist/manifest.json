@@ -5,6 +5,10 @@
         {
             "src": "/icon.jpg",
             "sizes": "512x512"
+        },
+        {
+            "src": "/icon.png",
+            "sizes": "512x512"
         }
     ],
     "start_url": "/",

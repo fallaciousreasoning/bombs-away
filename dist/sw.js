@@ -2,7 +2,7 @@ const resources = [
     "/",
     "/main.js",
     "/styles.css",
-    "/manifest.json"
+    "/manifest.json",
 ];
 const cacheName = "assets-v1";
 
