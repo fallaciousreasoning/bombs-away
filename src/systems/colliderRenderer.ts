@@ -26,13 +26,13 @@ interface DebugRenderConfig {
 }
 
 export const renderConfig: DebugRenderConfig = {
-    drawEdges: false,
+    drawEdges: true,
     fillShapes: true,
     drawVertices: false,
     drawContacts: false,
     drawCentroids: false,
     drawNormals: false,
-    drawAABBTree: true,
+    drawAABBTree: false,
     debugVertices: [],
     debugPoints: [],
 };
