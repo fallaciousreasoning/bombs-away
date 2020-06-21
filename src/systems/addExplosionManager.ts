@@ -9,6 +9,10 @@ import { liveParticles } from "./particleManager";
 import { particlePool } from "../particles/particlePool";
 import { basicEmitter } from "../particles/emitterFactory";
 
+const vibrate = ('vibrate' in navigator)
+    ? (amount: number) => navigator.vibrate(amount)
+    : () => {};
+
 const emitter = basicEmitter();
 
 export default (engine: Engine) => {
@@ -107,7 +111,7 @@ export default (engine: Engine) => {
                 explodes.force,
                 explodes.damage);
 
-            navigator.vibrate(50);
+            vibrate(50);
         }
     })
 }

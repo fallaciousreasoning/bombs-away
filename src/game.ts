@@ -29,7 +29,8 @@ window.addEventListener('resize', updateCanvasSize);
 
 requestAnimationFrame(tick);
 
-screen
-    ['orientation']
+if ('orientation' in screen) {
+    screen.orientation
     .lock('landscape')
     .catch(() => console.error("Failed to lock orientation to landscape!"));
+}
