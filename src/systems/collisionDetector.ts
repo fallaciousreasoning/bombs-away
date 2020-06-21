@@ -11,8 +11,11 @@ import { stableHashPair } from '../core/hashHelper'
 import { AABBTree } from '../geometry/dynamicAabbTree';
 import { CollisionManager } from '../collision/collisionManager';
 import { renderConfig, drawBox } from './colliderRenderer';
+import { useGameView, PIXELS_A_METRE, METRES_A_PIXEL } from './addRenderer';
+import { context } from '../game';
 
 export const tree = new AABBTree<Fixture>();
+window['tree'] = tree;
 
 export default function addPhysics(engine: Engine) {
     const collisionManager = new CollisionManager(engine);
@@ -98,9 +101,14 @@ export default function addPhysics(engine: Engine) {
         .onMessage('tick', () => {
             if (!renderConfig.drawAABBTree) return;
 
+            useGameView();
+
             for (const node of tree) {
                 const color = treeNodeColors[node.id % treeNodeColors.length];
-                drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, color, true);
+                // drawBox(node.bounds.centre, node.bounds.width, node.bounds.height, color, true);
+                context.strokeStyle = color;
+                context.lineWidth = METRES_A_PIXEL;
+                context.strokeRect(node.bounds.min.x, node.bounds.min.y, node.bounds.width, node.bounds.height);
             }
         });
 
