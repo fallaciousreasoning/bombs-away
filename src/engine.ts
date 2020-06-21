@@ -94,8 +94,8 @@ export class Engine {
         destroyMessage.entity = entity;
         this.broadcastMessage(destroyMessage);
 
-        this.entities[id];
         this.families.forEach(f => f.onEntityRemoved(entity));
+        delete this.entities[id];
     }
 
     clearEntities() {

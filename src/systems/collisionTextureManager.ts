@@ -49,6 +49,7 @@ export const destroyWithPredicate = (removeFrom: Destroyable, predicate: Destroy
     }
 
     const fixtures = getVerticesFromTexture(removeFrom.collisionTexture)
+        .filter(v => v.area > 0.001)
         .map(v => new Fixture(v, removeFrom.transform, removeFrom.id));
     removeFrom.collider.fixtures = fixtures;
 
