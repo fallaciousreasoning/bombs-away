@@ -165,14 +165,13 @@ export const newGame = (noPlayer?: boolean) => {
     }
     const player = new Entity()
         .add(new Tag('player'))
-        .add(new ContactTracker('player', true))
         .add(new Transform(new Vector2(5, -1)))
         // Player is only ever dead or alive.
         .add(new Health(1))
         .add(e => {
             const player = new Player();
             // The player can jump if the ground tracker isn't touching the player.
-            player.groundTracker = e.contactTracker;
+            player.groundTracker = new ContactTracker('player', true);
             return player;
         })
         .add(() => {
