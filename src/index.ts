@@ -71,6 +71,7 @@ const makeBomb = () => {
             const explodes = new Explodes();
             explodes.shape = { type: 'circle', radius };
             explodes.force = force;
+            explodes.dontExplodeTag = 'player';
             return explodes;
         })
         .add(new Transform())

@@ -1,5 +1,3 @@
-import { Entity } from "../entity";
-import { AABB } from "../core/aabb";
 
 type ExplosionShape = {
     type: 'circle',
@@ -15,4 +13,5 @@ export default class Explodes {
     shape: ExplosionShape;
     force: number = 0;
     damage: number = 1;
+    dontExplodeTag?: string;
 }
