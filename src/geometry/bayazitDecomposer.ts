@@ -154,8 +154,6 @@ export const convexPartition = (vertices: Vertices, result?: Vertices[]): Vertic
                 upperPoly = vertices.slice(Math.round(bestIndex), i + 1);
             }
 
-            lowerPoly.forceCounterClockwise();
-            upperPoly.forceCounterClockwise();
             convexPartition(lowerPoly, result);
             convexPartition(upperPoly, result);
             return result;
