@@ -50,6 +50,7 @@ import { random, randomValue } from "./utils/random";
 import { ColliderRenderer } from "./components/colliderRenderer";
 import "./hud";
 import Health from "./components/health";
+import Line from "./components/line";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -191,6 +192,12 @@ export const newGame = (noPlayer?: boolean) => {
         .add(player.player.groundTracker)
         .add(boxCollider(1.2, 0.2, true));
 
+    const playerRotationShower = new Entity()
+        .add(new Transform(Vector2.zero, 0, player.transform))
+        .add(boxCollider(0.1, player.collider.bounds.height, true))
+        .add(new ColliderRenderer('white'))
+        .add(new Tag('player'));
+
     const spawnOffsets = new Vector2(0, -20);
     const bomber = new Entity()
         .add(new Transform(new Vector2(getWidth() / 2, 0)))
@@ -219,9 +226,11 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new FollowTransform(player, { lockX: true, spring: 10 }))
         .add(new Camera());
 
-    if (!noPlayer)
+    if (!noPlayer) {
         engine.addEntity(player);
-    engine.addEntity(playerGroundDetector);
+        engine.addEntity(playerGroundDetector);
+        engine.addEntity(playerRotationShower);
+    }
     engine.addEntity(makeWall('left'));
     engine.addEntity(makeWall('right'));
 
@@ -238,10 +247,10 @@ export const newGame = (noPlayer?: boolean) => {
 newGame(/** noPlayer = */true);
 
 addRenderer(engine, Color.black);
+drawCollider(engine);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);
-drawCollider(engine);
 particleManager(engine);
 addGravity(engine);
 addPlayerController(engine);
