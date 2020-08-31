@@ -58,3 +58,8 @@ export const randomColor = (min?: Color, max?: Color) => {
         randomInt(min.g, max.g),
         randomInt(min.b, max.b));
 }
+
+export const randomOf = <T>(items: T[]): T => {
+    const index = random(items.length);
+    return items[index];
+}
