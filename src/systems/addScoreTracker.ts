@@ -1,8 +1,7 @@
-import Vector2 from '../core/vector2';
 import { Engine } from "../engine";
-import { canvas, context } from '../game';
-import { useGameView, getWidth } from './addRenderer';
+import { context } from '../game';
 import { setMotivationalMessage } from '../hud';
+import { getWidth, useGameView } from './addRenderer';
 
 const motivations = {
     0: "Really?!",
@@ -10,9 +9,10 @@ const motivations = {
     10: "Okay..",
     25: "Not bad.",
     50: "Guess that's all right.",
-    75: "Wow!",
-    100: "Amazing!",
-    250: "You have waaaaaay too much time."
+    75: "That's pretty good",
+    100: "Wow!",
+    200: "Amazing!",
+    250: "You have waaaaaay too much time.",
 }
 
 export default function addScoreTracker(engine: Engine) {
