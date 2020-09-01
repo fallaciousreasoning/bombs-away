@@ -6,6 +6,7 @@ export interface CanvasRendererOptions {
     fill?: string;
     stroke?: string;
     alpha?: number;
+    strokeWidth?: number;
 }
 
 interface BoxOptions extends CanvasRendererOptions {
@@ -49,14 +50,13 @@ export const circleRenderer = (options: CircleOptions) => new CanvasRenderer(con
 interface LineOptions extends CanvasRendererOptions {
     length: number;
     direction: Vector2;
-    width: number;
+    strokeWidth: number;
 }
 export const lineRenderer = (options: LineOptions) => new CanvasRenderer(context => {
     const lineEnd = options.direction.mul(options.length);
 
     context.strokeStyle = options.stroke || options.fill;
-    context.lineWidth = options.width;
-    
+
     context.beginPath();
     context.lineTo(lineEnd.x, lineEnd.y);
     context.stroke();

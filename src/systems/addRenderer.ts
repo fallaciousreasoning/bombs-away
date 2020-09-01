@@ -2,6 +2,9 @@ import { Color } from "../core/color";
 import { Engine } from "../engine";
 import { canvas, context } from "../game";
 import { Entityish } from "./system";
+import { Entity } from "../entity";
+import { Transform } from "../components/transform";
+import { Camera } from "../components/camera";
 
 export const PIXELS_A_METRE = 64;
 export const METRES_A_PIXEL = 1 / PIXELS_A_METRE;
@@ -9,7 +12,7 @@ export const METRES_A_PIXEL = 1 / PIXELS_A_METRE;
 export const getWidth = () => canvas.width * METRES_A_PIXEL;
 export const getHeight = () => canvas.height * METRES_A_PIXEL;
 
-let camera: Entityish<['camera', 'transform']>;
+let camera: Entityish<['camera', 'transform']> = new Entity().add(new Transform).add(new Camera);
 export const getCamera = () => camera;
 export const useCamera = () => {
     context.setTransform(1, 0, 0, 1, -getCamera().transform.position.x * PIXELS_A_METRE + canvas.width / 2,

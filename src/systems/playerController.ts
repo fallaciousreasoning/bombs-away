@@ -1,12 +1,11 @@
-import { ColliderRenderer } from "../components/colliderRenderer";
+import { CanvasRenderer } from "../components/canvasRenderer";
+import Health from "../components/health";
 import Player, { mergeIn } from "../components/player";
 import Vector2 from "../core/vector2";
 import { Engine } from "../engine";
 import { input } from "../game";
-import { getWidth } from "./addRenderer";
 import { showMenu } from "../hud";
-import Health from "../components/health";
-import { CanvasRenderer } from "../components/canvasRenderer";
+import { getWidth } from "./addRenderer";
 
 export default function addPlayerController(engine: Engine) {
     const managePowers = (player: Player, renderer: CanvasRenderer, health: Health, step: number) => {
@@ -31,7 +30,7 @@ export default function addPlayerController(engine: Engine) {
 
         renderer.options.fill = colorScheme.fill.hex;
         renderer.options.stroke = colorScheme.stroke.hex;
-        // renderer.options.strokeWidth = colorScheme.thickness
+        renderer.options.strokeWidth = colorScheme.thickness
     }
 
     engine

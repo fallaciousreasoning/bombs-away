@@ -19,14 +19,18 @@ export default (engine: Engine) => {
 
             for (const entity of entities) {
                 const { canvasRenderer, transform } = entity;
+
+                context.save();
                 context.fillStyle = canvasRenderer.options.fill;
                 context.strokeStyle = canvasRenderer.options.stroke;
+                context.lineWidth = canvasRenderer.options.strokeWidth;
 
                 context.translate(transform.position.x, transform.position.y);
                 context.rotate(transform.rotation);
                 context.scale(transform.scale.x, transform.scale.y);
 
                 entity.canvasRenderer.draw(context, entity);
+                context.restore();
             }
         });
 }

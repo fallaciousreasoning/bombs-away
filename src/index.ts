@@ -2,13 +2,13 @@ import { bombCollider, boxCollider, circleCollider, fromVertices, triangleCollid
 import AliveForTime from "./components/aliveForTime";
 import AnimateSize from "./components/animateSize";
 import Body from "./components/body";
-import Box from "./components/box";
 import { Camera } from "./components/camera";
 import { CollisionTexture } from "./components/collisionTexture";
 import ContactTracker from "./components/contactTracker";
 import Explodes from "./components/explodes";
 import { FollowTransform } from "./components/followTransform";
 import GroundTiler from "./components/groundTiler";
+import Health from "./components/health";
 import Player from "./components/player";
 import Powerup from "./components/powerup";
 import Powerupable from "./components/powerupable";
@@ -17,13 +17,14 @@ import { Replaceable } from "./components/replaceable";
 import Score from "./components/score";
 import Spawn from "./components/spawn";
 import { Tag } from "./components/tag";
-import { Text } from './components/text';
 import { Transform } from "./components/transform";
 import { Color } from "./core/color";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
+import { boxRenderer, colliderRenderer } from "./factories/rendererFactory";
 import { canvas, engine } from './game';
 import { polygonsToString } from "./geometry/serializer";
+import "./hud";
 import { explosionEmitter } from "./particles/emitterFactory";
 import addContactTracker from "./systems/addContactTracker";
 import addExplosionManager from "./systems/addExplosionManager";
@@ -35,7 +36,7 @@ import addRenderer, { getWidth, METRES_A_PIXEL } from './systems/addRenderer';
 import addScoreTracker from "./systems/addScoreTracker";
 import addVelocityClamp from "./systems/addVelocityClamp";
 import animator from "./systems/animator";
-import drawCollider from "./systems/colliderRenderer";
+import canvasRenderer from "./systems/canvasRenderer";
 import addPhysics from "./systems/collisionDetector";
 import { getVerticesFromTexture } from "./systems/collisionTextureManager";
 import { addFixtureManager } from "./systems/fixtureManager";
@@ -45,13 +46,7 @@ import powerups, { powers, powerupColors } from "./systems/powerups";
 import removeDeadThings from "./systems/removeDeadThings";
 import replaceOnDeath from "./systems/replaceOnDeath";
 import addSpawn from "./systems/spawnSystem";
-import { Entityish } from "./systems/system";
 import { random, randomValue } from "./utils/random";
-import { ColliderRenderer } from "./components/colliderRenderer";
-import "./hud";
-import Health from "./components/health";
-import canvasRenderer from "./systems/canvasRenderer";
-import { colliderRenderer } from "./factories/rendererFactory";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -78,7 +73,9 @@ const makeBomb = () => {
         })
         .add(new Transform())
         .add(bombCollider(size, size * 1.5))
-        .add(new ColliderRenderer())
+        .add(colliderRenderer({
+            fill: 'gray'
+        }))
         .add(new AliveForTime(5, Color.black, Color.white))
         .add(new Replaceable(() => makeExplosion(radius)))
         .add(new Body());
@@ -97,7 +94,9 @@ const makePowerup = () => {
             return aliveForTime;
         })
         .add(triangleCollider(1))
-        .add(new ColliderRenderer(powerupColors[power]));
+        .add(colliderRenderer({
+            fill: powerupColors[power].hex
+        }));
 }
 
 const makeGrenade = () => {
@@ -122,7 +121,11 @@ const makeLaser = () => {
 
     return new Entity()
         .add(new Transform)
-        .add(new Box(width, height, '#ff9900'))
+        .add(boxRenderer({
+            width,
+            height,
+            fill: '#ff9900'
+        }))
         .add(() => {
             const explodes = new Explodes();
             explodes.force = 0;
@@ -148,7 +151,10 @@ export const newGame = (noPlayer?: boolean) => {
             .add(new CollisionTexture(width, height, gridSize))
             .add(new RemoveWhenFar(distanceConsideredFar, player, Vector2.up))
             .add(e => fromVertices(...getVerticesFromTexture(e.collisionTexture)))
-            .add(new ColliderRenderer('green', 'green'));
+            .add(colliderRenderer({
+                fill: 'green',
+                stroke: 'green'
+            }));
     }
 
     const makeWall = (side: 'left' | 'right') => {
@@ -246,7 +252,6 @@ canvasRenderer(engine);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);
-drawCollider(engine);
 particleManager(engine);
 addGravity(engine);
 addPlayerController(engine);
