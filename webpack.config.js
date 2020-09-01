@@ -5,7 +5,6 @@ module.exports = {
     mode: 'development',
     entry: {
         main: "./src/index.ts",
-        serviceWorker: "./src/serviceWorker.ts"
     },
     output: {
         filename: "[name].js",
