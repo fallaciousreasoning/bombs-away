@@ -43,7 +43,7 @@ module.exports = {
     ],
 
     devServer: {
-        hot: false,
+        hot: true,
         contentBase:  './public',
         host: '0.0.0.0',
         disableHostCheck: true
