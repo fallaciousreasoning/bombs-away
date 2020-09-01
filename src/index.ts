@@ -224,10 +224,7 @@ export const newGame = (noPlayer?: boolean) => {
 
     const powerupper = new Entity()
         .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
-        .add(() => {
-            const spawn = new DistanceSpawn(makePowerup);
-            return spawn;
-        })
+        .add(new DistanceSpawn(makePowerup))
         .add(boxCollider(getWidth(), 1, true))
         .add(new Transform(new Vector2(getWidth() / 2, 0)));
 
