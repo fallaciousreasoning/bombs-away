@@ -47,6 +47,7 @@ import removeDeadThings from "./systems/removeDeadThings";
 import replaceOnDeath from "./systems/replaceOnDeath";
 import addSpawn from "./systems/spawnSystem";
 import { random, randomValue } from "./utils/random";
+import { DistanceSpawn } from "./components/distanceSpawn";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -197,7 +198,7 @@ export const newGame = (noPlayer?: boolean) => {
                 fill: 'red'
             });
             entity.player.rendererOptions = collider.options;
-            
+
             return complexRenderer(collider,
                 lineRenderer({
                     direction: Vector2.up,
@@ -224,8 +225,7 @@ export const newGame = (noPlayer?: boolean) => {
     const powerupper = new Entity()
         .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
         .add(() => {
-            const spawn = new Spawn(makePowerup);
-            spawn.spawnRate = 1 / 30;
+            const spawn = new DistanceSpawn(makePowerup);
             return spawn;
         })
         .add(boxCollider(getWidth(), 1, true))

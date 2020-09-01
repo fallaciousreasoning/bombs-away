@@ -30,4 +30,20 @@ export default function addSpawn(engine: Engine) {
             engine.addEntity(spawned);
             spawn.tillNextSpawn = spawn.spawnRate;
         });
+
+    engine.makeSystem('distanceSpawn', 'transform', 'collider')
+        .onEach('tick', ({ distanceSpawn, transform, collider }) => {
+            if (distanceSpawn.nextSpawn === undefined) {
+                distanceSpawn.nextSpawn = transform.position.y
+                    + distanceSpawn.spawnEvery;
+            }
+
+            if (transform.position.y >= distanceSpawn.nextSpawn) {
+                const spawn = distanceSpawn.spawn();
+                spawn.transform.position = randomInBounds(collider.bounds);
+                engine.addEntity(spawn);
+
+                distanceSpawn.nextSpawn += distanceSpawn.spawnEvery;
+            }
+        });
 }
