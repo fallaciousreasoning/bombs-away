@@ -11,6 +11,10 @@ window['input'] = input;
 const tickEvent: Tick = { type: 'tick', step: 0, elapsedTime: 0 };
 let lastTick = 0;
 
+export const resetElapsedTime = () => {
+    tickEvent.elapsedTime = 0;
+}
+
 const tick = (timestamp) => {
     const step = Math.min(timestamp - lastTick, 60);
     tickEvent.step = step/1000;

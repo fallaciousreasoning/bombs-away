@@ -22,7 +22,7 @@ import { Color } from "./core/color";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
 import { boxRenderer, colliderRenderer, complexRenderer, lineRenderer } from "./factories/rendererFactory";
-import { canvas, engine } from './game';
+import { canvas, engine, resetElapsedTime } from './game';
 import { polygonsToString } from "./geometry/serializer";
 import "./hud";
 import { explosionEmitter } from "./particles/emitterFactory";
@@ -138,6 +138,7 @@ const makeLaser = () => {
 }
 
 export const newGame = (noPlayer?: boolean) => {
+    resetElapsedTime();
     engine.clearEntities();
 
     const distanceConsideredFar = 50;
