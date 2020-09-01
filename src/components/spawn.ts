@@ -4,11 +4,17 @@ import { randomValue } from "../utils/random";
 
 type Spawner = () => Entity;
 
+type RateGetter = number | ((elapsedTime: number) => number)
+
 export default class Spawn {
     type: 'spawn' = 'spawn';
 
-    // Approximate spawns a second.
-    spawnRate = 1;
+    // Spawns once per second.
+    spawnRate: RateGetter = 5;
+
+    // The variance of the spawn rate.
+    variance: RateGetter = 0;
+
     tillNextSpawn: number = 0;
 
     spawnables: Spawner[] = [];

@@ -9,9 +9,9 @@ export default function addSpawn(engine: Engine) {
         .makeSystem('transform', 'spawn')
         .onEach('tick', (entity, message) => {
             const spawn = entity.spawn;
-            const probability = entity.spawn.spawnRate * message.step;
+            spawn.tillNextSpawn -= message.step;
 
-            if (random() > probability)
+            if (spawn.tillNextSpawn > 0)
                 return;
             const collider = entity.get('collider');
 
@@ -28,7 +28,16 @@ export default function addSpawn(engine: Engine) {
                 body.angularVelocity = random(-1, 1);
             }
             engine.addEntity(spawned);
-            spawn.tillNextSpawn = spawn.spawnRate;
+
+            const spawnRate = typeof spawn.spawnRate === 'number'
+                ? spawn.spawnRate
+                : spawn.spawnRate(message.elapsedTime);
+            const variance = typeof spawn.variance === 'number'
+                ? spawn.variance
+                : spawn.variance(message.elapsedTime);
+
+            // Next spawn should be the spawn rate, offset by some random variance.
+            spawn.tillNextSpawn = spawnRate + random(variance) - variance / 2;
         });
 
     engine.makeSystem('distanceSpawn', 'transform', 'collider')
