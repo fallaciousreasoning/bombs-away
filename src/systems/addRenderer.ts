@@ -1,10 +1,7 @@
-import Line from "../components/line";
-import { Transform } from "../components/transform";
-import Vector2 from "../core/vector2";
+import { Color } from "../core/color";
 import { Engine } from "../engine";
 import { canvas, context } from "../game";
 import { Entityish } from "./system";
-import { Color } from "../core/color";
 
 export const PIXELS_A_METRE = 64;
 export const METRES_A_PIXEL = 1 / PIXELS_A_METRE;
@@ -15,8 +12,8 @@ export const getHeight = () => canvas.height * METRES_A_PIXEL;
 let camera: Entityish<['camera', 'transform']>;
 export const getCamera = () => camera;
 export const useCamera = () => {
-    context.setTransform(1, 0, 0, 1, -getCamera().transform.position.x*PIXELS_A_METRE + canvas.width/2,
-        -getCamera().transform.position.y*PIXELS_A_METRE + canvas.height / 2);
+    context.setTransform(1, 0, 0, 1, -getCamera().transform.position.x * PIXELS_A_METRE + canvas.width / 2,
+        -getCamera().transform.position.y * PIXELS_A_METRE + canvas.height / 2);
 }
 
 export const useGameView = () => {
@@ -24,7 +21,7 @@ export const useGameView = () => {
     context.scale(PIXELS_A_METRE, PIXELS_A_METRE);
 }
 
-export default function addRenderer(engine: Engine, clearColor: Color=Color.white) {
+export default function addRenderer(engine: Engine, clearColor: Color = Color.white) {
     const context = canvas.getContext('2d');
 
     engine.makeSystem('camera', 'transform')
@@ -33,91 +30,5 @@ export default function addRenderer(engine: Engine, clearColor: Color=Color.whit
             (context as any).resetTransform();
             context.fillStyle = clearColor.hex;
             context.fillRect(0, 0, canvas.width, canvas.height)
-        });
-
-    engine
-        .makeSystem("box", "transform")
-        .onEach('tick', ({ transform, box }) => {
-            const size = new Vector2(box.width, box.height).mul(PIXELS_A_METRE).round();
-            const halfSize = size.div(2);
-            const position = transform.position.mul(PIXELS_A_METRE).round();
-
-            context.save();
-
-            if (box.useCameraCoords)
-                useCamera();
-
-            context.translate(position.x, position.y);
-            context.rotate(transform.rotation);
-            context.scale(transform.scale.x, transform.scale.y);
-
-            context.fillStyle = box.color;
-            context.fillRect(-halfSize.x, -halfSize.y, size.x, size.y);
-
-            context.restore();
-        });
-
-    engine.makeSystem("circle", "transform")
-        .onEach('tick', ({ transform, circle }) => {
-            const radius = circle.radius * PIXELS_A_METRE;
-            const position = transform.position.mul(PIXELS_A_METRE).round();
-
-            context.save();
-
-            if (circle.useCameraCoords)
-                useCamera();
-
-            context.translate(position.x, position.y);
-            context.fillStyle = 'red';
-            context.beginPath();
-            context.arc(0, 0, radius, 0, Math.PI * 2);
-            context.fill();
-
-            context.restore();
-        })
-
-    engine
-        .makeSystem("line", "transform")
-        .onEach('tick', ({ transform, line }: { transform: Transform, line: Line }) => {
-            const position = transform.position.mul(PIXELS_A_METRE).round();
-            const lineEnd = line.direction
-                .mul(line.length)
-                .rotate(transform.rotation)
-                .mul(PIXELS_A_METRE)
-                .add(position)
-                .round();
-
-            context.save();
-
-            if (line.useCameraCoords)
-                useCamera();
-
-            context.beginPath();
-            context.lineWidth = line.width * PIXELS_A_METRE;
-            context.strokeStyle = line.color;
-            context.moveTo(position.x, position.y);
-            context.lineTo(lineEnd.x, lineEnd.y);
-            context.stroke();
-
-            context.restore();
-        });    engine
-        .makeSystem("text", "transform")
-        .onEach('tick', ({ transform, text }) => {
-            const position = transform.position.mul(PIXELS_A_METRE).round();
-
-            context.save();
-
-            if (text.useCameraCoords)
-                useCamera();
-
-            context.fillStyle = text.color;
-            context.font = `${text.fontSize}px ${text.font}`;
-            context.textBaseline = text.verticalAlign;
-            context.textAlign = text.horizontalAlign;
-
-            const string = text.getText();
-            context.fillText(string, position.x, position.y);
-
-            context.restore();
         });
 }
