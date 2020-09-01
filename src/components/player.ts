@@ -1,5 +1,6 @@
 import ContactTracker from "./contactTracker";
 import { Color } from "../core/color";
+import { CanvasRendererOptions } from "../factories/rendererFactory";
 
 interface ColorScheme {
     fill: Color;
@@ -22,6 +23,8 @@ export const mergeIn = (current: ColorScheme, mergeIn: Partial<ColorScheme>, wei
 
 export default class Player {
     type: 'player' = 'player';
+
+    rendererOptions: CanvasRendererOptions;
 
     normalColor: ColorScheme = {
         fill: Color.red,

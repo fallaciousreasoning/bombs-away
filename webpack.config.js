@@ -44,7 +44,8 @@ module.exports = {
 
     devServer: {
         hot: true,
-        contentBase:  './public',
+        publicPath:  '/build',
+        contentBase: './public',
         host: '0.0.0.0',
         disableHostCheck: true
     }

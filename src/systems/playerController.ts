@@ -8,7 +8,7 @@ import { showMenu } from "../hud";
 import { getWidth } from "./addRenderer";
 
 export default function addPlayerController(engine: Engine) {
-    const managePowers = (player: Player, renderer: CanvasRenderer, health: Health, step: number) => {
+    const managePowers = (player: Player, health: Health, step: number) => {
         let colorScheme = player.normalColor;
 
         if (player.isFast) {
@@ -28,15 +28,16 @@ export default function addPlayerController(engine: Engine) {
                 health.health = player.defaultHealth;
         }
 
-        renderer.options.fill = colorScheme.fill.hex;
-        renderer.options.stroke = colorScheme.stroke.hex;
-        renderer.options.strokeWidth = colorScheme.thickness
+        const rendererOptions = player.rendererOptions;
+        rendererOptions.fill = colorScheme.fill.hex;
+        rendererOptions.stroke = colorScheme.stroke.hex;
+        rendererOptions.strokeWidth = colorScheme.thickness
     }
 
     engine
-        .makeSystem('player', 'body', 'canvasRenderer', 'health')
-        .onEach('tick', ({ player, body, canvasRenderer, health }, message) => {
-            managePowers(player, canvasRenderer, health, message.step);
+        .makeSystem('player', 'body', 'health')
+        .onEach('tick', ({ player, body, health }, message) => {
+            managePowers(player, health, message.step);
 
             let horizontal = input.getAxis('horizontal');
             if (input.getAxis('shoot'))

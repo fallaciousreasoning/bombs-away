@@ -177,7 +177,7 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new Transform(new Vector2(5, -1)))
         // Player is only ever dead or alive.
         .add(new Health(1))
-        .add(e => {
+        .add(() => {
             const player = new Player();
             // The player can jump if the ground tracker isn't touching the player.
             player.groundTracker = new ContactTracker('player', true);
@@ -192,18 +192,22 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new Body(3))
         .add(new Score('#score', '#highscore'))
         .add(new Powerupable())
-        .add(complexRenderer(
-            colliderRenderer({
+        .add(entity => {
+            const collider = colliderRenderer({
                 fill: 'red'
-            }),
-            lineRenderer({
-                direction: Vector2.up,
-                length: 1,
-                strokeWidth: 0.1,
-                stroke: 'white',
-                fill: 'white'
-            })
-        ));
+            });
+            entity.player.rendererOptions = collider.options;
+            
+            return complexRenderer(collider,
+                lineRenderer({
+                    direction: Vector2.up,
+                    length: 1,
+                    strokeWidth: 0.1,
+                    stroke: 'white',
+                    fill: 'white'
+                })
+            )
+        });
 
     const playerGroundDetector = new Entity()
         .add(new Transform(new Vector2(0, 1), 0, player.transform))
