@@ -8,12 +8,14 @@ export const context = canvas.getContext('2d');
 export const input = new Input(canvas);
 window['input'] = input;
 
-const tickEvent: Tick = { type: 'tick', step: 0 };
+const tickEvent: Tick = { type: 'tick', step: 0, elapsedTime: 0 };
 let lastTick = 0;
 
 const tick = (timestamp) => {
     const step = Math.min(timestamp - lastTick, 60);
     tickEvent.step = step/1000;
+    tickEvent.elapsedTime += tickEvent.step;
+
     engine.broadcastMessage(tickEvent);
     lastTick = timestamp;
     requestAnimationFrame(tick);
