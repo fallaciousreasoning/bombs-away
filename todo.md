@@ -12,11 +12,10 @@
 - [x] Add score tracking
 - [x] Add health (and death)
 - [x] Menus
-- [ ] Difficulty should increase
-- [ ] Camping should be prohibited
-- [ ] Add powerups
+- [X] Difficulty should increase
+- [X] Camping should be prohibited
+- [X] Add powerups
   - [x] Laser
-  - [ ] Grenade
-      -  needs to not kill player
+  - [X] Grenade
   - [x] Invulnerable
   - [x] Super fast
