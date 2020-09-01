@@ -1,16 +1,10 @@
-import { Engine } from '../engine';
-import { Entityish } from './system';
-import Vector2 from '../core/vector2';
-import { TextureConverter } from '../geometry/textureConverter';
-import { convexPartition } from '../geometry/bayazitDecomposer';
-import Input from '../core/input';
-import { renderConfig } from './colliderRenderer';
 import { Fixture } from '../collision/fixture';
-import { input } from '../game';
-import { tree } from './collisionDetector';
-import { AABB } from '../core/aabb';
-import { collinearSimplify } from '../geometry/simplifyTools';
 import { CollisionTexture } from '../components/collisionTexture';
+import { AABB } from '../core/aabb';
+import Vector2 from '../core/vector2';
+import { convexPartition } from '../geometry/bayazitDecomposer';
+import { TextureConverter } from '../geometry/textureConverter';
+import { Entityish } from './system';
 
 type Destroyable = Entityish<['transform', 'collisionTexture', 'collider']>;
 export const destroyCircle = (removeFrom: Destroyable, centre: Vector2, radius: number) => {

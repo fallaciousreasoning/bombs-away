@@ -9,7 +9,7 @@ module.exports = {
     },
     output: {
         filename: "[name].js",
-        path: __dirname + "/dist"
+        path: __dirname + "/public/build"
     },
 
     // Enable sourcemaps for debugging webpack's output.
@@ -45,7 +45,7 @@ module.exports = {
 
     devServer: {
         hot: false,
-        contentBase:  './dist',
+        contentBase:  './public',
         host: '0.0.0.0',
         disableHostCheck: true
     }
