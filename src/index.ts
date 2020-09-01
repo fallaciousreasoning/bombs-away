@@ -226,7 +226,7 @@ export const newGame = (noPlayer?: boolean) => {
                 const baseRate = 2;
                 const maxRate = 0.2;
                 const diff = baseRate - maxRate;
-                const timeTillMaxRate = 200;
+                const timeTillMaxRate = 180;
                 const percentProgress = Math.min(elapsedTime/timeTillMaxRate, 1);
                 return baseRate - diff*percentProgress;
             }
