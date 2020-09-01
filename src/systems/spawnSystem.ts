@@ -37,7 +37,7 @@ export default function addSpawn(engine: Engine) {
                 : spawn.variance(message.elapsedTime);
 
             // Next spawn should be the spawn rate, offset by some random variance.
-            spawn.tillNextSpawn = spawnRate + random(variance) - variance / 2;
+            spawn.tillNextSpawn = spawnRate + (random(variance) - variance / 2) * spawnRate;
         });
 
     engine.makeSystem('distanceSpawn', 'transform', 'collider')

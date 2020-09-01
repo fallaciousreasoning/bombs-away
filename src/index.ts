@@ -219,7 +219,19 @@ export const newGame = (noPlayer?: boolean) => {
     const bomber = new Entity()
         .add(new Transform(new Vector2(getWidth() / 2, 0)))
         .add(new FollowTransform(player, { lockX: true, offset: spawnOffsets }))
-        .add(new Spawn(makeBomb))
+        .add(() => {
+            const spawn = new Spawn(makeBomb);
+            spawn.spawnRate = elapsedTime => {
+                const baseRate = 2;
+                const maxRate = 0.2;
+                const diff = baseRate - maxRate;
+                const timeTillMaxRate = 200;
+                const percentProgress = Math.min(elapsedTime/timeTillMaxRate, 1);
+                return baseRate - diff*percentProgress;
+            }
+            spawn.variance = 0.2;
+            return spawn;
+        })
         .add(boxCollider(getWidth(), 1, true));
 
     const powerupper = new Entity()
