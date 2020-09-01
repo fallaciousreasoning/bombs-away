@@ -229,9 +229,10 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new FollowTransform(player, { lockX: true, spring: 10 }))
         .add(new Camera());
 
-    if (!noPlayer)
+    if (!noPlayer) {
         engine.addEntity(player);
-    engine.addEntity(playerGroundDetector);
+        engine.addEntity(playerGroundDetector);
+    }
     engine.addEntity(makeWall('left'));
     engine.addEntity(makeWall('right'));
 

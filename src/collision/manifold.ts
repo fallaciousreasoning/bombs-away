@@ -1,9 +1,7 @@
-import Vector2 from '../core/vector2';
-import { Entity } from '../entity';
-import { Vertices } from '../geometry/vertices';
-import { Transform } from '../components/transform';
-import { Fixture } from './fixture';
 import { stableHashPair } from '../core/hashHelper';
+import Vector2 from '../core/vector2';
+import { Vertices } from '../geometry/vertices';
+import { Fixture } from './fixture';
 
 const getMinMax = (dir: Vector2, of: Vertices) => {
     let min = Number.MAX_SAFE_INTEGER;

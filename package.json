@@ -17,7 +17,7 @@
     "source-map-loader": "^0.2.4",
     "ts-jest": "^23.10.4",
     "typescript": "^3.8",
-    "webpack": "^4.17.1",
+    "webpack": "^4.44.1",
     "webpack-cli": "~3.3.10"
   },
   "jest": {
@@ -34,5 +34,8 @@
       "json",
       "node"
     ]
+  },
+  "dependencies": {
+    "webpack-dev-server": "^3.11.0"
   }
 }

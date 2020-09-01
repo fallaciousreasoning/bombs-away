@@ -41,7 +41,6 @@ for (let i = 0; i < numSpokes; ++i) {
     vertices.push(spoke.rotate(rotateBy*i).add(circleCentre));
 };
 const bombVertices = new Vertices(vertices);
-bombVertices.forceCounterClockwise();
 bombVertices.calculateProperties();
 
 export const makeBomb = (width: number, height: number) => {
