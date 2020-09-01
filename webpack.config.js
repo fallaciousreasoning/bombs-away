@@ -29,7 +29,6 @@ module.exports = {
     },
 
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
         new webpackUnionGeneratorPlugin({
             fileGlobs: __dirname + '/src/components/',
             outputFile: __dirname + '/src/components/Component.ts',
