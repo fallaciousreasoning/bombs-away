@@ -15,12 +15,19 @@ export const powerupColors: { [P in Powerup['power']]: Color } = {
 export const powers: Powers[] = Object.keys(powerupColors) as any;
 
 export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Entity) => {
-    engine.makeSystem('powerupable')
+    engine.makeSystem('powerupable', 'player')
         .onTargetedMessage('collision-enter', ({ entity, hit }) => {
             if (!hit.has('powerup'))
                 return;
 
-            entity.powerupable.powerups.push(hit.powerup.power);
+            const power = hit.powerup.power;
+            if (power === "invulnerable") {
+                entity.player.invulnerableFor = entity.player.invulnerableTime;
+            } else if (power === "agility") {
+                entity.player.fastFor = entity.player.fastTime;
+            } else {
+                entity.powerupable.powerups.push(hit.powerup.power);
+            }
             engine.removeEntity(hit);
         });
 
@@ -59,14 +66,6 @@ export default (engine: Engine, makeGrenade: () => Entity, makeLaser: () => Enti
                 case "laser":
                     entity = makeLaser();
                     break;
-                case "invulnerable":
-                    player.invulnerableFor = player.invulnerableTime;
-                    break;
-                case "agility":
-                    player.fastFor = player.fastTime
-                    break;
-                default:
-                    let never: never;
             }
 
             if (entity) {
