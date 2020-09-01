@@ -1,6 +1,7 @@
 {
     "short_name": "Bombs Away",
     "name": "Bombs Away",
+    "description": "A physics based survival game! How low can you go!",
     "icons": [
         {
             "src": "/icon.jpg",
