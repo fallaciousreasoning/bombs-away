@@ -1,6 +1,6 @@
 import { CanvasRenderer } from "../components/canvasRenderer";
 import Vector2 from "../core/vector2";
-import { PIXELS_A_METRE } from "../systems/addRenderer";
+import { PIXELS_A_METRE, METRES_A_PIXEL } from "../systems/addRenderer";
 import { verticesFromString } from "../geometry/serializer";
 export interface CanvasRendererOptions {
     fill?: string;
@@ -62,6 +62,9 @@ interface ColliderOptions extends CanvasRendererOptions {
 
 export const colliderRenderer = (options: ColliderOptions) => {
     return new CanvasRenderer((context, entity) => {
+        const strokeWidth = (options.strokeWidth === undefined
+            ? 1 : options.strokeWidth)*METRES_A_PIXEL;
+
         if (!entity.has('collider'))
             throw new Error("Added a collider renderer to entity without collider!");
         for (const fixture of entity.collider.fixtures) {
@@ -75,7 +78,7 @@ export const colliderRenderer = (options: ColliderOptions) => {
 
             if (options.stroke) {
                 context.beginPath();
-                context.lineWidth = options.strokeWidth/PIXELS_A_METRE;
+                context.lineWidth = strokeWidth;
                 
                 const first = vertices.getVertex(0);
                 context.moveTo(first.x, first.y);

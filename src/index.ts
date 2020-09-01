@@ -50,6 +50,8 @@ import { random, randomValue } from "./utils/random";
 import { ColliderRenderer } from "./components/colliderRenderer";
 import "./hud";
 import Health from "./components/health";
+import canvasRenderer from "./systems/canvasRenderer";
+import { colliderRenderer } from "./factories/rendererFactory";
 
 window['engine'] = engine;
 window['debugPoints'] = [];
@@ -184,7 +186,9 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new Body(3))
         .add(new Score('#score', '#highscore'))
         .add(new Powerupable())
-        .add(new ColliderRenderer());
+        .add(colliderRenderer({
+            fill: 'red',
+        }));
 
     const playerGroundDetector = new Entity()
         .add(new Transform(new Vector2(0, 1), 0, player.transform))
@@ -238,6 +242,7 @@ export const newGame = (noPlayer?: boolean) => {
 newGame(/** noPlayer = */true);
 
 addRenderer(engine, Color.black);
+canvasRenderer(engine);
 addFollows(engine);
 addExplosionManager(engine);
 addSpawn(engine);
