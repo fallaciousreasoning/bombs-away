@@ -6,6 +6,8 @@ This game was inspired by 7bomb on Windows Phone 7, back in the day. It contains
 
 In addition, the game is a valid PWA, meaning that it should be installable and will work offline.
 
+A live version of the game is available at https://bombs-away.now.sh/
+
 ## Development
 
 Initialize submodules
