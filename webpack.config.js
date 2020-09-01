@@ -43,7 +43,6 @@ module.exports = {
     ],
 
     devServer: {
-        hot: true,
         publicPath:  '/build',
         contentBase: './public',
         host: '0.0.0.0',
