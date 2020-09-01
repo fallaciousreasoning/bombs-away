@@ -1,7 +1,7 @@
 import { CanvasRenderer } from "../components/canvasRenderer";
 import Vector2 from "../core/vector2";
-import { PIXELS_A_METRE, METRES_A_PIXEL } from "../systems/addRenderer";
-import { verticesFromString } from "../geometry/serializer";
+import { METRES_A_PIXEL } from "../systems/addRenderer";
+import { applyRendererColors } from "../systems/canvasRenderer";
 export interface CanvasRendererOptions {
     fill?: string;
     stroke?: string;
@@ -58,6 +58,7 @@ export const lineRenderer = (options: LineOptions) => new CanvasRenderer(context
     context.strokeStyle = options.stroke || options.fill;
 
     context.beginPath();
+    context.moveTo(0, 0);
     context.lineTo(lineEnd.x, lineEnd.y);
     context.stroke();
 }, options);
@@ -102,3 +103,10 @@ export const colliderRenderer = (options: ColliderOptions) => {
         }
     }, options);
 }
+
+export const complexRenderer = (...renderers: CanvasRenderer[]) => new CanvasRenderer((context, entity) => {
+    for (const renderer of renderers) {
+        applyRendererColors(context, renderer);
+        renderer.draw(context, entity);
+    }
+});

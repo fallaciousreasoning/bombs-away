@@ -2,8 +2,15 @@ import { Engine } from "../engine";
 import { Entityish } from "./system";
 import { context } from "../game";
 import { useGameView } from "./addRenderer";
+import { CanvasRenderer } from "../components/canvasRenderer";
 
 let entities: Entityish<['canvasRenderer', 'transform']>[] = [];
+
+export const applyRendererColors = (context: CanvasRenderingContext2D, renderer: CanvasRenderer) => {
+    context.fillStyle = renderer.options.fill;
+    context.strokeStyle = renderer.options.stroke;
+    context.lineWidth = renderer.options.strokeWidth;
+}
 
 export default (engine: Engine) => {
     engine.makeSystem('canvasRenderer', 'transform')
@@ -21,9 +28,8 @@ export default (engine: Engine) => {
                 const { canvasRenderer, transform } = entity;
 
                 context.save();
-                context.fillStyle = canvasRenderer.options.fill;
-                context.strokeStyle = canvasRenderer.options.stroke;
-                context.lineWidth = canvasRenderer.options.strokeWidth;
+
+                applyRendererColors(context, canvasRenderer);
 
                 context.translate(transform.position.x, transform.position.y);
                 context.rotate(transform.rotation);

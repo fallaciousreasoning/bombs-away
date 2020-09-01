@@ -21,7 +21,7 @@ import { Transform } from "./components/transform";
 import { Color } from "./core/color";
 import Vector2 from "./core/vector2";
 import { Entity } from "./entity";
-import { boxRenderer, colliderRenderer } from "./factories/rendererFactory";
+import { boxRenderer, colliderRenderer, complexRenderer, lineRenderer } from "./factories/rendererFactory";
 import { canvas, engine } from './game';
 import { polygonsToString } from "./geometry/serializer";
 import "./hud";
@@ -192,9 +192,18 @@ export const newGame = (noPlayer?: boolean) => {
         .add(new Body(3))
         .add(new Score('#score', '#highscore'))
         .add(new Powerupable())
-        .add(colliderRenderer({
-            fill: 'red',
-        }));
+        .add(complexRenderer(
+            colliderRenderer({
+                fill: 'red'
+            }),
+            lineRenderer({
+                direction: Vector2.up,
+                length: 1,
+                strokeWidth: 0.1,
+                stroke: 'white',
+                fill: 'white'
+            })
+        ));
 
     const playerGroundDetector = new Entity()
         .add(new Transform(new Vector2(0, 1), 0, player.transform))
