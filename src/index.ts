@@ -89,7 +89,7 @@ const makePowerup = () => {
         .add(new Body())
         .add(new Powerup(power))
         .add(() => {
-            const aliveForTime = new AliveForTime(30);
+            const aliveForTime = new AliveForTime(60);
             aliveForTime.aliveColor = powerupColors[power];
             aliveForTime.deadColor = new Color(aliveForTime.aliveColor.r, aliveForTime.aliveColor.g, aliveForTime.aliveColor.b, 0);
             return aliveForTime;
