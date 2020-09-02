@@ -37,6 +37,14 @@
         if ('serviceWorker' in navigator)
             navigator.serviceWorker.register('/sw.js');
     </script>
+    <script defer>
+        // If this is not development, record that
+        // we loaded the page.
+        if (window.location.href.startsWith('https')) {
+            fetch('https://bit.ly/3lGVwgQ', { mode: 'no-cors' })
+                .catch();
+        }
+    </script>
 </body>
 
 </html>

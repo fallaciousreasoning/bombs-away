@@ -2,7 +2,8 @@ const resources = [
     "/",
     "/main.js",
     "/styles.css",
-    "/manifest.json",
+    "/icon.png",
+    "/icon.jpg"
 ];
 const cacheName = "assets-v1";
 
@@ -31,5 +32,16 @@ const getResponse = async (event) => {
 }
 
 addEventListener('fetch', event => {
+    const url = new URL(event.request.url);
+
+    // Don't respond to request for a different origin.
+    if (url.origin !== location.origin)
+        return;
+
+    // Only try to respond to request that match a
+    // cached path.
+    if (!resources.some(r => url.pathname === r))
+        return;
+
     event.respondWith(getResponse(event));
 })
