@@ -2,7 +2,6 @@ const resources = [
     "/",
     "/main.js",
     "/styles.css",
-    "/icon.png",
     "/icon.jpg"
 ];
 const cacheName = "assets-v1";
