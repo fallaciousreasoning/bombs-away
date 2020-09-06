@@ -23,13 +23,13 @@ Tap the left side of the screen to go left, and the right side to go right. Tap 
 
 ### Power-ups
 
-![green triangle](/docs/laser.svg): Laser. Cuts out a space to sit in, safe from bombs. Tap player to use.
+![green triangle](https://lingtalfi.com/services/pngtext?color=32cd32&size=15&text=%E2%96%B2): Laser. Cuts out a space to sit in, safe from bombs. Tap player to use.
 
-<span style="color: yellow">▲</span>: Grenade. Makes an explosion, flinging away bombs (and potentially you!) and destroying terrain. Tap player to use.
+![yellow triangle](https://lingtalfi.com/services/pngtext?color=ffff00&size=15&text=%E2%96%B2): Grenade. Makes an explosion, flinging away bombs (and potentially you!) and destroying terrain. Tap player to use.
 
-<span style="color: purple">▲</span>: Agility: temporarily increase your speed and agility. Used on contact.
+![purple triangle](https://lingtalfi.com/services/pngtext?color=5a005a&size=15&text=%E2%96%B2): Agility: temporarily increase your speed and agility. Used on contact.
 
-<span style="color: lightblue">▲</span>: Invulnerability: temporarily makes you invulnerable! Used on contact.
+![purple triangle](https://lingtalfi.com/services/pngtext?color=517ea0&size=15&text=%E2%96%B2): Invulnerability: temporarily makes you invulnerable! Used on contact.
 
 ## Development
 
