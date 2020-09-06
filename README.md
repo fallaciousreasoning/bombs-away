@@ -8,6 +8,19 @@ In addition, the game is a valid PWA, meaning that it should be installable and 
 
 A live version of the game is available at https://bombs-away.now.sh/
 
+## Gameplay
+
+### Desktop
+
+<kbd>A</kbd> or <kbd>←</kbd> to go left.
+
+<kbd>D</kbd> or <kbd>→</kbd> to go right.
+
+<kbd>Space</kbd> or <kbd>W</kbd> to jump.
+
+### Mobile 
+Tap the left side of the screen to go left, and the right side to go right. Tap the other side of the screen (when moving in a direction) to jump.
+
 ## Development
 
 Initialize submodules
