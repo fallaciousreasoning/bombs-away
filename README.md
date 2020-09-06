@@ -23,7 +23,7 @@ Tap the left side of the screen to go left, and the right side to go right. Tap 
 
 ### Power-ups
 
-![green triangle](docs/laser.svg): Laser. Cuts out a space to sit in, safe from bombs. Tap player to use.
+![green triangle](/docs/laser.svg): Laser. Cuts out a space to sit in, safe from bombs. Tap player to use.
 
 <span style="color: yellow">▲</span>: Grenade. Makes an explosion, flinging away bombs (and potentially you!) and destroying terrain. Tap player to use.
 
