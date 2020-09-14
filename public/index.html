@@ -42,7 +42,7 @@
         // we loaded the page.
         if (window.location.href.startsWith('https')) {
             fetch('https://bit.ly/3lGVwgQ', { mode: 'no-cors' })
-                .catch();
+                .catch(() => {});
         }
     </script>
 </body>
