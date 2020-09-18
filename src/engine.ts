@@ -27,18 +27,9 @@ export class Engine {
         }
     }
 
-    makeSystem = <T0 extends ComponentType = never,
-        T1 extends ComponentType = never,
-        T2 extends ComponentType = never,
-        T3 extends ComponentType = never,
-        T4 extends ComponentType = never,
-        T5 extends ComponentType = never,
-        T6 extends ComponentType = never,
-        T7 extends ComponentType = never,
-        T8 extends ComponentType = never,
-        T9 extends ComponentType = never>
-        (...types: [T0?, T1?, T2?, T3?, T4?, T5?, T6?, T7?, T8?, T9?]) => {
-        const system = new System(types);
+    makeSystem = <Components extends ComponentType[]>
+        (...types: Components) => {
+        const system = new System(...types);
         this.systems.push(system);
         return system;
     }

@@ -1,17 +1,11 @@
-import { Manifold } from '../collision/manifold';
-import { Pool } from "../core/pool";
-import { Engine } from "../engine";
-import { Collision, Trigger } from "../messages/collision";
-import solve from './collisionResolver';
-import { Entityish } from "./system";
-import { dynamicFixtures, dynamicEntities, otherFixtures, fixtures, triggerFixtures } from './fixtureManager';
-import { Fixture } from '../collision/fixture';
-import Vector2 from '../core/vector2';
-import { stableHashPair } from '../core/hashHelper'
-import { AABBTree } from '../geometry/dynamicAabbTree';
 import { CollisionManager } from '../collision/collisionManager';
-import { useGameView, PIXELS_A_METRE, METRES_A_PIXEL } from './addRenderer';
+import { Fixture } from '../collision/fixture';
+import { Engine } from "../engine";
 import { context } from '../game';
+import { AABBTree } from '../geometry/dynamicAabbTree';
+import { METRES_A_PIXEL, useGameView } from './addRenderer';
+import solve from './collisionResolver';
+import { dynamicEntities, dynamicFixtures, fixtures, triggerFixtures } from './fixtureManager';
 
 export const tree = new AABBTree<Fixture>();
 window['tree'] = tree;
