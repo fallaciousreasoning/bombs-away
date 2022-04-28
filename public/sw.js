@@ -1,6 +1,6 @@
 const resources = [
     "/",
-    "/main.js",
+    "/build/main.js",
     "/styles.css",
     "/icon.jpg"
 ];
